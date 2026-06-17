@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Shop Decants — Robot Fragrances</title>
-  <meta name="description" content="Browse the Robot Fragrances shelf — authentic designer and niche decants in 2 ml, 5 ml and 10 ml sizes." />
+  <meta name="description" content="Browse the Robot Fragrances shelf — authentic designer and niche decants in 2 ml, 5 ml, 10 ml and 30 ml sizes." />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Jost:wght@300;400;500;600&display=swap" />
@@ -41,117 +41,33 @@
         <p class="breadcrumb"><a href="index.html">Home</a> / Shop</p>
         <span class="eyebrow">The full shelf</span>
         <h1>Decants for the curious.</h1>
-        <p class="lead">Every scent below is poured from an authentic bottle into a sealed travel atomiser. Filter by family, then start small.</p>
+        <p class="lead">Every scent below is poured from an authentic bottle into a sealed travel atomiser. Choose your size — 2&nbsp;ml to 30&nbsp;ml — and the price updates as you go.</p>
       </div>
     </section>
 
     <!-- ======================= PRODUCTS ======================= -->
     <section class="section--tight" style="padding-top:0">
       <div class="container">
-        <div class="filter-bar" role="group" aria-label="Filter by fragrance family">
+        <div class="filter-bar" role="group" aria-label="Filter by collection">
           <button data-filter="all" class="is-active">All</button>
-          <button data-filter="woody">Woody</button>
-          <button data-filter="fresh">Fresh</button>
-          <button data-filter="floral">Floral</button>
-          <button data-filter="amber">Amber & Oud</button>
-          <button data-filter="gourmand">Gourmand</button>
+          <button data-filter="designer">Designer</button>
+          <button data-filter="niche">Niche</button>
+          <button data-filter="house">Le Labo &amp; Byredo</button>
         </div>
 
-        <div class="product-grid">
+        <!-- Cards are rendered from the catalogue in assets/js/main.js -->
+        <div class="product-grid" id="shop-grid"></div>
 
-          <article class="product-card reveal" data-family="amber">
-            <div class="product-thumb"><span class="product-tag">Bestseller</span><svg class="bottle" viewBox="0 0 100 150" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="40" y="5" width="20" height="15" rx="2.5"/><path d="M44 20h12v8H44z"/><path d="M28 28h44a8 8 0 0 1 8 8v100a8 8 0 0 1-8 8H28a8 8 0 0 1-8-8V36a8 8 0 0 1 8-8z"/><circle cx="42" cy="66" r="3.4" fill="currentColor" stroke="none"/><circle cx="58" cy="66" r="3.4" fill="currentColor" stroke="none"/><path d="M42 80c3 3 13 3 16 0"/></svg></div>
-            <div class="product-body">
-              <span class="product-house">Maison Atelier</span>
-              <h3 class="product-name">Velvet Oud</h3>
-              <p class="product-notes">Oud · Bulgarian rose · saffron · warm amber</p>
-              <div class="product-foot"><span class="product-price">$14 <small>/ 5 ml</small></span><button class="product-add">Add decant</button></div>
-            </div>
-          </article>
+        <noscript>
+          <p class="form-note" style="text-align:center">
+            Our interactive shelf needs JavaScript to show live pricing.
+            Pricing per size: <strong>Designer</strong> from $4 · <strong>Premium designer</strong> from $6 ·
+            <strong>Niche</strong> from $8 · <strong>Rare niche</strong> from $15 ·
+            <strong>Le&nbsp;Labo &amp; Byredo</strong> from $12 · <strong>Le&nbsp;Labo City Exclusive</strong> from $20.
+          </p>
+        </noscript>
 
-          <article class="product-card reveal" data-family="fresh">
-            <div class="product-thumb"><svg class="bottle" viewBox="0 0 100 150" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="40" y="5" width="20" height="15" rx="2.5"/><path d="M44 20h12v8H44z"/><path d="M28 28h44a8 8 0 0 1 8 8v100a8 8 0 0 1-8 8H28a8 8 0 0 1-8-8V36a8 8 0 0 1 8-8z"/><circle cx="42" cy="66" r="3.4" fill="currentColor" stroke="none"/><circle cx="58" cy="66" r="3.4" fill="currentColor" stroke="none"/><path d="M42 80c3 3 13 3 16 0"/></svg></div>
-            <div class="product-body">
-              <span class="product-house">Lumen Paris</span>
-              <h3 class="product-name">Midnight Bergamot</h3>
-              <p class="product-notes">Bergamot · vetiver · cedar · soft amber</p>
-              <div class="product-foot"><span class="product-price">$12 <small>/ 5 ml</small></span><button class="product-add">Add decant</button></div>
-            </div>
-          </article>
-
-          <article class="product-card reveal" data-family="fresh">
-            <div class="product-thumb"><span class="product-tag">New</span><svg class="bottle" viewBox="0 0 100 150" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="40" y="5" width="20" height="15" rx="2.5"/><path d="M44 20h12v8H44z"/><path d="M28 28h44a8 8 0 0 1 8 8v100a8 8 0 0 1-8 8H28a8 8 0 0 1-8-8V36a8 8 0 0 1 8-8z"/><circle cx="42" cy="66" r="3.4" fill="currentColor" stroke="none"/><circle cx="58" cy="66" r="3.4" fill="currentColor" stroke="none"/><path d="M42 80c3 3 13 3 16 0"/></svg></div>
-            <div class="product-body">
-              <span class="product-house">Northbound</span>
-              <h3 class="product-name">Steel Lavender</h3>
-              <p class="product-notes">Lavender · clary sage · cedar · vetiver</p>
-              <div class="product-foot"><span class="product-price">$11 <small>/ 5 ml</small></span><button class="product-add">Add decant</button></div>
-            </div>
-          </article>
-
-          <article class="product-card reveal" data-family="gourmand">
-            <div class="product-thumb"><svg class="bottle" viewBox="0 0 100 150" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="40" y="5" width="20" height="15" rx="2.5"/><path d="M44 20h12v8H44z"/><path d="M28 28h44a8 8 0 0 1 8 8v100a8 8 0 0 1-8 8H28a8 8 0 0 1-8-8V36a8 8 0 0 1 8-8z"/><circle cx="42" cy="66" r="3.4" fill="currentColor" stroke="none"/><circle cx="58" cy="66" r="3.4" fill="currentColor" stroke="none"/><path d="M42 80c3 3 13 3 16 0"/></svg></div>
-            <div class="product-body">
-              <span class="product-house">Maison Atelier</span>
-              <h3 class="product-name">Golden Ember</h3>
-              <p class="product-notes">Amber · tonka · vanilla · sandalwood</p>
-              <div class="product-foot"><span class="product-price">$16 <small>/ 5 ml</small></span><button class="product-add">Add decant</button></div>
-            </div>
-          </article>
-
-          <article class="product-card reveal" data-family="floral">
-            <div class="product-thumb"><svg class="bottle" viewBox="0 0 100 150" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="40" y="5" width="20" height="15" rx="2.5"/><path d="M44 20h12v8H44z"/><path d="M28 28h44a8 8 0 0 1 8 8v100a8 8 0 0 1-8 8H28a8 8 0 0 1-8-8V36a8 8 0 0 1 8-8z"/><circle cx="42" cy="66" r="3.4" fill="currentColor" stroke="none"/><circle cx="58" cy="66" r="3.4" fill="currentColor" stroke="none"/><path d="M42 80c3 3 13 3 16 0"/></svg></div>
-            <div class="product-body">
-              <span class="product-house">Lumen Paris</span>
-              <h3 class="product-name">Ivory Musk</h3>
-              <p class="product-notes">White musk · iris · sandalwood · pear</p>
-              <div class="product-foot"><span class="product-price">$13 <small>/ 5 ml</small></span><button class="product-add">Add decant</button></div>
-            </div>
-          </article>
-
-          <article class="product-card reveal" data-family="floral">
-            <div class="product-thumb"><span class="product-tag">Limited</span><svg class="bottle" viewBox="0 0 100 150" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="40" y="5" width="20" height="15" rx="2.5"/><path d="M44 20h12v8H44z"/><path d="M28 28h44a8 8 0 0 1 8 8v100a8 8 0 0 1-8 8H28a8 8 0 0 1-8-8V36a8 8 0 0 1 8-8z"/><circle cx="42" cy="66" r="3.4" fill="currentColor" stroke="none"/><circle cx="58" cy="66" r="3.4" fill="currentColor" stroke="none"/><path d="M42 80c3 3 13 3 16 0"/></svg></div>
-            <div class="product-body">
-              <span class="product-house">Atelier Nord</span>
-              <h3 class="product-name">Rose Mécanique</h3>
-              <p class="product-notes">Centifolia rose · pink pepper · patchouli</p>
-              <div class="product-foot"><span class="product-price">$15 <small>/ 5 ml</small></span><button class="product-add">Add decant</button></div>
-            </div>
-          </article>
-
-          <article class="product-card reveal" data-family="woody">
-            <div class="product-thumb"><svg class="bottle" viewBox="0 0 100 150" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="40" y="5" width="20" height="15" rx="2.5"/><path d="M44 20h12v8H44z"/><path d="M28 28h44a8 8 0 0 1 8 8v100a8 8 0 0 1-8 8H28a8 8 0 0 1-8-8V36a8 8 0 0 1 8-8z"/><circle cx="42" cy="66" r="3.4" fill="currentColor" stroke="none"/><circle cx="58" cy="66" r="3.4" fill="currentColor" stroke="none"/><path d="M42 80c3 3 13 3 16 0"/></svg></div>
-            <div class="product-body">
-              <span class="product-house">Northbound</span>
-              <h3 class="product-name">Cyan Vetiver</h3>
-              <p class="product-notes">Vetiver · grapefruit · oakmoss · ambergris</p>
-              <div class="product-foot"><span class="product-price">$12 <small>/ 5 ml</small></span><button class="product-add">Add decant</button></div>
-            </div>
-          </article>
-
-          <article class="product-card reveal" data-family="woody">
-            <div class="product-thumb"><svg class="bottle" viewBox="0 0 100 150" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="40" y="5" width="20" height="15" rx="2.5"/><path d="M44 20h12v8H44z"/><path d="M28 28h44a8 8 0 0 1 8 8v100a8 8 0 0 1-8 8H28a8 8 0 0 1-8-8V36a8 8 0 0 1 8-8z"/><circle cx="42" cy="66" r="3.4" fill="currentColor" stroke="none"/><circle cx="58" cy="66" r="3.4" fill="currentColor" stroke="none"/><path d="M42 80c3 3 13 3 16 0"/></svg></div>
-            <div class="product-body">
-              <span class="product-house">Maison Atelier</span>
-              <h3 class="product-name">Atlas Cedar</h3>
-              <p class="product-notes">Cedar · cardamom · dry leather · incense</p>
-              <div class="product-foot"><span class="product-price">$13 <small>/ 5 ml</small></span><button class="product-add">Add decant</button></div>
-            </div>
-          </article>
-
-          <article class="product-card reveal" data-family="woody">
-            <div class="product-thumb"><svg class="bottle" viewBox="0 0 100 150" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="40" y="5" width="20" height="15" rx="2.5"/><path d="M44 20h12v8H44z"/><path d="M28 28h44a8 8 0 0 1 8 8v100a8 8 0 0 1-8 8H28a8 8 0 0 1-8-8V36a8 8 0 0 1 8-8z"/><circle cx="42" cy="66" r="3.4" fill="currentColor" stroke="none"/><circle cx="58" cy="66" r="3.4" fill="currentColor" stroke="none"/><path d="M42 80c3 3 13 3 16 0"/></svg></div>
-            <div class="product-body">
-              <span class="product-house">Lumen Paris</span>
-              <h3 class="product-name">Noir Cardamom</h3>
-              <p class="product-notes">Cardamom · black pepper · cypress · amber</p>
-              <div class="product-foot"><span class="product-price">$15 <small>/ 5 ml</small></span><button class="product-add">Add decant</button></div>
-            </div>
-          </article>
-
-        </div>
-
-        <p class="form-note" style="text-align:center; margin-top:2.5rem">Every scent is also available as a 2&nbsp;ml tester and a 10&nbsp;ml carry. Prices shown are for 5&nbsp;ml.</p>
+        <p class="form-note" style="text-align:center; margin-top:2.5rem">Sizes available: 2&nbsp;ml · 5&nbsp;ml · 10&nbsp;ml · 30&nbsp;ml. Le&nbsp;Labo City Exclusives are poured up to 10&nbsp;ml.</p>
       </div>
     </section>
 

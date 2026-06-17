@@ -385,6 +385,22 @@ p { color: var(--ink-soft); }
 }
 .product-add:hover { background: var(--ink); color: #fff; border-color: var(--ink); }
 
+/* ---- Size selector (within product card) ----------------- */
+.size-options { display: flex; flex-wrap: wrap; gap: 0.4rem; margin-top: 0.9rem; }
+.size-opt {
+  font-size: 0.72rem;
+  letter-spacing: 0.03em;
+  color: var(--ink-soft);
+  background: transparent;
+  border: 1px solid var(--line);
+  border-radius: 100px;
+  padding: 0.4em 0.75em;
+  cursor: pointer;
+  transition: background 0.25s var(--ease), color 0.25s var(--ease), border-color 0.25s var(--ease);
+}
+.size-opt:hover { border-color: var(--ink); color: var(--ink); }
+.size-opt.is-active { background: var(--ink); color: #fff; border-color: var(--ink); }
+
 /* ---- Filter bar ------------------------------------------ */
 .filter-bar {
   display: flex;
