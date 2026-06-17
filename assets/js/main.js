@@ -1,7 +1,7 @@
 /* ============================================================
    Robot Fragrances — interactions
-   Mostly progressive enhancement. The shop grid is rendered
-   from the catalogue below (single source of truth for pricing).
+   The shop grid and the quiz both read one catalogue
+   (exposed as window.RF_CATALOGUE) so pricing stays in sync.
    ============================================================ */
 (function () {
   "use strict";
@@ -37,6 +37,21 @@
     { name: "Byredo Animalique",     label: "Niche", group: "niche", tier: "byredoLelabo", notes: "Musk · leather · amber · warm spice" }
   ];
 
+  function slugify(str) {
+    return str.toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, "")
+      .replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "");
+  }
+
+  /* Enriched, shared catalogue (adds slug + starting price). */
+  var CATALOGUE = PRODUCTS.map(function (p) {
+    return {
+      name: p.name, label: p.label, group: p.group, tier: p.tier,
+      notes: p.notes, tag: p.tag || "",
+      slug: slugify(p.name), from: TIERS[p.tier][0][1]
+    };
+  });
+  window.RF_CATALOGUE = CATALOGUE;
+
   var BOTTLE_SVG =
     '<svg class="bottle" viewBox="0 0 100 150" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' +
     '<rect x="40" y="5" width="20" height="15" rx="2.5"/><path d="M44 20h12v8H44z"/>' +
@@ -48,7 +63,7 @@
   /* --- Render the shop grid ------------------------------ */
   var grid = document.getElementById("shop-grid");
   if (grid) {
-    grid.innerHTML = PRODUCTS.map(function (p) {
+    grid.innerHTML = CATALOGUE.map(function (p) {
       var sizes = TIERS[p.tier];
       var first = sizes[0];
       var pills = sizes.map(function (s, i) {
@@ -57,7 +72,7 @@
       }).join("");
       var tag = p.tag ? '<span class="product-tag">' + p.tag + "</span>" : "";
       return '' +
-        '<article class="product-card reveal" data-group="' + p.group + '">' +
+        '<article class="product-card reveal" id="' + p.slug + '" data-group="' + p.group + '">' +
           '<div class="product-thumb">' + tag + BOTTLE_SVG + "</div>" +
           '<div class="product-body">' +
             '<span class="product-house">' + p.label + "</span>" +
@@ -71,6 +86,15 @@
           "</div>" +
         "</article>";
     }).join("");
+
+    // If we arrived via a deep link (e.g. from the quiz), reveal that card.
+    if (location.hash) {
+      var target = document.getElementById(location.hash.slice(1));
+      if (target) {
+        target.classList.add("is-visible");
+        target.scrollIntoView({ block: "center" });
+      }
+    }
   }
 
   /* --- Mobile nav toggle --------------------------------- */
@@ -89,7 +113,7 @@
     });
   }
 
-  /* --- Scroll reveal (covers freshly rendered cards) ----- */
+  /* --- Scroll reveal ------------------------------------- */
   var reveals = document.querySelectorAll(".reveal");
   if ("IntersectionObserver" in window && reveals.length) {
     var io = new IntersectionObserver(function (entries) {

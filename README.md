@@ -22,6 +22,7 @@ so customers can live with a scent before committing to a full bottle.
 |------|------|--------------|
 | **Home** | `index.html` | Hero, brand promise, feature strip, featured collection, "why decant" editorial, customer quote, newsletter sign-up |
 | **Shop** | `shop.html` | Catalogue-driven product grid with collection filters and a per-card size selector (live pricing), discovery-set call-to-action |
+| **Scent Finder** | `quiz.html` | An 8-question quiz that recommends one decant (plus two alternates) and deep-links to it on the shop |
 | **How It Works** | `how-it-works.html` | 3-step decanting process, size guide, authenticity stats, mini-FAQ |
 | **About** | `about.html` | Brand story, core values, mission quote |
 | **Contact** | `contact.html` | Contact form, direct details, full FAQ |
@@ -35,6 +36,7 @@ mobile menu, and a dark footer.
 .
 ├── index.html
 ├── shop.html
+├── quiz.html
 ├── how-it-works.html
 ├── about.html
 ├── contact.html
@@ -42,8 +44,13 @@ mobile menu, and a dark footer.
     ├── css/
     │   └── style.css     # design tokens + all components
     └── js/
-        └── main.js        # mobile nav, scroll reveal, shop filter, demo forms
+        ├── main.js       # catalogue, shop render, nav, reveal, filter, deep links
+        └── quiz.js       # Scent Finder quiz (scoring + result), reads the catalogue
 ```
+
+The quiz reads the same `window.RF_CATALOGUE` exposed by `main.js`, so its
+recommendations, prices, and links always stay in sync with the shop. Every
+fragrance in the catalogue is reachable as a result.
 
 ## Running it
 

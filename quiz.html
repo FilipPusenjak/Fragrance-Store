@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Shop Decants — Robot Fragrances</title>
-  <meta name="description" content="Browse the Robot Fragrances shelf — authentic designer and niche decants in 2 ml, 5 ml, 10 ml and 30 ml sizes." />
+  <title>Scent Finder — Robot Fragrances</title>
+  <meta name="description" content="Take the 8-question Robot Fragrances Scent Finder and get a personal decant recommendation from our designer and niche shelf." />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Jost:wght@300;400;500;600&display=swap" />
@@ -22,8 +22,8 @@
       </a>
       <nav class="nav-links" aria-label="Primary">
         <a href="index.html">Home</a>
-        <a href="shop.html" aria-current="page">Shop</a>
-        <a href="quiz.html">Scent Finder</a>
+        <a href="shop.html">Shop</a>
+        <a href="quiz.html" aria-current="page">Scent Finder</a>
         <a href="how-it-works.html">How It Works</a>
         <a href="about.html">About</a>
         <a href="contact.html">Contact</a>
@@ -38,46 +38,31 @@
     <!-- ======================= PAGE HERO ======================= -->
     <section class="page-hero">
       <div class="container">
-        <p class="breadcrumb"><a href="index.html">Home</a> / Shop</p>
-        <span class="eyebrow">The full shelf</span>
-        <h1>Decants for the curious.</h1>
-        <p class="lead">Every scent below is poured from an authentic bottle into a sealed travel atomiser. Choose your size — 2&nbsp;ml to 30&nbsp;ml — and the price updates as you go.</p>
+        <p class="breadcrumb"><a href="index.html">Home</a> / Scent Finder</p>
+        <span class="eyebrow">Scent finder</span>
+        <h1>Find your fragrance<br />in eight questions.</h1>
+        <p class="lead">Answer a few quick prompts and we'll point you to the decant most likely to become your signature — with a couple of alternates worth a sniff.</p>
       </div>
     </section>
 
-    <!-- ======================= PRODUCTS ======================= -->
+    <!-- ======================= QUIZ ======================= -->
     <section class="section--tight" style="padding-top:0">
       <div class="container">
-        <div class="filter-bar" role="group" aria-label="Filter by collection">
-          <button data-filter="all" class="is-active">All</button>
-          <button data-filter="designer">Designer</button>
-          <button data-filter="niche">Niche</button>
-        </div>
+        <div class="quiz">
+          <div class="quiz-progress">
+            <span class="count" id="quiz-count">Question 1 of 8</span>
+            <div class="quiz-bar"><span id="quiz-bar-fill"></span></div>
+          </div>
 
-        <!-- Cards are rendered from the catalogue in assets/js/main.js -->
-        <div class="product-grid" id="shop-grid"></div>
+          <div class="quiz-card" id="quiz-card"><!-- rendered by quiz.js --></div>
+          <div class="quiz-result" id="quiz-result" hidden></div>
 
-        <noscript>
-          <p class="form-note" style="text-align:center">
-            Our interactive shelf needs JavaScript to show live pricing.
-            Pricing per size — <strong>Designer</strong> from $4 · <strong>Premium designer</strong> from $6 ·
-            <strong>Niche</strong> from $8 (rare niche from $15; Le&nbsp;Labo &amp; Byredo from $12;
-            Le&nbsp;Labo City Exclusive from $20).
-          </p>
-        </noscript>
-
-        <p class="form-note" style="text-align:center; margin-top:2.5rem">Sizes available: 2&nbsp;ml · 5&nbsp;ml · 10&nbsp;ml · 30&nbsp;ml. Le&nbsp;Labo City Exclusives are poured up to 10&nbsp;ml.</p>
-      </div>
-    </section>
-
-    <!-- ===================== SAMPLE SET CTA ===================== -->
-    <section class="section">
-      <div class="container">
-        <div class="cta-card reveal">
-          <span class="eyebrow">Can't decide?</span>
-          <h2>Build a discovery set.</h2>
-          <p>Pick any five 2&nbsp;ml testers and we'll box them together — the easiest way to find your signature without the guesswork.</p>
-          <a class="btn btn--light" href="contact.html">Start a set</a>
+          <noscript>
+            <div class="quiz-card">
+              <h2 class="quiz-question">The Scent Finder needs JavaScript</h2>
+              <p class="lead">No problem — you can <a href="shop.html">browse the full shelf</a> and filter by Designer or Niche instead.</p>
+            </div>
+          </noscript>
         </div>
       </div>
     </section>
@@ -91,7 +76,7 @@
           <a class="brand" href="index.html"><svg class="logo-mark" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="6" y="8" width="12" height="13" rx="3"/><path d="M10 8V5.5h4V8"/><rect x="10.5" y="2.5" width="3" height="3" rx="0.6"/><circle cx="9.7" cy="13.5" r="1.1" fill="currentColor" stroke="none"/><circle cx="14.3" cy="13.5" r="1.1" fill="currentColor" stroke="none"/><path d="M9.6 17.4h4.8"/></svg><span><b>Robot</b> Fragrances</span></a>
           <p>Authentic designer & niche fragrances, decanted into honest sizes. Discover more, commit when you're sure.</p>
         </div>
-        <div class="footer-col"><h4>Shop</h4><ul><li><a href="shop.html">All decants</a></li><li><a href="shop.html">New arrivals</a></li><li><a href="shop.html">Bestsellers</a></li><li><a href="shop.html">Sample sets</a></li></ul></div>
+        <div class="footer-col"><h4>Shop</h4><ul><li><a href="shop.html">All decants</a></li><li><a href="quiz.html">Scent Finder</a></li><li><a href="shop.html">Bestsellers</a></li><li><a href="shop.html">Sample sets</a></li></ul></div>
         <div class="footer-col"><h4>Learn</h4><ul><li><a href="how-it-works.html">How it works</a></li><li><a href="about.html">Our story</a></li><li><a href="contact.html">FAQ</a></li><li><a href="contact.html">Contact</a></li></ul></div>
         <div class="footer-col"><h4>Care</h4><ul><li><a href="contact.html">Shipping</a></li><li><a href="contact.html">Returns</a></li><li><a href="contact.html">Authenticity</a></li><li><a href="contact.html">Privacy</a></li></ul></div>
       </div>
@@ -103,5 +88,6 @@
   </footer>
 
   <script src="assets/js/main.js"></script>
+  <script src="assets/js/quiz.js"></script>
 </body>
 </html>
