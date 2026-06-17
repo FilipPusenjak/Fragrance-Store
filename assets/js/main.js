@@ -29,7 +29,7 @@
     { name: "By the Fireplace",      label: "Designer", group: "designer", tier: "designer", notes: "Clove · roasted chestnut · vanilla · smoky woods" },
     { name: "Wood Neroli",           label: "Designer", group: "designer", tier: "designer", notes: "Neroli · orange blossom · warm woods" },
     { name: "Erba Pura",             label: "Niche", group: "niche", tier: "niche", notes: "Sicilian orange · summer fruits · amber · white musk" },
-    { name: "PDM Greenley",          label: "Niche", group: "niche", tier: "niche", notes: "Mint · fig leaf · vetiver · tonka" },
+    { name: "PDM Greenley",          label: "Niche", group: "niche", tier: "niche", notes: "Mint · fig leaf · vetiver · tonka", image: "assets/img/pdm-greenley.webp" },
     { name: "Wild Vetiver",          label: "Niche · Rare", group: "niche", tier: "expNiche", notes: "Vetiver · citrus · spice · dry woods" },
     { name: "Ombra Lirica",          label: "Niche · Rare", group: "niche", tier: "expNiche", notes: "Incense · amber · soft resins · woods" },
     { name: "Le Labo Osmanthus 19",  label: "Niche", group: "niche", tier: "cityExclusive", notes: "Osmanthus · apricot · leather · musk", tag: "City Exclusive" },
@@ -46,7 +46,7 @@
   var CATALOGUE = PRODUCTS.map(function (p) {
     return {
       name: p.name, label: p.label, group: p.group, tier: p.tier,
-      notes: p.notes, tag: p.tag || "",
+      notes: p.notes, tag: p.tag || "", image: p.image || "",
       slug: slugify(p.name), from: TIERS[p.tier][0][1]
     };
   });
@@ -71,9 +71,12 @@
           '" type="button" data-ml="' + s[0] + '" data-price="' + s[1] + '">' + s[0] + " ml</button>";
       }).join("");
       var tag = p.tag ? '<span class="product-tag">' + p.tag + "</span>" : "";
+      var media = p.image
+        ? '<img class="product-photo" src="' + p.image + '" alt="' + p.name + '" loading="lazy">'
+        : BOTTLE_SVG;
       return '' +
         '<article class="product-card reveal" id="' + p.slug + '" data-group="' + p.group + '">' +
-          '<div class="product-thumb">' + tag + BOTTLE_SVG + "</div>" +
+          '<div class="product-thumb' + (p.image ? " has-photo" : "") + '">' + tag + media + "</div>" +
           '<div class="product-body">' +
             '<span class="product-house">' + p.label + "</span>" +
             '<h3 class="product-name">' + p.name + "</h3>" +

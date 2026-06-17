@@ -348,7 +348,10 @@ p { color: var(--ink-soft); }
   background: radial-gradient(120% 100% at 50% 0%, #fffdf8, #efeadf);
   border-bottom: 1px solid var(--line-soft);
   position: relative;
+  overflow: hidden;
 }
+.product-thumb.has-photo { padding: 0; }
+.product-photo { width: 100%; height: 100%; object-fit: cover; display: block; }
 .product-thumb .bottle { width: 42%; color: var(--ink); transition: transform 0.5s var(--ease); }
 .product-card:hover .product-thumb .bottle { transform: translateY(-4px) scale(1.03); }
 .product-tag {
@@ -692,6 +695,8 @@ p { color: var(--ink-soft); }
   border-right: 1px solid var(--line-soft);
 }
 .result-media .bottle { width: 58%; color: var(--ink); }
+.result-media.has-photo { padding: 0; place-items: stretch; min-height: 320px; overflow: hidden; }
+.result-photo { width: 100%; height: 100%; object-fit: cover; display: block; }
 .result-body { padding: clamp(1.75rem, 4vw, 2.75rem); }
 .result-body .product-house { color: var(--muted); }
 .result-name { font-family: var(--serif); font-weight: 500; font-size: clamp(2rem, 4.2vw, 2.9rem); line-height: 1.05; margin: 0.3rem 0 0.6rem; }

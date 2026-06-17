@@ -176,6 +176,10 @@
     var win = entries[0].p;
     var alts = entries.slice(1, 3).map(function (e) { return e.p; });
 
+    var media = win.image
+      ? '<img class="result-photo" src="' + win.image + '" alt="' + win.name + '" loading="lazy">'
+      : BOTTLE_SVG;
+
     var altHTML = alts.length
       ? '<div class="result-alts"><h4>You might also like</h4><div class="alt-list">' +
           alts.map(function (p) {
@@ -188,7 +192,7 @@
     resultMount.innerHTML =
       '<div class="result-eyebrow"><span class="eyebrow">Your match</span></div>' +
       '<div class="result-card">' +
-        '<div class="result-media">' + BOTTLE_SVG + "</div>" +
+        '<div class="result-media' + (win.image ? " has-photo" : "") + '">' + media + "</div>" +
         '<div class="result-body">' +
           '<span class="product-house">' + win.label + "</span>" +
           '<h3 class="result-name">' + win.name + "</h3>" +
