@@ -63,8 +63,8 @@ the grid, filters, and size selector update automatically.
 
 Prices are per decant size (USD):
 
-| Collection | 2 ml | 5 ml | 10 ml | 30 ml |
-|------------|-----:|-----:|------:|------:|
+| Pricing tier | 2 ml | 5 ml | 10 ml | 30 ml |
+|--------------|-----:|-----:|------:|------:|
 | Designer | $4 | $9 | $17 | $45 |
 | Premium designer | $6 | $13 | $25 | $65 |
 | Niche | $8 | $17 | $30 | $85 |
@@ -72,9 +72,13 @@ Prices are per decant size (USD):
 | Le Labo & Byredo | $12 | $30 | $55 | $150 |
 | Le Labo City Exclusive | $20 | $45 | $80 | — |
 
+The storefront has two shoppable collections — **Designer** and **Niche**.
+Le Labo, Byredo and the Le Labo City Exclusive are shelved under **Niche**
+while keeping their own pricing tiers above.
+
 Current scents include Hermès H24, Prada L'Homme, Bleu de Chanel, Dior Sauvage
-EDP, JPG Le Male Le Parfum, By the Fireplace, Erba Pura, Greenley, Le Labo Thé
-Noir 29, Le Labo Osmanthus 19, Byredo Animalique, and more.
+EDP, JPG Le Male Le Parfum, By the Fireplace, Erba Pura, PDM Greenley, Le Labo
+Thé Noir 29, Le Labo Osmanthus 19, Byredo Animalique, and more.
 
 ## Notes
 

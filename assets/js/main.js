@@ -29,12 +29,12 @@
     { name: "By the Fireplace",      label: "Designer", group: "designer", tier: "designer", notes: "Clove · roasted chestnut · vanilla · smoky woods" },
     { name: "Wood Neroli",           label: "Designer", group: "designer", tier: "designer", notes: "Neroli · orange blossom · warm woods" },
     { name: "Erba Pura",             label: "Niche", group: "niche", tier: "niche", notes: "Sicilian orange · summer fruits · amber · white musk" },
-    { name: "Greenley",              label: "Niche", group: "niche", tier: "niche", notes: "Mint · fig leaf · vetiver · tonka" },
+    { name: "PDM Greenley",          label: "Niche", group: "niche", tier: "niche", notes: "Mint · fig leaf · vetiver · tonka" },
     { name: "Wild Vetiver",          label: "Niche · Rare", group: "niche", tier: "expNiche", notes: "Vetiver · citrus · spice · dry woods" },
     { name: "Ombra Lirica",          label: "Niche · Rare", group: "niche", tier: "expNiche", notes: "Incense · amber · soft resins · woods" },
-    { name: "Le Labo Osmanthus 19",  label: "Le Labo · City Exclusive", group: "house", tier: "cityExclusive", notes: "Osmanthus · apricot · leather · musk", tag: "City Exclusive" },
-    { name: "Le Labo Thé Noir 29", label: "Le Labo & Byredo", group: "house", tier: "byredoLelabo", notes: "Black tea · fig · bay leaf · cedarwood" },
-    { name: "Byredo Animalique",     label: "Le Labo & Byredo", group: "house", tier: "byredoLelabo", notes: "Musk · leather · amber · warm spice" }
+    { name: "Le Labo Osmanthus 19",  label: "Niche", group: "niche", tier: "cityExclusive", notes: "Osmanthus · apricot · leather · musk", tag: "City Exclusive" },
+    { name: "Le Labo Thé Noir 29", label: "Niche", group: "niche", tier: "byredoLelabo", notes: "Black tea · fig · bay leaf · cedarwood" },
+    { name: "Byredo Animalique",     label: "Niche", group: "niche", tier: "byredoLelabo", notes: "Musk · leather · amber · warm spice" }
   ];
 
   var BOTTLE_SVG =
