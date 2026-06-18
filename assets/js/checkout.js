@@ -18,6 +18,11 @@
     return 0;
   }
   function shippingFor(sub) { return sub === 0 || sub >= 50 ? 0 : 5; }
+  function escapeHtml(s) {
+    return String(s).replace(/[&<>"']/g, function (c) {
+      return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c];
+    });
+  }
 
   function showEmpty() {
     root.innerHTML =
@@ -29,16 +34,20 @@
       "</div>";
   }
 
-  function showConfirm() {
+  function showConfirm(email) {
     var order = "RF-" + Math.floor(100000 + Math.random() * 900000);
+    var emailLine = email
+      ? '<p class="confirm-email">A confirmation is on its way to <strong>' + escapeHtml(email) + "</strong>.</p>"
+      : "";
     root.innerHTML =
       '<div class="container section confirm">' +
         '<div class="confirm-card">' +
           '<div class="confirm-check" aria-hidden="true">&check;</div>' +
           '<span class="eyebrow">Order confirmed</span>' +
           "<h1>Thank you.</h1>" +
-          '<p class="lead" style="margin:1rem auto 1.5rem">This is a demo store, so no payment was taken and nothing will ship — but your order <strong>' + order + "</strong> is on the books.</p>" +
-          '<a class="btn" href="shop.html">Continue shopping</a>' +
+          '<p class="lead" style="margin:1rem auto 1rem">This is a demo store, so no payment was taken and nothing will ship — but your order <strong>' + order + "</strong> is on the books.</p>" +
+          emailLine +
+          '<a class="btn" href="shop.html" style="margin-top:1.25rem">Continue shopping</a>' +
         "</div>" +
       "</div>";
     if (cart()) cart().clear();
@@ -78,7 +87,8 @@
     if (form) {
       form.addEventListener("submit", function (e) {
         e.preventDefault();
-        showConfirm();
+        var emailEl = form.querySelector("#co-email");
+        showConfirm(emailEl ? emailEl.value : "");
         window.scrollTo({ top: 0, behavior: "smooth" });
       });
     }

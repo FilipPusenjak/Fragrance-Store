@@ -71,8 +71,17 @@ Pura, PDM Greenley); otherwise the inline bottle illustration is used.
 (`rf_cart`) and is available on every page via the header bag icon and a
 slide-out drawer. `window.RFCart` exposes `add / setQty / remove / clear /
 items / count / subtotal`, and a `rfcart:change` event keeps the badge,
-drawer and checkout summary in sync. Checkout is a front-end demo — free
-shipping over $50, otherwise $5 — and no payment is processed.
+drawer and checkout summary in sync. Extras:
+
+- **Shareable cart in the URL** — the cart is mirrored to a `?cart=` query
+  param (`slug:ml:qty,…`); opening a link with that param restores the
+  cart (validated against the catalogue), so quantities persist in the URL.
+- **Decant of the month** — the drawer shows a rotating upsell that changes
+  each month (deterministic by month), hidden once that scent is in the cart.
+- Checkout is a front-end demo — free shipping over $50, otherwise $5, no
+  payment processed — and the confirmation echoes the email entered.
+
+The homepage "dispatch" newsletter now promises new decants **monthly**.
 
 ## Running it
 
