@@ -44,15 +44,16 @@ mobile menu, and a dark footer.
     ├── css/
     │   └── style.css     # design tokens + all components
     ├── img/
-    │   └── pdm-greenley.webp   # product photo (others use the inline SVG)
+    │   ├── erba-pura.webp      # product photos (scents without one use the SVG)
+    │   └── pdm-greenley.webp
     └── js/
         ├── main.js       # catalogue, shop render, nav, reveal, filter, deep links
         └── quiz.js       # Scent Finder quiz (scoring + result), reads the catalogue
 ```
 
-A catalogue entry may include an optional `image` (e.g. PDM Greenley) — when
-present, the shop card and quiz result show that photo instead of the inline
-bottle illustration.
+A catalogue entry may include an optional `image` (e.g. Erba Pura, PDM
+Greenley) — when present, the shop card and quiz result show that photo
+instead of the inline bottle illustration.
 
 The quiz reads the same `window.RF_CATALOGUE` exposed by `main.js`, so its
 recommendations, prices, and links always stay in sync with the shop. Every
