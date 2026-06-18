@@ -46,7 +46,8 @@ mobile menu, and a dark footer.
     ├── img/
     │   ├── erba-pura.webp      # product photos (scents without one use the SVG)
     │   ├── ombra-lirica.webp
-    │   └── pdm-greenley.webp
+    │   ├── pdm-greenley.webp
+    │   └── tom-ford-ombre-leather.webp
     └── js/
         ├── main.js       # catalogue, shop render, nav, reveal, filter, deep links
         └── quiz.js       # Scent Finder quiz (scoring + result), reads the catalogue
@@ -92,8 +93,9 @@ Le Labo, Byredo and the Le Labo City Exclusive are shelved under **Niche**
 while keeping their own pricing tiers above.
 
 Current scents include Hermès H24, Prada L'Homme, Bleu de Chanel, Dior Sauvage
-EDP, JPG Le Male Le Parfum, By the Fireplace, Erba Pura, PDM Greenley, Le Labo
-Thé Noir 29, Le Labo Osmanthus 19, Byredo Animalique, and more.
+EDP, JPG Le Male Le Parfum, By the Fireplace, Erba Pura, PDM Greenley, Tom Ford
+Ombré Leather, Le Labo Thé Noir 29, Le Labo Osmanthus 19, Byredo Animalique, and
+more.
 
 ## Notes
 

@@ -30,6 +30,7 @@
     { name: "Wood Neroli",           label: "Designer", group: "designer", tier: "designer", notes: "Neroli · orange blossom · warm woods" },
     { name: "Erba Pura",             label: "Niche", group: "niche", tier: "niche", notes: "Sicilian orange · summer fruits · amber · white musk", image: "assets/img/erba-pura.webp" },
     { name: "PDM Greenley",          label: "Niche", group: "niche", tier: "niche", notes: "Mint · fig leaf · vetiver · tonka", image: "assets/img/pdm-greenley.webp" },
+    { name: "Tom Ford Ombré Leather", label: "Niche", group: "niche", tier: "niche", notes: "Leather · cardamom · jasmine · amber", image: "assets/img/tom-ford-ombre-leather.webp" },
     { name: "Wild Vetiver",          label: "Niche · Rare", group: "niche", tier: "expNiche", notes: "Vetiver · citrus · spice · dry woods" },
     { name: "Ombra Lirica",          label: "Niche · Rare", group: "niche", tier: "expNiche", notes: "Incense · amber · soft resins · woods", image: "assets/img/ombra-lirica.webp" },
     { name: "Le Labo Osmanthus 19",  label: "Niche", group: "niche", tier: "cityExclusive", notes: "Osmanthus · apricot · leather · musk", tag: "City Exclusive" },
