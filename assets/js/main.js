@@ -22,22 +22,22 @@
   /* --- Catalogue ----------------------------------------- */
   /* group = used for filtering; label = small line on the card. */
   var PRODUCTS = [
-    { name: "SWY Powerfully",        label: "Designer", group: "designer", tier: "cheapDesigner", notes: "Bright, bold and built to last" },
-    { name: "Hermès H24",       label: "Designer", group: "designer", tier: "cheapDesigner", notes: "Clary sage · narcissus · rosewood · warm metallic musk" },
-    { name: "Prada L'Homme",         label: "Designer", group: "designer", tier: "cheapDesigner", notes: "Neroli · iris · amber · cedar" },
-    { name: "JPG Le Male Le Parfum", label: "Designer", group: "designer", tier: "designer", notes: "Lavender · cardamom · vanilla · benzoin", tag: "Bestseller" },
-    { name: "Bleu de Chanel",        label: "Designer", group: "designer", tier: "designer", notes: "Citrus · cedar · sandalwood · incense", tag: "Bestseller" },
-    { name: "Dior Sauvage EDP",      label: "Designer", group: "designer", tier: "designer", notes: "Bergamot · ambroxan · spicy lavender · vanilla" },
-    { name: "By the Fireplace",      label: "Designer", group: "designer", tier: "designer", notes: "Clove · roasted chestnut · vanilla · smoky woods" },
-    { name: "Wood Neroli",           label: "Designer", group: "designer", tier: "designer", notes: "Neroli · orange blossom · warm woods" },
+    { name: "SWY Powerfully",        label: "Designer", group: "designer", tier: "cheapDesigner", notes: "Bright, bold and built to last", image: "assets/img/swy-powerfully.webp" },
+    { name: "Hermès H24",       label: "Designer", group: "designer", tier: "cheapDesigner", notes: "Clary sage · narcissus · rosewood · warm metallic musk", image: "assets/img/hermes-h24.webp" },
+    { name: "Prada L'Homme",         label: "Designer", group: "designer", tier: "cheapDesigner", notes: "Neroli · iris · amber · cedar", image: "assets/img/prada-l-homme.webp" },
+    { name: "JPG Le Male Le Parfum", label: "Designer", group: "designer", tier: "designer", notes: "Lavender · cardamom · vanilla · benzoin", tag: "Bestseller", image: "assets/img/jpg-le-male-le-parfum.webp" },
+    { name: "Bleu de Chanel",        label: "Designer", group: "designer", tier: "designer", notes: "Citrus · cedar · sandalwood · incense", tag: "Bestseller", image: "assets/img/bleu-de-chanel.webp" },
+    { name: "Dior Sauvage EDP",      label: "Designer", group: "designer", tier: "designer", notes: "Bergamot · ambroxan · spicy lavender · vanilla", image: "assets/img/dior-sauvage-edp.webp" },
+    { name: "By the Fireplace",      label: "Designer", group: "designer", tier: "designer", notes: "Clove · roasted chestnut · vanilla · smoky woods", image: "assets/img/by-the-fireplace.webp" },
+    { name: "Wood Neroli",           label: "Designer", group: "designer", tier: "designer", notes: "Neroli · orange blossom · warm woods", image: "assets/img/wood-neroli.webp" },
     { name: "Erba Pura",             label: "Niche", group: "niche", tier: "niche", notes: "Sicilian orange · summer fruits · amber · white musk", image: "assets/img/erba-pura.webp" },
     { name: "PDM Greenley",          label: "Niche", group: "niche", tier: "niche", notes: "Mint · fig leaf · vetiver · tonka", image: "assets/img/pdm-greenley.webp" },
     { name: "Tom Ford Ombré Leather", label: "Niche", group: "niche", tier: "niche", notes: "Leather · cardamom · jasmine · amber", image: "assets/img/tom-ford-ombre-leather.webp" },
-    { name: "Wild Vetiver",          label: "Niche · Rare", group: "niche", tier: "expNiche", notes: "Vetiver · citrus · spice · dry woods" },
+    { name: "Wild Vetiver",          label: "Niche · Rare", group: "niche", tier: "expNiche", notes: "Vetiver · citrus · spice · dry woods", image: "assets/img/wild-vetiver.webp" },
     { name: "Ombra Lirica",          label: "Niche · Rare", group: "niche", tier: "expNiche", notes: "Incense · amber · soft resins · woods", image: "assets/img/ombra-lirica.webp" },
-    { name: "Le Labo Osmanthus 19",  label: "Niche", group: "niche", tier: "cityExclusive", notes: "Osmanthus · apricot · leather · musk", tag: "City Exclusive" },
-    { name: "Le Labo Thé Noir 29", label: "Niche", group: "niche", tier: "byredoLelabo", notes: "Black tea · fig · bay leaf · cedarwood" },
-    { name: "Byredo Animalique",     label: "Niche", group: "niche", tier: "byredoLelabo", notes: "Musk · leather · amber · warm spice" }
+    { name: "Le Labo Osmanthus 19",  label: "Niche", group: "niche", tier: "cityExclusive", notes: "Osmanthus · apricot · leather · musk", tag: "City Exclusive", image: "assets/img/le-labo-osmanthus-19.webp" },
+    { name: "Le Labo Thé Noir 29", label: "Niche", group: "niche", tier: "byredoLelabo", notes: "Black tea · fig · bay leaf · cedarwood", image: "assets/img/le-labo-the-noir-29.webp" },
+    { name: "Byredo Animalique",     label: "Niche", group: "niche", tier: "byredoLelabo", notes: "Musk · leather · amber · warm spice", image: "assets/img/byredo-animalique.webp" }
   ];
 
   /* --- Long-form details (keyed by slug) ----------------- */
