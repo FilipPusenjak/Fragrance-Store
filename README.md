@@ -45,6 +45,7 @@ mobile menu, and a dark footer.
     │   └── style.css     # design tokens + all components
     ├── img/
     │   ├── erba-pura.webp      # product photos (scents without one use the SVG)
+    │   ├── ombra-lirica.webp
     │   └── pdm-greenley.webp
     └── js/
         ├── main.js       # catalogue, shop render, nav, reveal, filter, deep links
