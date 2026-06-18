@@ -25,6 +25,7 @@
   /* Layout */
   --container: 1180px;
   --radius: 4px;
+  --radius-card: 14px;   /* softer corners for fragrance displays */
   --gutter: clamp(1.25rem, 4vw, 3rem);
 
   /* Motion */
@@ -324,7 +325,7 @@ p { color: var(--ink-soft); }
 .product-card {
   background: var(--bg-card);
   border: 1px solid var(--line-soft);
-  border-radius: var(--radius);
+  border-radius: var(--radius-card);
   overflow: hidden;
   display: flex;
   flex-direction: column;
@@ -684,7 +685,7 @@ p { color: var(--ink-soft); }
   grid-template-columns: 0.85fr 1.15fr;
   background: var(--bg-card);
   border: 1px solid var(--line-soft);
-  border-radius: var(--radius);
+  border-radius: var(--radius-card);
   overflow: hidden;
   box-shadow: 0 40px 80px -60px rgba(27, 27, 27, 0.5);
 }
