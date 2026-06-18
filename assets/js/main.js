@@ -1,7 +1,9 @@
 /* ============================================================
-   Robot Fragrances — interactions
-   The shop grid and the quiz both read one catalogue
-   (exposed as window.RF_CATALOGUE) so pricing stays in sync.
+   Robot Fragrances — core data + shop/site interactions
+   One catalogue (window.RF_CATALOGUE) feeds the shop, the
+   product pages, the quiz and the cart so everything stays
+   in sync. window.RF_get(slug) and window.RF_BOTTLE are
+   shared helpers.
    ============================================================ */
 (function () {
   "use strict";
@@ -38,20 +40,47 @@
     { name: "Byredo Animalique",     label: "Niche", group: "niche", tier: "byredoLelabo", notes: "Musk · leather · amber · warm spice" }
   ];
 
+  /* --- Long-form details (keyed by slug) ----------------- */
+  var DETAILS = {
+    "swy-powerfully": { description: "A confident, crowd-pleasing signature built to last — bright and energetic on the open, warm and tenacious as it settles into the skin.", family: "Aromatic", season: "Year-round", occasion: "Everyday", longevity: "8–10 hrs" },
+    "hermes-h24": { description: "A modern men's fragrance that pairs dewy clary sage and narcissus with a warm, almost metallic woodiness — green, clean and quietly futuristic.", family: "Aromatic green", season: "Spring–Summer", occasion: "Office & day", longevity: "6–8 hrs" },
+    "prada-l-homme": { description: "Powdery iris and neroli rest over soft amber and cedar — an understated, impeccably-groomed scent that whispers rather than shouts.", family: "Floral musk", season: "Spring", occasion: "Office & day", longevity: "6–8 hrs" },
+    "jpg-le-male-le-parfum": { description: "The classic lavender–vanilla pairing turned rich and resinous with cardamom and benzoin — sweet, warm and unmistakably night-time.", family: "Oriental fougère", season: "Autumn–Winter", occasion: "Date & evening", longevity: "10+ hrs" },
+    "bleu-de-chanel": { description: "The definitive do-everything fragrance: bright citrus, dry cedar, smoky incense and creamy sandalwood that carry effortlessly from the office to the evening.", family: "Woody aromatic", season: "Year-round", occasion: "Versatile", longevity: "8–10 hrs" },
+    "dior-sauvage-edp": { description: "Juicy bergamot meets a huge ambroxan-and-vanilla base for that radiant, magnetic trail — bold, fresh-spicy and endlessly wearable.", family: "Amber fougère", season: "Year-round", occasion: "Versatile", longevity: "9–12 hrs" },
+    "by-the-fireplace": { description: "Roasted chestnut, clove and creamy vanilla wrapped in smoky guaiac wood — like a winter evening spent beside an open fire.", family: "Woody gourmand", season: "Autumn–Winter", occasion: "Cosy evenings", longevity: "7–9 hrs" },
+    "wood-neroli": { description: "Sun-warmed neroli and orange blossom resting on soft, clean woods — fresh, elegant and effortless to wear.", family: "Floral woody", season: "Spring–Summer", occasion: "Day & office", longevity: "6–8 hrs" },
+    "erba-pura": { description: "A luminous burst of Sicilian orange and candied fruits over white musk and amber — joyful, fruity and famously easy to love.", family: "Fruity amber", season: "Spring–Summer", occasion: "Versatile", longevity: "8–10 hrs" },
+    "pdm-greenley": { description: "Cool mint and fig leaf over green vetiver and soft tonka — a crisp, contemporary green that feels both fresh and refined.", family: "Green aromatic", season: "Spring–Summer", occasion: "Day & office", longevity: "7–9 hrs" },
+    "tom-ford-ombre-leather": { description: "Supple leather softened with jasmine and cardamom over amber and a touch of moss — rugged yet refined, equally at home day or night.", family: "Leather", season: "Autumn–Winter", occasion: "Versatile", longevity: "8–10 hrs" },
+    "wild-vetiver": { description: "Earthy vetiver lifted by bright citrus and a whisper of spice, drying down to clean, dry woods — a sophisticated everyday signature.", family: "Woody", season: "Spring–Autumn", occasion: "Office & day", longevity: "7–9 hrs" },
+    "ombra-lirica": { description: "Smoky incense and soft resins glow over warm amber and woods — a contemplative, almost ceremonial scent for cooler evenings.", family: "Amber woody", season: "Autumn–Winter", occasion: "Evening", longevity: "8–10 hrs" },
+    "le-labo-osmanthus-19": { description: "Apricot-tinged osmanthus laced with supple leather and musk — a city exclusive that's luminous, leathery and quietly unconventional.", family: "Floral leather", season: "Spring–Autumn", occasion: "Special", longevity: "7–9 hrs" },
+    "le-labo-the-noir-29": { description: "Black tea, fig and bay leaf over cedar and vetiver — dry, sophisticated and endlessly versatile, the kind of scent people lean in to ask about.", family: "Woody aromatic", season: "Year-round", occasion: "Versatile", longevity: "7–9 hrs" },
+    "byredo-animalique": { description: "Warm musk, supple leather and amber with a spiced undertone — intimate, skin-like and undeniably after-dark.", family: "Leather musk", season: "Autumn–Winter", occasion: "Evening", longevity: "8–10 hrs" }
+  };
+
   function slugify(str) {
     return str.toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, "")
       .replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "");
   }
 
-  /* Enriched, shared catalogue (adds slug + starting price). */
+  /* Enriched, shared catalogue (slug, sizes, starting price, details). */
   var CATALOGUE = PRODUCTS.map(function (p) {
+    var slug = slugify(p.name);
+    var d = DETAILS[slug] || {};
+    var sizes = TIERS[p.tier].map(function (s) { return { ml: s[0], price: s[1] }; });
     return {
       name: p.name, label: p.label, group: p.group, tier: p.tier,
       notes: p.notes, tag: p.tag || "", image: p.image || "",
-      slug: slugify(p.name), from: TIERS[p.tier][0][1]
+      slug: slug, sizes: sizes, from: sizes[0].price,
+      description: d.description || p.notes,
+      family: d.family || "", season: d.season || "", occasion: d.occasion || "", longevity: d.longevity || ""
     };
   });
-  window.RF_CATALOGUE = CATALOGUE;
+
+  var BY_SLUG = {};
+  CATALOGUE.forEach(function (p) { BY_SLUG[p.slug] = p; });
 
   var BOTTLE_SVG =
     '<svg class="bottle" viewBox="0 0 100 150" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' +
@@ -61,30 +90,35 @@
     '<circle cx="58" cy="66" r="3.4" fill="currentColor" stroke="none"/>' +
     '<path d="M42 80c3 3 13 3 16 0"/></svg>';
 
+  /* Shared globals for the other scripts */
+  window.RF_CATALOGUE = CATALOGUE;
+  window.RF_BOTTLE = BOTTLE_SVG;
+  window.RF_get = function (slug) { return BY_SLUG[slug] || null; };
+
   /* --- Render the shop grid ------------------------------ */
   var grid = document.getElementById("shop-grid");
   if (grid) {
     grid.innerHTML = CATALOGUE.map(function (p) {
-      var sizes = TIERS[p.tier];
-      var first = sizes[0];
-      var pills = sizes.map(function (s, i) {
+      var first = p.sizes[0];
+      var pills = p.sizes.map(function (s, i) {
         return '<button class="size-opt' + (i === 0 ? " is-active" : "") +
-          '" type="button" data-ml="' + s[0] + '" data-price="' + s[1] + '">' + s[0] + " ml</button>";
+          '" type="button" data-ml="' + s.ml + '" data-price="' + s.price + '">' + s.ml + " ml</button>";
       }).join("");
       var tag = p.tag ? '<span class="product-tag">' + p.tag + "</span>" : "";
       var media = p.image
         ? '<img class="product-photo" src="' + p.image + '" alt="' + p.name + '" loading="lazy">'
         : BOTTLE_SVG;
+      var href = "product.html?id=" + p.slug;
       return '' +
         '<article class="product-card reveal" id="' + p.slug + '" data-group="' + p.group + '">' +
-          '<div class="product-thumb' + (p.image ? " has-photo" : "") + '">' + tag + media + "</div>" +
+          '<a class="product-thumb' + (p.image ? " has-photo" : "") + '" href="' + href + '" aria-label="' + p.name + '">' + tag + media + "</a>" +
           '<div class="product-body">' +
             '<span class="product-house">' + p.label + "</span>" +
-            '<h3 class="product-name">' + p.name + "</h3>" +
+            '<h3 class="product-name"><a href="' + href + '">' + p.name + "</a></h3>" +
             '<p class="product-notes">' + p.notes + "</p>" +
             '<div class="size-options" role="group" aria-label="Choose size">' + pills + "</div>" +
             '<div class="product-foot">' +
-              '<span class="product-price">$' + first[1] + ' <small>/ ' + first[0] + ' ml</small></span>' +
+              '<span class="product-price">$' + first.price + ' <small>/ ' + first.ml + ' ml</small></span>' +
               '<button class="product-add" type="button">Add decant</button>' +
             "</div>" +
           "</div>" +
@@ -150,31 +184,19 @@
     });
   }
 
-  /* --- Card interactions (delegated: works on rendered DOM) */
+  /* --- Shop-card size selection (delegated) -------------- */
+  /* Adding to cart is handled in cart.js. */
   document.addEventListener("click", function (e) {
-    // Size selection updates the displayed price
     var size = e.target.closest(".size-opt");
-    if (size) {
-      var card = size.closest(".product-card");
-      card.querySelectorAll(".size-opt").forEach(function (b) {
-        b.classList.toggle("is-active", b === size);
-      });
-      var priceEl = card.querySelector(".product-price");
-      if (priceEl) {
-        priceEl.innerHTML = "$" + size.dataset.price + " <small>/ " + size.dataset.ml + " ml</small>";
-      }
-      return;
-    }
-    // Add-to-decant feedback (demo). Anchors (e.g. "View sizes") just navigate.
-    var add = e.target.closest("button.product-add");
-    if (add && !add.disabled) {
-      var original = add.textContent;
-      add.textContent = "Added ✓";
-      add.disabled = true;
-      setTimeout(function () {
-        add.textContent = original;
-        add.disabled = false;
-      }, 1400);
+    if (!size) return;
+    var card = size.closest(".product-card");
+    if (!card) return;   // product page manages its own size state
+    card.querySelectorAll(".size-opt").forEach(function (b) {
+      b.classList.toggle("is-active", b === size);
+    });
+    var priceEl = card.querySelector(".product-price");
+    if (priceEl) {
+      priceEl.innerHTML = "$" + size.dataset.price + " <small>/ " + size.dataset.ml + " ml</small>";
     }
   });
 

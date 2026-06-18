@@ -21,14 +21,16 @@ so customers can live with a scent before committing to a full bottle.
 | Page | File | What's on it |
 |------|------|--------------|
 | **Home** | `index.html` | Hero, brand promise, feature strip, featured collection, "why decant" editorial, customer quote, newsletter sign-up |
-| **Shop** | `shop.html` | Catalogue-driven product grid with collection filters and a per-card size selector (live pricing), discovery-set call-to-action |
-| **Scent Finder** | `quiz.html` | An 8-question quiz that recommends one decant (plus two alternates) and deep-links to it on the shop |
+| **Shop** | `shop.html` | Catalogue-driven product grid with collection filters and a per-card size selector (live pricing); cards link through to the detail page |
+| **Product** | `product.html?id=<slug>` | Detail page per fragrance: large image, description, specs, size + quantity selector, add-to-cart, and related scents |
+| **Checkout** | `checkout.html` | Order summary (from the cart) + a demo shipping/payment form and an order confirmation |
+| **Scent Finder** | `quiz.html` | An 8-question quiz that recommends one decant (plus two alternates) and links to its product page |
 | **How It Works** | `how-it-works.html` | 3-step decanting process, size guide, authenticity stats, mini-FAQ |
 | **About** | `about.html` | Brand story, core values, mission quote |
 | **Contact** | `contact.html` | Contact form, direct details, full FAQ |
 
 Shared across every page: a sticky translucent header with active-page nav, a
-mobile menu, and a dark footer.
+mobile menu, a **cart button + slide-out drawer**, and a dark footer.
 
 ## Structure
 
@@ -36,6 +38,8 @@ mobile menu, and a dark footer.
 .
 ├── index.html
 ├── shop.html
+├── product.html
+├── checkout.html
 ├── quiz.html
 ├── how-it-works.html
 ├── about.html
@@ -49,17 +53,26 @@ mobile menu, and a dark footer.
     │   ├── pdm-greenley.webp
     │   └── tom-ford-ombre-leather.webp
     └── js/
-        ├── main.js       # catalogue, shop render, nav, reveal, filter, deep links
-        └── quiz.js       # Scent Finder quiz (scoring + result), reads the catalogue
+        ├── main.js       # catalogue (data) + shop render, nav, reveal, filter
+        ├── cart.js       # localStorage cart + header button/badge + slide-out drawer
+        ├── product.js    # product detail page (size/qty, add-to-cart, related)
+        ├── checkout.js   # checkout summary + demo order flow
+        └── quiz.js       # Scent Finder quiz (scoring + result)
 ```
 
-A catalogue entry may include an optional `image` (e.g. Erba Pura, PDM
-Greenley) — when present, the shop card and quiz result show that photo
-instead of the inline bottle illustration.
+`main.js` is the single source of truth: it exposes `window.RF_CATALOGUE`
+(each entry has `slug`, `sizes`, `from`, notes, a long-form `description`
+and specs), plus helpers `window.RF_get(slug)` and `window.RF_BOTTLE`. The
+shop, product pages, quiz and cart all read from it, so pricing and details
+never drift. A catalogue entry may include an optional `image` (e.g. Erba
+Pura, PDM Greenley); otherwise the inline bottle illustration is used.
 
-The quiz reads the same `window.RF_CATALOGUE` exposed by `main.js`, so its
-recommendations, prices, and links always stay in sync with the shop. Every
-fragrance in the catalogue is reachable as a result.
+**Cart & checkout** (`cart.js`): the cart lives in `localStorage`
+(`rf_cart`) and is available on every page via the header bag icon and a
+slide-out drawer. `window.RFCart` exposes `add / setQty / remove / clear /
+items / count / subtotal`, and a `rfcart:change` event keeps the badge,
+drawer and checkout summary in sync. Checkout is a front-end demo — free
+shipping over $50, otherwise $5 — and no payment is processed.
 
 ## Running it
 
