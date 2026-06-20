@@ -38,20 +38,26 @@ mobile menu, a **cart button + slide-out drawer**, and a dark footer.
 .
 ├── index.html
 ├── shop.html
-├── product.html
+├── product.html         # legacy ?id= shell (noindex); static pages below are canonical
 ├── checkout.html
 ├── quiz.html
 ├── how-it-works.html
 ├── about.html
 ├── contact.html
+├── privacy.html
+├── terms.html
+├── build.js             # generates the files below from the catalogue (node build.js)
+├── sitemap.xml          # generated
+├── robots.txt           # generated
+├── fragrance/           # generated: one static, pre-rendered page per product
+│   └── <slug>.html
 └── assets/
     ├── css/
     │   └── style.css     # design tokens + all components
     ├── img/
-    │   ├── erba-pura.webp      # product photos (scents without one use the SVG)
-    │   ├── ombra-lirica.webp
-    │   ├── pdm-greenley.webp
-    │   └── tom-ford-ombre-leather.webp
+    │   ├── favicon.svg        # brand mark (favicon)
+    │   ├── og-cover.png       # default social share image (1200×630)
+    │   └── <slug>.webp        # one product photo per fragrance
     └── js/
         ├── main.js       # catalogue (data) + shop render, nav, reveal, filter
         ├── cart.js       # localStorage cart + header button/badge + slide-out drawer
@@ -85,13 +91,26 @@ The homepage "dispatch" newsletter now promises new decants **monthly**.
 
 ## Running it
 
-It's a static site — no build step. Open `index.html` directly, or serve the
-folder for clean routing:
+It's a static site. One small Node build pre-renders a crawlable,
+shareable HTML page per product (`fragrance/<slug>.html`) plus
+`sitemap.xml` and `robots.txt`. Re-run it whenever the catalogue in
+`assets/js/main.js` changes:
+
+```bash
+node build.js          # regenerate fragrance/*.html, sitemap.xml, robots.txt
+```
+
+Then open `index.html` directly, or serve the folder for clean routing:
 
 ```bash
 python3 -m http.server 8000
 # then visit http://localhost:8000
 ```
+
+> **Deploy note:** absolute URLs (canonical / Open Graph / sitemap) use
+> `SITE_URL` in `build.js` and the `<head>` of the hand-written pages.
+> Confirm it matches your live URL (custom domain or repo path) before
+> deploying — search for the current value to change it.
 
 ## Catalogue & pricing
 

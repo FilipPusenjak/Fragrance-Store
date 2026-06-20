@@ -9,6 +9,8 @@
   var mount = document.getElementById("quiz-card");
   if (!mount) return;
 
+  var prod = window.RF_prod || function (s) { return "product.html?id=" + s; }; // canonical product page
+
   var resultMount = document.getElementById("quiz-result");
   var bar = document.getElementById("quiz-bar-fill");
   var counter = document.getElementById("quiz-count");
@@ -184,7 +186,7 @@
     var altHTML = alts.length
       ? '<div class="result-alts"><h4>You might also like</h4><div class="alt-list">' +
           alts.map(function (p) {
-            return '<a class="alt-chip" href="product.html?id=' + p.slug + '">' + p.name +
+            return '<a class="alt-chip" href="' + prod(p.slug) + '">' + p.name +
               ' <span>· from $' + p.from + "</span></a>";
           }).join("") +
         "</div></div>"
@@ -200,7 +202,7 @@
           '<p class="result-notes">' + win.notes + "</p>" +
           '<div class="result-price">from $' + win.from + ' <small>/ 2 ml</small></div>' +
           '<div class="result-actions">' +
-            '<a class="btn" href="product.html?id=' + win.slug + '">Shop this decant</a>' +
+            '<a class="btn" href="' + prod(win.slug) + '">Shop this decant</a>' +
             '<button type="button" class="btn btn--ghost" id="quiz-retake">Retake quiz</button>' +
           "</div>" +
           altHTML +

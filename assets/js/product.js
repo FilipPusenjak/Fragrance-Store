@@ -11,16 +11,29 @@
   if (!mount) return;
 
   var BOTTLE = window.RF_BOTTLE || "";
-  var slug = new URLSearchParams(location.search).get("id");
+  var site = window.RF_site || function (x) { return x; };
+  var prod = window.RF_prod || function (s) { return "product.html?id=" + s; };
+
+  /* Slug comes from ?id= (legacy product.html) or the static
+     page's data-slug (/fragrance/<slug>.html). */
+  var fromQuery = new URLSearchParams(location.search).get("id");
+  var slug = fromQuery || mount.getAttribute("data-slug");
   var p = window.RF_get ? window.RF_get(slug) : null;
+
+  /* On the legacy ?id= page, point the canonical at the static page. */
+  if (p && fromQuery) {
+    var canon = document.querySelector('link[rel="canonical"]');
+    if (!canon) { canon = document.createElement("link"); canon.rel = "canonical"; document.head.appendChild(canon); }
+    canon.setAttribute("href", prod(p.slug));
+  }
 
   if (!p) {
     mount.innerHTML =
       '<div class="container" style="text-align:center; padding-block: 2rem">' +
-        '<p class="breadcrumb"><a href="index.html">Home</a> / <a href="shop.html">Shop</a></p>' +
+        '<p class="breadcrumb"><a href="' + site("index.html") + '">Home</a> / <a href="' + site("shop.html") + '">Shop</a></p>' +
         '<h1>Fragrance not found</h1>' +
         '<p class="lead" style="margin:1rem auto 2rem">We couldn’t find that one on the shelf.</p>' +
-        '<a class="btn" href="shop.html">Browse the full shelf</a>' +
+        '<a class="btn" href="' + site("shop.html") + '">Browse the full shelf</a>' +
       "</div>";
     var rel0 = document.getElementById("product-related");
     if (rel0) rel0.style.display = "none";
@@ -37,7 +50,7 @@
     return p.sizes[0].price;
   }
 
-  var media = p.image ? '<img class="pd-photo" src="' + p.image + '" alt="' + p.name + '">' : BOTTLE;
+  var media = p.image ? '<img class="pd-photo" src="' + site(p.image) + '" alt="' + p.name + '">' : BOTTLE;
   var tag = p.tag ? '<span class="product-tag">' + p.tag + "</span>" : "";
 
   var specRows = [["Family", p.family], ["Best season", p.season], ["Occasion", p.occasion], ["Longevity", p.longevity]]
@@ -51,7 +64,7 @@
 
   mount.innerHTML =
     '<div class="container">' +
-      '<p class="breadcrumb"><a href="index.html">Home</a> / <a href="shop.html">Shop</a> / ' + p.name + "</p>" +
+      '<p class="breadcrumb"><a href="' + site("index.html") + '">Home</a> / <a href="' + site("shop.html") + '">Shop</a> / ' + p.name + "</p>" +
       '<div class="pd-grid">' +
         '<div class="pd-media' + (p.image ? " has-photo" : "") + '">' + tag + media + "</div>" +
         '<div class="pd-info">' +
@@ -108,8 +121,8 @@
       '<div class="container">' +
         '<div class="section-head center"><span class="eyebrow">More to explore</span><h2>You might also like</h2></div>' +
         '<div class="product-grid">' + related.map(function (r) {
-          var rmedia = r.image ? '<img class="product-photo" src="' + r.image + '" alt="' + r.name + '" loading="lazy">' : BOTTLE;
-          var href = "product.html?id=" + r.slug;
+          var rmedia = r.image ? '<img class="product-photo" src="' + site(r.image) + '" alt="' + r.name + '" loading="lazy">' : BOTTLE;
+          var href = prod(r.slug);
           return '<article class="product-card">' +
             '<a class="product-thumb' + (r.image ? " has-photo" : "") + '" href="' + href + '">' + (r.tag ? '<span class="product-tag">' + r.tag + "</span>" : "") + rmedia + "</a>" +
             '<div class="product-body">' +

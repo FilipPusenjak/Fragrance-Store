@@ -95,6 +95,16 @@
   window.RF_BOTTLE = BOTTLE_SVG;
   window.RF_get = function (slug) { return BY_SLUG[slug] || null; };
 
+  /* Path helpers — static product pages live in /fragrance/, one
+     level deep, so links and assets need a "../" prefix there.
+     Used by main/cart/product/quiz so URLs resolve from any page. */
+  var IN_SUB = /\/fragrance\//.test(location.pathname);
+  function rfSite(p) { return (IN_SUB ? "../" : "") + p; }                       // assets + top-level pages
+  function rfProd(slug) { return (IN_SUB ? "" : "fragrance/") + slug + ".html"; } // canonical product page
+  window.RF_inSub = IN_SUB;
+  window.RF_site = rfSite;
+  window.RF_prod = rfProd;
+
   /* --- Render the shop grid ------------------------------ */
   var grid = document.getElementById("shop-grid");
   if (grid) {
@@ -106,9 +116,9 @@
       }).join("");
       var tag = p.tag ? '<span class="product-tag">' + p.tag + "</span>" : "";
       var media = p.image
-        ? '<img class="product-photo" src="' + p.image + '" alt="' + p.name + '" loading="lazy">'
+        ? '<img class="product-photo" src="' + rfSite(p.image) + '" alt="' + p.name + '" loading="lazy">'
         : BOTTLE_SVG;
-      var href = "product.html?id=" + p.slug;
+      var href = rfProd(p.slug);
       return '' +
         '<article class="product-card reveal" id="' + p.slug + '" data-group="' + p.group + '">' +
           '<a class="product-thumb' + (p.image ? " has-photo" : "") + '" href="' + href + '" aria-label="' + p.name + '">' + tag + media + "</a>" +
@@ -200,16 +210,36 @@
     }
   });
 
-  /* --- Demo forms (no backend) --------------------------- */
-  document.querySelectorAll("form[data-demo]").forEach(function (form) {
+  /* --- Forms (Formspree-ready) --------------------------- *
+   * Progressive enhancement: without JS the form does a normal
+   * POST to its action; with JS we POST via fetch and show an
+   * inline message. Both need a real endpoint in the form's
+   * action — until then it stays honestly non-functional.
+   * Set action to your Formspree endpoint (replace
+   * FORM_ENDPOINT_TODO), e.g. https://formspree.io/f/xxxxxxx     */
+  function setNote(form, msg, ok) {
+    var note = form.querySelector("[data-form-note]");
+    if (!note) return;
+    note.textContent = msg;
+    note.style.color = ok ? "var(--accent)" : "#b23b3b";
+  }
+  document.querySelectorAll("form[data-form]").forEach(function (form) {
     form.addEventListener("submit", function (e) {
-      e.preventDefault();
-      var note = form.querySelector("[data-form-note]");
-      if (note) {
-        note.textContent = "Thank you — this is a demo, so nothing was sent. We'll be in touch soon.";
-        note.style.color = "var(--accent)";
+      var action = form.getAttribute("action") || "";
+      var configured = action && action.indexOf("FORM_ENDPOINT_TODO") === -1 && /^https?:\/\//.test(action);
+      if (!configured) {
+        e.preventDefault();
+        setNote(form, "This form isn’t connected yet — add your form endpoint to enable it.", false);
+        return;
       }
-      form.reset();
+      e.preventDefault();
+      setNote(form, "Sending…", true);
+      fetch(action, { method: "POST", body: new FormData(form), headers: { Accept: "application/json" } })
+        .then(function (r) {
+          if (r.ok) { setNote(form, "Thank you — your message is on its way. We’ll be in touch soon.", true); form.reset(); }
+          else { setNote(form, "Something went wrong. Please email hello@robotfragrances.com instead.", false); }
+        })
+        .catch(function () { form.submit(); }); // network hiccup: fall back to a normal POST
     });
   });
 

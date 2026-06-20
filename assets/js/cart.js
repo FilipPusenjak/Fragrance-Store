@@ -11,6 +11,8 @@
   var KEY = "rf_cart";
   var catGet = window.RF_get || function () { return null; };
   var BOTTLE = window.RF_BOTTLE || "";
+  var site = window.RF_site || function (x) { return x; };                       // assets + top-level pages
+  var prod = window.RF_prod || function (s) { return "product.html?id=" + s; };  // canonical product page
 
   function load() {
     try { var a = JSON.parse(localStorage.getItem(KEY) || "[]"); return Array.isArray(a) ? a : []; }
@@ -148,7 +150,7 @@
       '<div class="cart-foot">' +
         '<div class="cart-subtotal"><span>Subtotal</span><span class="cart-subtotal-val">$0</span></div>' +
         '<p class="cart-note">Shipping &amp; taxes calculated at checkout.</p>' +
-        '<a class="btn cart-checkout" href="checkout.html">Checkout</a>' +
+        '<a class="btn cart-checkout" href="' + site("checkout.html") + '">Checkout</a>' +
         '<button class="btn btn--ghost cart-continue" type="button">Continue shopping</button>' +
       '</div>';
 
@@ -192,7 +194,7 @@
   }
 
   function media(p) {
-    return p.image ? '<img src="' + p.image + '" alt="' + p.name + '">' : '<span class="cart-svg">' + BOTTLE + "</span>";
+    return p.image ? '<img src="' + site(p.image) + '" alt="' + p.name + '">' : '<span class="cart-svg">' + BOTTLE + "</span>";
   }
 
   function renderBadge() {
@@ -207,16 +209,16 @@
     if (!bodyEl) return;
     if (!items.length) {
       drawer.classList.add("is-empty");
-      bodyEl.innerHTML = '<div class="cart-empty"><p>Your cart is empty.</p><a class="link-arrow" href="shop.html">Browse the shelf &rarr;</a></div>';
+      bodyEl.innerHTML = '<div class="cart-empty"><p>Your cart is empty.</p><a class="link-arrow" href="' + site("shop.html") + '">Browse the shelf &rarr;</a></div>';
     } else {
       drawer.classList.remove("is-empty");
       bodyEl.innerHTML = items.map(function (it) {
         var p = catGet(it.slug); if (!p) return "";
         var price = priceFor(it.slug, it.ml);
         return '<div class="cart-item" data-slug="' + it.slug + '" data-ml="' + it.ml + '">' +
-          '<a class="cart-item-media' + (p.image ? " has-photo" : "") + '" href="product.html?id=' + p.slug + '">' + media(p) + "</a>" +
+          '<a class="cart-item-media' + (p.image ? " has-photo" : "") + '" href="' + prod(p.slug) + '">' + media(p) + "</a>" +
           '<div class="cart-item-info">' +
-            '<a class="cart-item-name" href="product.html?id=' + p.slug + '">' + p.name + "</a>" +
+            '<a class="cart-item-name" href="' + prod(p.slug) + '">' + p.name + "</a>" +
             '<div class="cart-item-size">' + it.ml + " ml decant · $" + price + "</div>" +
             '<div class="cart-item-controls">' +
               '<div class="qty"><button type="button" class="qty-dec" aria-label="Decrease quantity">&minus;</button><span class="qty-val">' + it.qty + '</span><button type="button" class="qty-inc" aria-label="Increase quantity">+</button></div>' +
@@ -238,8 +240,8 @@
     upsellEl.hidden = false;
     upsellEl.innerHTML =
       '<span class="cart-upsell-tag">Decant of the month</span>' +
-      '<a class="cart-upsell-media' + (pick.image ? " has-photo" : "") + '" href="product.html?id=' + pick.slug + '">' + media(pick) + "</a>" +
-      '<div class="cart-upsell-info"><a class="cart-upsell-name" href="product.html?id=' + pick.slug + '">' + pick.name + '</a><span class="cart-upsell-price">' + pick.label + "</span></div>" +
+      '<a class="cart-upsell-media' + (pick.image ? " has-photo" : "") + '" href="' + prod(pick.slug) + '">' + media(pick) + "</a>" +
+      '<div class="cart-upsell-info"><a class="cart-upsell-name" href="' + prod(pick.slug) + '">' + pick.name + '</a><span class="cart-upsell-price">' + pick.label + "</span></div>" +
       '<button type="button" class="cart-upsell-add" data-slug="' + pick.slug + '" data-ml="5">Add 5 ml · $' + price + "</button>";
   }
 
