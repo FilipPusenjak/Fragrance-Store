@@ -30,7 +30,7 @@ const vm = require("vm");
    custom domain or a different repo path, change it here and in
    the <head> of the hand-written pages (search for this value).
    ------------------------------------------------------------ */
-const SITE_URL = "https://filippusenjak.github.io/Fragrance-Store";
+const SITE_URL = "https://robotfragrances.com";
 
 const ROOT = __dirname;
 const OUT_DIR = path.join(ROOT, "fragrance");

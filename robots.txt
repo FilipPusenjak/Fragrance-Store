@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://filippusenjak.github.io/Fragrance-Store/sitemap.xml
+Sitemap: https://robotfragrances.com/sitemap.xml
