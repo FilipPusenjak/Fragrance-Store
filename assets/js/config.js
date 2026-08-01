@@ -16,7 +16,7 @@ window.RF_CONFIG = {
      Leave as null and the checkout page will say it isn't
      connected yet rather than failing silently.
      ---------------------------------------------------------- */
-  checkoutApi: null,
+  checkoutApi: "https://robot-fragrances-checkout.robotfragrances.workers.dev",
 
   /* ----------------------------------------------------------
      2. Checkout mode — the in-app switch.
