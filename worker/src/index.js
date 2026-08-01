@@ -317,7 +317,10 @@ export default {
         stripeConfigured: Boolean(env.STRIPE_SECRET_KEY),
         liveMode: (env.STRIPE_SECRET_KEY || "").startsWith("sk_live_"),
         products: Object.keys(CATALOGUE).length,
-        site: env.SITE_URL || "https://robotfragrances.com"
+        site: env.SITE_URL || "https://robotfragrances.com",
+        /* Binding NAMES only — never values. Makes a misnamed secret
+           obvious instead of looking like a missing one. */
+        bindings: Object.keys(env).sort()
       }, 200, request, env);
     }
 
