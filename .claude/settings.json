@@ -1,5 +1,14 @@
 {
+  "extraKnownMarketplaces": {
+    "cloudflare": {
+      "source": {
+        "source": "github",
+        "repo": "cloudflare/skills"
+      }
+    }
+  },
   "enabledPlugins": {
-    "stripe@claude-plugins-official": true
+    "stripe@claude-plugins-official": true,
+    "cloudflare@cloudflare": true
   }
 }
