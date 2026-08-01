@@ -305,6 +305,11 @@ function main() {
   fs.writeFileSync(path.join(ROOT, "sitemap.xml"), buildSitemap(cat), "utf8");
   fs.writeFileSync(path.join(ROOT, "robots.txt"), buildRobots(), "utf8");
 
+  /* The checkout worker prices orders from its own copy of the
+     catalogue. Regenerate it here so a price edited in main.js can
+     never silently disagree with what customers are charged. */
+  require("./scripts/gen-worker-catalogue.js");
+
   console.log(`Built ${cat.length} product pages → /fragrance/`);
   console.log("Wrote sitemap.xml and robots.txt");
   console.log(`SITE_URL = ${SITE_URL}  (change in build.js if your domain differs)`);

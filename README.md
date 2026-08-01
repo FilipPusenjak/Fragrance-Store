@@ -23,7 +23,8 @@ so customers can live with a scent before committing to a full bottle.
 | **Home** | `index.html` | Hero, brand promise, feature strip, featured collection, "why decant" editorial, customer quote, newsletter sign-up |
 | **Shop** | `shop.html` | Catalogue-driven product grid with collection filters and a per-card size selector (live pricing); cards link through to the detail page |
 | **Product** | `product.html?id=<slug>` | Detail page per fragrance: large image, description, specs, size + quantity selector, add-to-cart, and related scents |
-| **Checkout** | `checkout.html` | Order summary (from the cart) + a demo shipping/payment form and an order confirmation |
+| **Checkout** | `checkout.html` | Order summary (from the cart) + real Stripe payment via the checkout worker |
+| **Order confirmed** | `order-confirmed.html` | Where Stripe returns the shopper; verifies the session before confirming anything |
 | **Scent Finder** | `quiz.html` | An 8-question quiz that recommends one decant (plus two alternates) and links to its product page |
 | **How It Works** | `how-it-works.html` | 3-step decanting process, size guide, authenticity stats, mini-FAQ |
 | **About** | `about.html` | Brand story, core values, mission quote |
@@ -59,11 +60,24 @@ mobile menu, a **cart button + slide-out drawer**, and a dark footer.
     │   ├── og-cover.png       # default social share image (1200×630)
     │   └── <slug>.webp        # one product photo per fragrance
     └── js/
+        ├── config.js     # PUBLIC front-end config (worker URL, checkout mode)
         ├── main.js       # catalogue (data) + shop render, nav, reveal, filter
         ├── cart.js       # localStorage cart + header button/badge + slide-out drawer
         ├── product.js    # product detail page (size/qty, add-to-cart, related)
-        ├── checkout.js   # checkout summary + demo order flow
+        ├── checkout.js   # order summary + Stripe handoff (hosted or embedded)
+        ├── confirm.js    # verifies the Stripe session on the return page
         └── quiz.js       # Scent Finder quiz (scoring + result)
+```
+
+Payments live in two extra places:
+
+```
+├── worker/              # Cloudflare Worker — cart -> Stripe Checkout Session
+│   ├── src/index.js     # the API (see worker/README.md)
+│   ├── src/catalogue.js # GENERATED server-side price table
+│   └── test/            # 23 tests, no Stripe key needed
+└── scripts/
+    └── gen-worker-catalogue.js   # main.js prices -> worker/src/catalogue.js
 ```
 
 `main.js` is the single source of truth: it exposes `window.RF_CATALOGUE`
@@ -84,8 +98,33 @@ drawer and checkout summary in sync. Extras:
   cart (validated against the catalogue), so quantities persist in the URL.
 - **Decant of the month** — the drawer shows a rotating upsell that changes
   each month (deterministic by month), hidden once that scent is in the cart.
-- Checkout is a front-end demo — free shipping over $50, otherwise $5, no
-  payment processed — and the confirmation echoes the email entered.
+
+## Payments
+
+Checkout is real. `checkout.html` posts the cart to a small **Cloudflare Worker**
+(`/worker`), which creates a Stripe Checkout Session and hands back either a
+redirect URL or an embedded client secret. The site itself stays static on GitHub
+Pages — the worker is the only server-side piece.
+
+**The prices shown on the page are a preview.** The worker prices every order from
+its own copy of the catalogue and ignores anything the browser says about money,
+so an edited `localStorage` cart can't change what gets charged.
+
+Two modes, switched with one line in `assets/js/config.js`:
+
+| `checkoutMode` | What the shopper sees | Needs |
+|---|---|---|
+| `"hosted"` (default) | Redirect to Stripe's page, then back to `order-confirmed.html` | nothing extra |
+| `"embedded"` | Payment form inside `checkout.html` — never leaves the domain | `publishableKey` |
+
+Both are implemented and tested; moving to in-app checkout is a config change, not
+a rewrite. Setup, deploy, and local dev are in **[`worker/README.md`](worker/README.md)**.
+
+Until `checkoutApi` is set in `assets/js/config.js`, the checkout page says so
+plainly and points shoppers at email rather than failing silently.
+
+Shipping is free over $50, otherwise a $5 flat rate — enforced by the worker, not
+just displayed.
 
 The homepage "dispatch" newsletter now promises new decants **monthly**.
 
@@ -140,9 +179,12 @@ more.
 
 ## Notes
 
-- Forms (newsletter, contact), the size selector, and the "Add decant" buttons
-  are front-end demos with no backend — wire them to your platform of choice to
-  go live.
+- The newsletter and contact forms still need an endpoint — replace
+  `FORM_ENDPOINT_TODO` in `index.html` and `contact.html` with a Formspree (or
+  similar) URL. Checkout is live and does not need this.
+- Prices live in `assets/js/main.js`. After changing one, run `node build.js`
+  (which regenerates the worker's price table too) and redeploy the worker,
+  otherwise the site and the charge will disagree.
 - The shop grid is rendered from the catalogue at runtime; a `<noscript>`
   fallback summarises pricing if JavaScript is disabled. All other pages are
   fully readable without JS, and animations respect `prefers-reduced-motion`.

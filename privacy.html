@@ -70,7 +70,7 @@
         <ul>
           <li><strong>Newsletter sign-up:</strong> your email address, when you choose to subscribe.</li>
           <li><strong>Contact form:</strong> your name, email address, and the message you send us.</li>
-          <li><strong>Orders:</strong> the details needed to fulfil an order — name, shipping address, email, and order contents. Card payments, when enabled, are handled by a third-party payment provider; we do not store card numbers.</li>
+          <li><strong>Orders:</strong> the details needed to fulfil an order — name, shipping address, email, and order contents. Payments are handled by Stripe; we never see or store your full card number.</li>
           <li><strong>On your device:</strong> your shopping cart is stored locally in your browser (localStorage) and mirrored into the page URL so it can be shared or restored. It never leaves your device unless you place an order. We do not use advertising or tracking cookies.</li>
         </ul>
 
@@ -86,7 +86,7 @@
         <ul>
           <li>a form-handling service that delivers contact and newsletter submissions to us; <!-- TODO: owner — name your provider, e.g. Formspree, and link its privacy policy --></li>
           <li>an email/newsletter provider, if you subscribe; <!-- TODO: owner — name your provider --></li>
-          <li>a payment processor, if you pay by card; <!-- TODO: owner — name your provider, e.g. Stripe --></li>
+          <li><strong>Stripe</strong>, which processes payments. Card details are entered on Stripe’s own secure form and never reach our servers — we only ever see the last four digits and the outcome. See <a href="https://stripe.com/privacy" rel="noopener">Stripe’s privacy policy</a>;</li>
           <li>shipping carriers, to deliver your order.</li>
         </ul>
 

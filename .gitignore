@@ -1,0 +1,12 @@
+# Secrets — never commit. The Stripe secret key lives in
+# Cloudflare (wrangler secret put) and, for local dev only, in
+# worker/.dev.vars.
+worker/.dev.vars
+.env
+.env.*
+!.env.example
+
+# Dependencies / build noise
+node_modules/
+worker/.wrangler/
+.DS_Store

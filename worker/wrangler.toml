@@ -1,0 +1,21 @@
+name = "robot-fragrances-checkout"
+main = "src/index.js"
+compatibility_date = "2024-11-06"
+
+# Public config. Safe to commit — nothing here is a secret.
+[vars]
+SITE_URL = "https://robotfragrances.com"
+
+# ALLOWED_ORIGINS is optional: a comma-separated list of extra
+# origins allowed to call the API. SITE_URL, its www. variant and
+# localhost are always allowed, so most setups can leave it unset.
+# ALLOWED_ORIGINS = "https://staging.robotfragrances.com"
+
+# ------------------------------------------------------------
+# STRIPE_SECRET_KEY is a SECRET and must never live in this file
+# or anywhere else in the repo. Set it with:
+#
+#     npx wrangler secret put STRIPE_SECRET_KEY
+#
+# For local dev, put it in worker/.dev.vars (gitignored).
+# ------------------------------------------------------------

@@ -1,0 +1,6 @@
+# Copy to worker/.dev.vars and fill in. That file is gitignored —
+# never commit a real key.
+#
+# Use a TEST key (sk_test_...) for local development. Card 4242 4242
+# 4242 4242, any future expiry, any CVC will complete a test order.
+STRIPE_SECRET_KEY=sk_test_replace_me
