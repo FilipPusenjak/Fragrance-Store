@@ -230,11 +230,14 @@
           <span class="eyebrow">The dispatch</span>
           <h2>New decants, dropped monthly.</h2>
           <p>Join the list for restocks, fresh arrivals from niche houses, and the occasional note on what we're wearing.</p>
-          <!-- Formspree-ready: replace FORM_ENDPOINT_TODO with your endpoint (e.g. https://formspree.io/f/xxxxxxx).
-               Non-functional until then. -->
-          <form class="newsletter" data-form method="POST" action="FORM_ENDPOINT_TODO">
+          <!-- Shares one Formspree endpoint with the contact form; _subject
+               keeps the two apart in the inbox. -->
+          <form class="newsletter" data-form data-form-success="You’re on the list — watch for the next dispatch." method="POST" action="https://formspree.io/f/xpqvvqgb">
             <label class="sr-only" for="news-email" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)">Email address</label>
-            <input id="news-email" type="email" placeholder="you@example.com" required />
+            <input id="news-email" name="email" type="email" placeholder="you@example.com" required />
+            <input type="hidden" name="_subject" value="Newsletter sign-up — robotfragrances.com" />
+            <!-- Honeypot: bots fill this, people never see it. -->
+            <input type="text" name="_gotcha" tabindex="-1" autocomplete="off" style="display:none !important" aria-hidden="true" />
             <button class="btn btn--light" type="submit">Subscribe</button>
           </form>
           <p data-form-note class="form-note" style="color:#8a857c"></p>

@@ -218,7 +218,10 @@
    * Set action to your Formspree endpoint (replace
    * FORM_ENDPOINT_TODO), e.g. https://formspree.io/f/xxxxxxx     */
   function setNote(form, msg, ok) {
+    /* The contact form keeps its note inside the form; the newsletter
+       card puts it after. Look inside first, then alongside. */
     var note = form.querySelector("[data-form-note]");
+    if (!note && form.parentNode) note = form.parentNode.querySelector("[data-form-note]");
     if (!note) return;
     note.textContent = msg;
     note.style.color = ok ? "var(--accent)" : "#b23b3b";
@@ -236,7 +239,11 @@
       setNote(form, "Sending…", true);
       fetch(action, { method: "POST", body: new FormData(form), headers: { Accept: "application/json" } })
         .then(function (r) {
-          if (r.ok) { setNote(form, "Thank you — your message is on its way. We’ll be in touch soon.", true); form.reset(); }
+          if (r.ok) {
+            setNote(form, form.getAttribute("data-form-success") ||
+              "Thank you — your message is on its way. We’ll be in touch soon.", true);
+            form.reset();
+          }
           else { setNote(form, "Something went wrong. Please email hello@robotfragrances.com instead.", false); }
         })
         .catch(function () { form.submit(); }); // network hiccup: fall back to a normal POST

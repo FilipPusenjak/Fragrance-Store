@@ -69,9 +69,12 @@
           </dl>
         </aside>
 
-        <!-- Formspree-ready: replace FORM_ENDPOINT_TODO with your endpoint (e.g. https://formspree.io/f/xxxxxxx).
-             Non-functional until then. -->
-        <form class="contact-form reveal" data-form method="POST" action="FORM_ENDPOINT_TODO">
+        <!-- Shares one Formspree endpoint with the newsletter form; _subject
+             keeps the two apart in the inbox. -->
+        <form class="contact-form reveal" data-form method="POST" action="https://formspree.io/f/xpqvvqgb">
+          <input type="hidden" name="_subject" value="Contact form — robotfragrances.com" />
+          <!-- Honeypot: bots fill this, people never see it. -->
+          <input type="text" name="_gotcha" tabindex="-1" autocomplete="off" style="display:none !important" aria-hidden="true" />
           <div class="form-grid">
             <div class="field">
               <label for="name">Name</label>
