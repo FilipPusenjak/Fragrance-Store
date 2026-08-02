@@ -132,6 +132,77 @@ test("every catalogue product/size can be ordered", async () => {
 });
 
 /* ============================================================
+   Stripe Product linking
+   ============================================================ */
+
+test("describes the product inline when no Stripe ID is mapped", async () => {
+  stubStripe();
+  await worker.fetch(post({ items: [{ slug: "bleu-de-chanel", ml: 5, qty: 1 }] }), ENV);
+  const p = sent();
+  assert.equal(p["line_items[0][price_data][product]"], undefined);
+  assert.match(p["line_items[0][price_data][product_data][name]"], /Bleu de Chanel — 5 ml decant/);
+  restore();
+});
+
+test("a mapped slug references the Stripe Product instead", async () => {
+  const { PRODUCT_IDS } = await import("../src/product-ids.js");
+  const original = PRODUCT_IDS["bleu-de-chanel"];
+  PRODUCT_IDS["bleu-de-chanel"] = "prod_TEST123";
+  stubStripe();
+  await worker.fetch(post({ items: [{ slug: "bleu-de-chanel", ml: 5, qty: 1 }] }), ENV);
+  const p = sent();
+  assert.equal(p["line_items[0][price_data][product]"], "prod_TEST123");
+  assert.equal(p["line_items[0][price_data][product_data][name]"], undefined,
+    "Stripe rejects product and product_data together");
+  assert.equal(p["line_items[0][price_data][unit_amount]"], "1300",
+    "linking a Product must not hand pricing to Stripe");
+  PRODUCT_IDS["bleu-de-chanel"] = original;
+  restore();
+});
+
+test("a partial map mixes linked and inline items in one order", async () => {
+  const { PRODUCT_IDS } = await import("../src/product-ids.js");
+  const original = PRODUCT_IDS["bleu-de-chanel"];
+  PRODUCT_IDS["bleu-de-chanel"] = "prod_TEST123";
+  stubStripe();
+  await worker.fetch(post({
+    items: [
+      { slug: "bleu-de-chanel", ml: 5, qty: 1 },
+      { slug: "erba-pura", ml: 10, qty: 1 }
+    ]
+  }), ENV);
+  const p = sent();
+  assert.equal(p["line_items[0][price_data][product]"], "prod_TEST123");
+  assert.ok(p["line_items[1][price_data][product_data][name]"], "unmapped slug still works");
+  assert.equal(chargedSubtotal(), 1300 + 3000);
+  PRODUCT_IDS["bleu-de-chanel"] = original;
+  restore();
+});
+
+test("metadata carries a readable packing list with sizes", async () => {
+  stubStripe();
+  await worker.fetch(post({
+    items: [
+      { slug: "bleu-de-chanel", ml: 5, qty: 2 },
+      { slug: "erba-pura", ml: 10, qty: 1 }
+    ]
+  }), ENV);
+  const p = sent();
+  assert.match(p["metadata[items]"], /2x Bleu de Chanel 5ml/);
+  assert.match(p["metadata[items]"], /1x Erba Pura 10ml/);
+  assert.equal(p["metadata[cart]"], "bleu-de-chanel:5:2,erba-pura:10:1");
+  restore();
+});
+
+test("every catalogue slug has an entry in the product-id map", async () => {
+  const { PRODUCT_IDS } = await import("../src/product-ids.js");
+  const missing = Object.keys(CATALOGUE).filter((s) => !(s in PRODUCT_IDS));
+  assert.deepEqual(missing, [], "product-ids.js is missing catalogue slugs");
+  const extra = Object.keys(PRODUCT_IDS).filter((s) => !(s in CATALOGUE));
+  assert.deepEqual(extra, [], "product-ids.js has slugs not in the catalogue");
+});
+
+/* ============================================================
    Validation
    ============================================================ */
 

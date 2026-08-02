@@ -30,6 +30,7 @@ import {
   FREE_SHIPPING_THRESHOLD,
   SHIPPING_FLAT_RATE
 } from "./catalogue.js";
+import { PRODUCT_IDS } from "./product-ids.js";
 
 const STRIPE_API = "https://api.stripe.com/v1";
 
@@ -176,24 +177,40 @@ function priceCart(rawItems, siteUrl) {
     subtotal += r.unitAmount * r.qty;
     const line = {
       quantity: r.qty,
-      price_data: {
-        currency: CURRENCY,
-        unit_amount: r.unitAmount,
-        product_data: {
-          name: `${r.product.name} — ${r.ml} ml decant`,
-          description: r.product.label,
-          metadata: { slug: r.slug, ml: String(r.ml) }
-        }
-      }
+      price_data: { currency: CURRENCY, unit_amount: r.unitAmount }
     };
-    if (r.product.image) {
-      line.price_data.product_data.images = [`${siteUrl}/${r.product.image}`];
+
+    /* Either reference a real Stripe Product or describe one inline —
+       Stripe rejects both together. Referencing keeps orders grouped
+       under the dashboard products instead of creating a throwaway
+       product per session. The price is ours either way. */
+    const productId = PRODUCT_IDS[r.slug];
+    if (productId) {
+      line.price_data.product = productId;
+    } else {
+      line.price_data.product_data = {
+        name: `${r.product.name} — ${r.ml} ml decant`,
+        description: r.product.label,
+        metadata: { slug: r.slug, ml: String(r.ml) }
+      };
+      if (r.product.image) {
+        line.price_data.product_data.images = [`${siteUrl}/${r.product.image}`];
+      }
     }
     return line;
   });
 
+  /* Machine-readable, for re-parsing an order later. */
   const summary = rows.map((r) => `${r.slug}:${r.ml}:${r.qty}`).join(",");
-  return { lines, subtotal, summary };
+
+  /* Human-readable, for whoever is at the bench filling the order.
+     Line items lose the size once they reference a Stripe Product,
+     so this is where the ml actually lives. */
+  const packingList = rows
+    .map((r) => `${r.qty}x ${r.product.name} ${r.ml}ml`)
+    .join("; ");
+
+  return { lines, subtotal, summary, packingList };
 }
 
 function shippingOption(subtotal) {
@@ -244,7 +261,11 @@ async function handleCheckout(request, env) {
     phone_number_collection: { enabled: false },
     billing_address_collection: "auto",
     allow_promotion_codes: true,
-    metadata: { cart: priced.summary.slice(0, 480), source: "robotfragrances.com" }
+    metadata: {
+      items: priced.packingList.slice(0, 480),
+      cart: priced.summary.slice(0, 480),
+      source: "robotfragrances.com"
+    }
   };
 
   /* An email typed on our page pre-fills Stripe's; harmless if absent. */
