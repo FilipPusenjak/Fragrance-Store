@@ -160,7 +160,7 @@ function footerHTML(base) {
           <a class="brand" href="${base}index.html">${LOGO_MARK}<span><b>Robot</b> Fragrances</span></a>
           <p>Authentic designer &amp; niche fragrances, decanted into honest sizes. Discover more, commit when you're sure.</p>
         </div>
-        <div class="footer-col"><h4>Shop</h4><ul><li><a href="${base}shop.html">All decants</a></li><li><a href="${base}quiz.html">Scent Finder</a></li><li><a href="${base}shop.html">Bestsellers</a></li><li><a href="${base}shop.html">Sample sets</a></li></ul></div>
+        <div class="footer-col"><h4>Shop</h4><ul><li><a href="${base}shop.html">All decants</a></li><li><a href="${base}quiz.html">Scent Finder</a></li><li><a href="${base}discovery.html">Discovery set</a></li><li><a href="${base}shop.html">Bestsellers</a></li></ul></div>
         <div class="footer-col"><h4>Learn</h4><ul><li><a href="${base}how-it-works.html">How it works</a></li><li><a href="${base}about.html">Our story</a></li><li><a href="${base}contact.html">FAQ</a></li><li><a href="${base}contact.html">Contact</a></li></ul></div>
         <div class="footer-col"><h4>Care</h4><ul><li><a href="${base}contact.html">Shipping</a></li><li><a href="${base}contact.html">Returns</a></li><li><a href="${base}contact.html">Authenticity</a></li><li><a href="${base}privacy.html">Privacy</a></li><li><a href="${base}terms.html">Terms</a></li></ul></div>
       </div>
@@ -277,7 +277,7 @@ function productPage(p, cat) {
 function buildSitemap(cat) {
   const staticPages = [
     "", "shop.html", "quiz.html", "how-it-works.html",
-    "about.html", "contact.html", "privacy.html", "terms.html"
+    "about.html", "contact.html", "discovery.html", "privacy.html", "terms.html"
   ];
   const today = new Date().toISOString().slice(0, 10);
   const urls = staticPages.map(pg => `${SITE_URL}/${pg}`)

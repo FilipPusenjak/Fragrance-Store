@@ -110,6 +110,17 @@ export const CATALOGUE = {
       "30": 8500
     }
   },
+  "myrrh-tonka": {
+    "name": "Myrrh & Tonka",
+    "label": "Niche",
+    "image": "assets/img/myrrh-tonka.webp",
+    "sizes": {
+      "2": 800,
+      "5": 1700,
+      "10": 3000,
+      "30": 8500
+    }
+  },
   "pdm-greenley": {
     "name": "PDM Greenley",
     "label": "Niche",
@@ -181,8 +192,22 @@ export const CATALOGUE = {
       "5": 3000,
       "10": 5500
     }
+  },
+  "super-cedar": {
+    "name": "Super Cedar",
+    "label": "Niche",
+    "image": "assets/img/super-cedar.webp",
+    "sizes": {
+      "2": 1200,
+      "5": 3000,
+      "10": 5500
+    }
   }
 };
+
+/* Discovery set: this many DISTINCT fragrances at this size earn
+   the discount on those testers. Mirrors SET_RULE in main.js. */
+export const SET_RULE = {"ml":2,"min":5,"discount":0.1};
 
 /* Free shipping at or above this subtotal (cents). */
 export const FREE_SHIPPING_THRESHOLD = 5000;

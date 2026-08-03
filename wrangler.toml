@@ -18,6 +18,12 @@ name = "robot-fragrances-checkout"
 main = "worker/src/index.js"
 compatibility_date = "2025-11-01"
 
+# Runs before every bundle, including in Workers Builds. Stamps the
+# commit into worker/src/version.js so /api/health can report which
+# build is actually live.
+[build]
+command = "node scripts/stamp-version.js"
+
 # Public config. Safe to commit — nothing here is a secret.
 [vars]
 SITE_URL = "https://robotfragrances.com"

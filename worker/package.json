@@ -5,6 +5,7 @@
   "description": "Cloudflare Worker that turns a Robot Fragrances cart into a Stripe Checkout Session.",
   "type": "module",
   "scripts": {
+    "pretest": "cd .. && node scripts/stamp-version.js",
     "test": "node --test test/*.mjs",
     "deploy": "cd .. && npx wrangler deploy",
     "dev": "cd .. && npx wrangler dev --port 8787",

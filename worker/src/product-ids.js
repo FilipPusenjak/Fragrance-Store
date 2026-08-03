@@ -40,5 +40,7 @@ export const PRODUCT_IDS = {
   "ombra-lirica": null,
   "le-labo-osmanthus-19": null,
   "le-labo-the-noir-29": null,
-  "byredo-animalique": null
+  "byredo-animalique": null,
+  "super-cedar": null,
+  "myrrh-tonka": null
 };

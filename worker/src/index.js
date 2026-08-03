@@ -28,9 +28,11 @@ import {
   CATALOGUE,
   CURRENCY,
   FREE_SHIPPING_THRESHOLD,
+  SET_RULE,
   SHIPPING_FLAT_RATE
 } from "./catalogue.js";
 import { PRODUCT_IDS } from "./product-ids.js";
+import { BRANCH, BUILT_AT, VERSION } from "./version.js";
 
 const STRIPE_API = "https://api.stripe.com/v1";
 
@@ -173,13 +175,30 @@ function priceCart(rawItems, siteUrl) {
   });
 
   const rows = [...merged.values()];
+
+  /* Discovery set: N distinct fragrances at the tester size earn a
+     discount on those testers. Counted by distinct slug, so five of
+     one scent doesn't qualify — and decided here, from the server's
+     own rule, never from anything the browser claims. */
+  const testerSlugs = new Set(
+    rows.filter((r) => r.ml === SET_RULE.ml).map((r) => r.slug)
+  );
+  const isSet = testerSlugs.size >= SET_RULE.min;
+
   let subtotal = 0;
 
   const lines = rows.map((r) => {
-    subtotal += r.unitAmount * r.qty;
+    const discounted = isSet && r.ml === SET_RULE.ml;
+    /* Round the unit price, not the line total, so what Stripe charges
+       is always quantity x a real per-item price. */
+    const unitAmount = discounted
+      ? Math.round(r.unitAmount * (1 - SET_RULE.discount))
+      : r.unitAmount;
+
+    subtotal += unitAmount * r.qty;
     const line = {
       quantity: r.qty,
-      price_data: { currency: CURRENCY, unit_amount: r.unitAmount }
+      price_data: { currency: CURRENCY, unit_amount: unitAmount }
     };
 
     /* Either reference a real Stripe Product or describe one inline —
@@ -191,7 +210,8 @@ function priceCart(rawItems, siteUrl) {
       line.price_data.product = productId;
     } else {
       line.price_data.product_data = {
-        name: `${r.product.name} — ${r.ml} ml decant`,
+        name: `${r.product.name} — ${r.ml} ml decant` +
+          (discounted ? " (discovery set)" : ""),
         description: r.product.label,
         metadata: { slug: r.slug, ml: String(r.ml) }
       };
@@ -210,9 +230,9 @@ function priceCart(rawItems, siteUrl) {
      so this is where the ml actually lives. */
   const packingList = rows
     .map((r) => `${r.qty}x ${r.product.name} ${r.ml}ml`)
-    .join("; ");
+    .join("; ") + (isSet ? ` [discovery set -${Math.round(SET_RULE.discount * 100)}%]` : "");
 
-  return { lines, subtotal, summary, packingList };
+  return { lines, subtotal, summary, packingList, isSet };
 }
 
 function shippingOption(subtotal) {
@@ -340,7 +360,12 @@ export default {
         stripeConfigured: Boolean(env.STRIPE_SECRET_KEY),
         liveMode: (env.STRIPE_SECRET_KEY || "").startsWith("sk_live_"),
         products: Object.keys(CATALOGUE).length,
-        site: env.SITE_URL || "https://robotfragrances.com"
+        site: env.SITE_URL || "https://robotfragrances.com",
+        /* Which build is actually serving. Without this, a bad deploy
+           looks the same as a broken one. */
+        version: VERSION,
+        branch: BRANCH,
+        builtAt: BUILT_AT
       }, 200, request, env);
     }
 

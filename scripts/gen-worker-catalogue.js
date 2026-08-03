@@ -44,6 +44,29 @@ function loadCatalogue() {
   return cat;
 }
 
+/* The discovery-set rule lives beside the catalogue in main.js so the
+   site and the worker can't disagree about what earns a discount. */
+function loadSetRule() {
+  const code = fs.readFileSync(path.join(ROOT, "assets/js/main.js"), "utf8");
+  const sandbox = {
+    window: {},
+    document: {
+      getElementById: () => null, querySelector: () => null,
+      querySelectorAll: () => [], addEventListener: () => {}, readyState: "complete"
+    },
+    location: { search: "", hash: "", pathname: "/" },
+    navigator: { userAgent: "node" }
+  };
+  vm.createContext(sandbox);
+  vm.runInContext(code, sandbox);
+  const r = sandbox.window.RF_SET_RULE;
+  if (!r || !Number.isInteger(r.ml) || !Number.isInteger(r.min) ||
+      typeof r.discount !== "number" || r.discount < 0 || r.discount >= 1) {
+    throw new Error("Could not read a valid window.RF_SET_RULE from assets/js/main.js");
+  }
+  return r;
+}
+
 function generate() {
   const cat = loadCatalogue();
 
@@ -80,8 +103,13 @@ function generate() {
     "   costs — that check is the whole point of having a server.\n" +
     "   ============================================================ */\n\n";
 
+  const rule = loadSetRule();
+
   const body =
     "export const CATALOGUE = " + JSON.stringify(out, null, 2) + ";\n\n" +
+    "/* Discovery set: this many DISTINCT fragrances at this size earn\n" +
+    "   the discount on those testers. Mirrors SET_RULE in main.js. */\n" +
+    "export const SET_RULE = " + JSON.stringify(rule) + ";\n\n" +
     "/* Free shipping at or above this subtotal (cents). */\n" +
     "export const FREE_SHIPPING_THRESHOLD = 5000;\n\n" +
     "/* Flat rate charged below the threshold (cents). */\n" +

@@ -26,6 +26,17 @@
     byredoLelabo:  [[2, 12], [5, 30], [10, 55]]
   };
 
+  /* --- Discovery set ------------------------------------- */
+  /* Pick N different fragrances as 2 ml testers and the testers
+     come with a discount. Counted by DISTINCT fragrance, not by
+     quantity — the point is breadth, and five of the same scent
+     isn't a discovery set.
+
+     The worker enforces this independently from its own copy of
+     these numbers (generated into worker/src/catalogue.js), so the
+     browser can't invent a discount. Change them here only. */
+  var SET_RULE = { ml: 2, min: 5, discount: 0.10 };
+
   /* --- Catalogue ----------------------------------------- */
   /* group = used for filtering; label = small line on the card. */
   var PRODUCTS = [
@@ -38,13 +49,15 @@
     { name: "By the Fireplace",      label: "Designer", group: "designer", tier: "designer", notes: "Clove · roasted chestnut · vanilla · smoky woods", image: "assets/img/by-the-fireplace.webp" },
     { name: "Wood Neroli",           label: "Designer", group: "designer", tier: "designer", notes: "Neroli · orange blossom · warm woods", image: "assets/img/wood-neroli.webp" },
     { name: "Erba Pura",             label: "Niche", group: "niche", tier: "niche", notes: "Sicilian orange · summer fruits · amber · white musk", image: "assets/img/erba-pura.webp" },
+    { name: "Myrrh & Tonka",         label: "Niche", group: "niche", tier: "niche", notes: "Myrrh · tonka bean · vanilla · almond", image: "assets/img/myrrh-tonka.webp" },
     { name: "PDM Greenley",          label: "Niche", group: "niche", tier: "niche", notes: "Mint · fig leaf · vetiver · tonka", image: "assets/img/pdm-greenley.webp" },
     { name: "Tom Ford Ombré Leather", label: "Niche", group: "niche", tier: "niche", notes: "Leather · cardamom · jasmine · amber", image: "assets/img/tom-ford-ombre-leather.webp" },
     { name: "Wild Vetiver",          label: "Niche · Rare", group: "niche", tier: "expNiche", notes: "Vetiver · citrus · spice · dry woods", image: "assets/img/wild-vetiver.webp" },
     { name: "Ombra Lirica",          label: "Niche · Rare", group: "niche", tier: "expNiche", notes: "Incense · amber · soft resins · woods", image: "assets/img/ombra-lirica.webp" },
     { name: "Le Labo Osmanthus 19",  label: "Niche", group: "niche", tier: "cityExclusive", notes: "Osmanthus · apricot · leather · musk", tag: "City Exclusive", image: "assets/img/le-labo-osmanthus-19.webp" },
     { name: "Le Labo Thé Noir 29", label: "Niche", group: "niche", tier: "byredoLelabo", notes: "Black tea · fig · bay leaf · cedarwood", image: "assets/img/le-labo-the-noir-29.webp" },
-    { name: "Byredo Animalique",     label: "Niche", group: "niche", tier: "byredoLelabo", notes: "Musk · leather · amber · warm spice", image: "assets/img/byredo-animalique.webp" }
+    { name: "Byredo Animalique",     label: "Niche", group: "niche", tier: "byredoLelabo", notes: "Musk · leather · amber · warm spice", image: "assets/img/byredo-animalique.webp" },
+    { name: "Super Cedar",           label: "Niche", group: "niche", tier: "byredoLelabo", notes: "Virginian cedar · rose · sandalwood · musk", image: "assets/img/super-cedar.webp" }
   ];
 
   /* --- Long-form details (keyed by slug) ----------------- */
@@ -64,7 +77,9 @@
     "ombra-lirica": { description: "Smoky incense and soft resins glow over warm amber and woods — a contemplative, almost ceremonial scent for cooler evenings.", family: "Amber woody", season: "Autumn–Winter", occasion: "Evening", longevity: "8–10 hrs" },
     "le-labo-osmanthus-19": { description: "Apricot-tinged osmanthus laced with supple leather and musk — a city exclusive that's luminous, leathery and quietly unconventional.", family: "Floral leather", season: "Spring–Autumn", occasion: "Special", longevity: "7–9 hrs" },
     "le-labo-the-noir-29": { description: "Black tea, fig and bay leaf over cedar and vetiver — dry, sophisticated and endlessly versatile, the kind of scent people lean in to ask about.", family: "Woody aromatic", season: "Year-round", occasion: "Versatile", longevity: "7–9 hrs" },
-    "byredo-animalique": { description: "Warm musk, supple leather and amber with a spiced undertone — intimate, skin-like and undeniably after-dark.", family: "Leather musk", season: "Autumn–Winter", occasion: "Evening", longevity: "8–10 hrs" }
+    "byredo-animalique": { description: "Warm musk, supple leather and amber with a spiced undertone — intimate, skin-like and undeniably after-dark.", family: "Leather musk", season: "Autumn–Winter", occasion: "Evening", longevity: "8–10 hrs" },
+    "super-cedar": { description: "Sharp Virginian cedar softened by a single rose, drying down to creamy sandalwood and musk — clean, woody and deceptively simple.", family: "Woody floral", season: "Year-round", occasion: "Versatile", longevity: "6–8 hrs" },
+    "myrrh-tonka": { description: "Resinous myrrh wrapped in tonka bean, vanilla and almond — warm, sweet and faintly smoky, the kind of scent that sits close and lingers.", family: "Amber gourmand", season: "Autumn–Winter", occasion: "Evening", longevity: "8–10 hrs" }
   };
 
   function slugify(str) {
@@ -99,6 +114,7 @@
 
   /* Shared globals for the other scripts */
   window.RF_CATALOGUE = CATALOGUE;
+  window.RF_SET_RULE = SET_RULE;
   window.RF_BOTTLE = BOTTLE_SVG;
   window.RF_get = function (slug) { return BY_SLUG[slug] || null; };
 
@@ -260,4 +276,9 @@
   /* --- Footer year --------------------------------------- */
   var yearEl = document.querySelector("[data-year]");
   if (yearEl) yearEl.textContent = new Date().getFullYear();
+
+  /* --- Catalogue size (so the hero stat can't go stale) --- */
+  document.querySelectorAll("[data-scent-count]").forEach(function (el) {
+    el.textContent = CATALOGUE.length;
+  });
 })();

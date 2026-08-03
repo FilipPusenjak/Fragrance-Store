@@ -309,6 +309,88 @@ test("gives free shipping at or above the threshold", async () => {
 });
 
 /* ============================================================
+   Discovery set discount
+   ============================================================ */
+
+const FIVE = ["bleu-de-chanel", "erba-pura", "super-cedar", "myrrh-tonka", "pdm-greenley"];
+const testers = (slugs, qty = 1) => slugs.map((slug) => ({ slug, ml: 2, qty }));
+const fullPrice = (slugs) => slugs.reduce((n, s) => n + CATALOGUE[s].sizes["2"], 0);
+
+test("five distinct testers earn the discount", async () => {
+  stubStripe();
+  await worker.fetch(post({ items: testers(FIVE) }), ENV);
+  const gross = fullPrice(FIVE);
+  const expected = FIVE.reduce((n, s) => n + Math.round(CATALOGUE[s].sizes["2"] * 0.9), 0);
+  assert.equal(chargedSubtotal(), expected);
+  assert.ok(chargedSubtotal() < gross, "should be cheaper than full price");
+  assert.equal(Math.round((1 - chargedSubtotal() / gross) * 100), 10);
+  restore();
+});
+
+test("four distinct testers do not", async () => {
+  stubStripe();
+  const four = FIVE.slice(0, 4);
+  await worker.fetch(post({ items: testers(four) }), ENV);
+  assert.equal(chargedSubtotal(), fullPrice(four), "no discount below the threshold");
+  restore();
+});
+
+test("five of the SAME tester does not qualify", async () => {
+  stubStripe();
+  /* Counted by distinct fragrance — the point is breadth. */
+  await worker.fetch(post({ items: [{ slug: "bleu-de-chanel", ml: 2, qty: 5 }] }), ENV);
+  assert.equal(chargedSubtotal(), CATALOGUE["bleu-de-chanel"].sizes["2"] * 5);
+  restore();
+});
+
+test("larger sizes never get the tester discount", async () => {
+  stubStripe();
+  /* Qualifying set plus a 10 ml: only the testers are discounted. */
+  await worker.fetch(post({
+    items: [...testers(FIVE), { slug: "erba-pura", ml: 10, qty: 1 }]
+  }), ENV);
+  const p = sent();
+  let tenMl = null;
+  for (let i = 0; p[`line_items[${i}][quantity]`] !== undefined; i++) {
+    if (p[`line_items[${i}][price_data][product_data][name]`]?.includes("10 ml")) {
+      tenMl = Number(p[`line_items[${i}][price_data][unit_amount]`]);
+    }
+  }
+  assert.equal(tenMl, CATALOGUE["erba-pura"].sizes["10"], "10 ml must stay full price");
+  restore();
+});
+
+test("the client cannot claim a discount it hasn't earned", async () => {
+  stubStripe();
+  const res = await worker.fetch(post({
+    items: [{ slug: "bleu-de-chanel", ml: 2, qty: 1 }],
+    isSet: true, discount: 0.9, discoverySet: true
+  }), ENV);
+  assert.equal(res.status, 200);
+  assert.equal(chargedSubtotal(), CATALOGUE["bleu-de-chanel"].sizes["2"],
+    "flags in the request body must be ignored");
+  restore();
+});
+
+test("duplicate rows of the same tester don't inflate the distinct count", async () => {
+  stubStripe();
+  /* Four distinct slugs, one repeated to reach five rows. */
+  const items = [...testers(FIVE.slice(0, 4)), { slug: FIVE[0], ml: 2, qty: 1 }];
+  await worker.fetch(post({ items }), ENV);
+  const four = FIVE.slice(0, 4);
+  const expected = fullPrice(four) + CATALOGUE[FIVE[0]].sizes["2"];
+  assert.equal(chargedSubtotal(), expected, "still only four distinct fragrances");
+  restore();
+});
+
+test("a discounted set is flagged in the packing list", async () => {
+  stubStripe();
+  await worker.fetch(post({ items: testers(FIVE) }), ENV);
+  assert.match(sent()["metadata[items]"], /discovery set -10%/);
+  restore();
+});
+
+/* ============================================================
    Shipping destinations
    ============================================================ */
 

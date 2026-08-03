@@ -22,54 +22,54 @@
     fire: "by-the-fireplace", woodn: "wood-neroli", erba: "erba-pura",
     green: "pdm-greenley", wildv: "wild-vetiver", ombra: "ombra-lirica",
     osm: "le-labo-osmanthus-19", then: "le-labo-the-noir-29", anim: "byredo-animalique",
-    tfol: "tom-ford-ombre-leather"
+    tfol: "tom-ford-ombre-leather", cedar: "super-cedar", myrrh: "myrrh-tonka"
   };
 
   /* Tie-breaker order (crowd-pleasers first). */
-  var PRIORITY = ["bdc", "sauv", "erba", "then", "jpg", "osm", "h24", "prada",
-    "wildv", "green", "fire", "woodn", "ombra", "anim", "tfol", "swy"];
+  var PRIORITY = ["bdc", "sauv", "erba", "then", "cedar", "jpg", "myrrh", "osm",
+    "h24", "prada", "wildv", "green", "fire", "woodn", "ombra", "anim", "tfol", "swy"];
 
   var QUESTIONS = [
     { q: "What's the occasion?", options: [
-      { label: "Everyday & the office", s: { bdc: 2, prada: 2, h24: 2, then: 1, wildv: 1, woodn: 1, tfol: 1 } },
-      { label: "A date or a night out", s: { jpg: 2, anim: 2, sauv: 1, ombra: 1, osm: 1, tfol: 2 } },
-      { label: "A special occasion", s: { osm: 2, then: 2, ombra: 1, bdc: 1 } },
-      { label: "Honestly, anything", s: { sauv: 2, swy: 2, bdc: 1, erba: 1 } }
+      { label: "Everyday & the office", s: { bdc: 2, prada: 2, h24: 2, then: 1, wildv: 1, woodn: 1, tfol: 1, cedar: 2 } },
+      { label: "A date or a night out", s: { jpg: 2, anim: 2, sauv: 1, ombra: 1, osm: 1, tfol: 2, myrrh: 2 } },
+      { label: "A special occasion", s: { osm: 2, then: 2, ombra: 1, bdc: 1, myrrh: 1 } },
+      { label: "Honestly, anything", s: { sauv: 2, swy: 2, bdc: 1, erba: 1, cedar: 1 } }
     ]},
     { q: "Which scent family calls to you?", options: [
       { label: "Fresh & citrusy", s: { h24: 2, woodn: 2, green: 1, bdc: 1, erba: 1, swy: 1 } },
-      { label: "Warm & spicy", s: { sauv: 2, ombra: 2, jpg: 1, anim: 1, tfol: 2 } },
-      { label: "Woody & earthy", s: { wildv: 2, then: 2, bdc: 1, prada: 1, tfol: 1 } },
-      { label: "Sweet & gourmand", s: { jpg: 2, fire: 2, erba: 1 } },
-      { label: "Soft & floral", s: { osm: 2, prada: 2, h24: 1 } }
+      { label: "Warm & spicy", s: { sauv: 2, ombra: 2, jpg: 1, anim: 1, tfol: 2, myrrh: 2 } },
+      { label: "Woody & earthy", s: { wildv: 2, then: 2, bdc: 1, prada: 1, tfol: 1, cedar: 3 } },
+      { label: "Sweet & gourmand", s: { jpg: 2, fire: 2, erba: 1, myrrh: 2 } },
+      { label: "Soft & floral", s: { osm: 2, prada: 2, h24: 1, cedar: 1 } }
     ]},
     { q: "Pick a season.", options: [
       { label: "Spring", s: { woodn: 2, green: 2, h24: 1, prada: 1, osm: 1 } },
       { label: "Summer", s: { erba: 2, h24: 2, green: 1, woodn: 1, swy: 1 } },
-      { label: "Autumn", s: { then: 2, wildv: 2, bdc: 1, ombra: 1, fire: 2, tfol: 2 } },
-      { label: "Winter", s: { jpg: 2, fire: 2, anim: 2, ombra: 1, tfol: 1 } }
+      { label: "Autumn", s: { then: 2, wildv: 2, bdc: 1, ombra: 1, fire: 2, tfol: 2, cedar: 1, myrrh: 2 } },
+      { label: "Winter", s: { jpg: 2, fire: 2, anim: 2, ombra: 1, tfol: 1, myrrh: 2 } }
     ]},
     { q: "Your style in a word?", options: [
-      { label: "Classic & understated", s: { prada: 2, bdc: 2, wildv: 1, h24: 1, tfol: 1 } },
-      { label: "Bold & magnetic", s: { sauv: 2, jpg: 2, swy: 2, anim: 1, tfol: 2 } },
+      { label: "Classic & understated", s: { prada: 2, bdc: 2, wildv: 1, h24: 1, tfol: 1, cedar: 2 } },
+      { label: "Bold & magnetic", s: { sauv: 2, jpg: 2, swy: 2, anim: 1, tfol: 2, myrrh: 1 } },
       { label: "Creative & unexpected", s: { then: 2, osm: 2, ombra: 1, green: 1, fire: 1 } },
-      { label: "Clean & minimal", s: { h24: 2, woodn: 2, prada: 1, green: 1 } }
+      { label: "Clean & minimal", s: { h24: 2, woodn: 2, prada: 1, green: 1, cedar: 2 } }
     ]},
     { q: "How much presence do you want?", options: [
-      { label: "Subtle — close to the skin", s: { prada: 2, h24: 2, then: 1, woodn: 1 } },
-      { label: "Moderate — an arm's length", s: { bdc: 2, then: 2, woodn: 1, wildv: 1, osm: 1, fire: 1, tfol: 2 } },
-      { label: "Bold — fills the room", s: { sauv: 2, jpg: 2, anim: 2, ombra: 1, swy: 2, tfol: 1 } }
+      { label: "Subtle — close to the skin", s: { prada: 2, h24: 2, then: 1, woodn: 1, cedar: 1 } },
+      { label: "Moderate — an arm's length", s: { bdc: 2, then: 2, woodn: 1, wildv: 1, osm: 1, fire: 1, tfol: 2, cedar: 2, myrrh: 1 } },
+      { label: "Bold — fills the room", s: { sauv: 2, jpg: 2, anim: 2, ombra: 1, swy: 2, tfol: 1, myrrh: 2 } }
     ]},
     { q: "Which note draws you in?", options: [
       { label: "Citrus & bergamot", s: { sauv: 2, bdc: 2, h24: 1, erba: 1, swy: 1 } },
-      { label: "Vanilla, amber & spice", s: { jpg: 2, fire: 2, ombra: 1, sauv: 1, tfol: 1 } },
-      { label: "Vetiver, fig & green leaves", s: { wildv: 2, green: 2, then: 1 } },
-      { label: "Leather, tea & musk", s: { anim: 2, osm: 2, then: 1, ombra: 1, tfol: 2 } }
+      { label: "Vanilla, amber & spice", s: { jpg: 2, fire: 2, ombra: 1, sauv: 1, tfol: 1, myrrh: 3 } },
+      { label: "Vetiver, fig & green leaves", s: { wildv: 2, green: 2, then: 1, cedar: 1 } },
+      { label: "Leather, tea & musk", s: { anim: 2, osm: 2, then: 1, ombra: 1, tfol: 2, cedar: 1 } }
     ]},
     { q: "Day or night?", options: [
-      { label: "Daytime", s: { h24: 2, green: 2, woodn: 1, prada: 1, wildv: 1, erba: 1 } },
-      { label: "After dark", s: { jpg: 2, anim: 2, ombra: 2, fire: 1, osm: 1, tfol: 2 } },
-      { label: "Both, all the time", s: { bdc: 2, then: 2, sauv: 1, swy: 2, erba: 1, tfol: 1 } }
+      { label: "Daytime", s: { h24: 2, green: 2, woodn: 1, prada: 1, wildv: 1, erba: 1, cedar: 1 } },
+      { label: "After dark", s: { jpg: 2, anim: 2, ombra: 2, fire: 1, osm: 1, tfol: 2, myrrh: 2 } },
+      { label: "Both, all the time", s: { bdc: 2, then: 2, sauv: 1, swy: 2, erba: 1, tfol: 1, cedar: 2 } }
     ]},
     { q: "And your budget per decant?", filter: true, options: [
       { label: "Designer", desc: "From $4 a decant", group: "designer" },

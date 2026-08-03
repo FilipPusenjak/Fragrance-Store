@@ -121,11 +121,13 @@ Test card `4242 4242 4242 4242`, any future expiry, any CVC.
 npm test
 ```
 
-30 tests, no network and no Stripe key needed — the Stripe API is stubbed and the
+37 tests, no network and no Stripe key needed — the Stripe API is stubbed and the
 tests assert on the exact amounts the worker *would* have charged. Covers:
 
 - prices come from the catalogue even when the client sends its own
-- all 59 product/size combinations charge the right amount
+- all 66 product/size combinations charge the right amount
+- the discovery-set discount applies only to a genuine set, and cannot
+  be claimed by a flag in the request body
 - duplicate cart rows merge, so the 99-per-line cap can't be bypassed
 - unknown products and invalid sizes are rejected
 - the free-shipping threshold applies at the right subtotal
@@ -177,6 +179,24 @@ prevent — small-parcel international runs $15-25 against a $5 domestic rate.
 The customer-facing copy also says US-only in several places (`contact.html`,
 `terms.html`, `assets/js/checkout.js`, `assets/js/product.js`, `build.js`), so
 widening the list means updating those too.
+
+## Smoke-testing a deploy
+
+```bash
+npm run smoke                                    # uses checkoutApi from config.js
+node scripts/smoke.js <url> --expect-version <sha>
+```
+
+Checks the deployed worker is the checkout API *doing its job*, not merely
+responding: health, a real priced session against a lying client, the rejection
+paths, and CORS. Exits non-zero, so it can gate a deploy.
+
+Worth running after every build. The outage that motivated it returned 200 from
+every URL — availability is not correctness.
+
+`/api/health` also reports `version`, `branch` and `builtAt`, stamped at build
+time by `scripts/stamp-version.js` (run automatically via `[build]` in
+`wrangler.toml`). Without it, a bad deploy looks the same as a broken one.
 
 ## Not built yet
 

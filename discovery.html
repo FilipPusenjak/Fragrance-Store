@@ -3,19 +3,18 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Checkout — Robot Fragrances</title>
-  <meta name="description" content="Review your decants and check out securely with Stripe." />
-  <meta name="robots" content="noindex,follow" />
-  <link rel="canonical" href="https://robotfragrances.com/checkout.html" />
+  <title>Build a Discovery Set — Robot Fragrances</title>
+  <meta name="description" content="Pick any five 2 ml testers and save 10%. Build your own discovery set from the full Robot Fragrances shelf and find your signature without the guesswork." />
+  <link rel="canonical" href="https://robotfragrances.com/discovery.html" />
   <meta property="og:type" content="website" />
   <meta property="og:site_name" content="Robot Fragrances" />
-  <meta property="og:title" content="Checkout — Robot Fragrances" />
-  <meta property="og:description" content="Review your decants and check out securely with Stripe." />
-  <meta property="og:url" content="https://robotfragrances.com/checkout.html" />
+  <meta property="og:title" content="Build a Discovery Set — Robot Fragrances" />
+  <meta property="og:description" content="Pick any five 2 ml testers and save 10%. Build your own discovery set and find your signature without the guesswork." />
+  <meta property="og:url" content="https://robotfragrances.com/discovery.html" />
   <meta property="og:image" content="https://robotfragrances.com/assets/img/og-cover.png" />
   <meta name="twitter:card" content="summary_large_image" />
-  <meta name="twitter:title" content="Checkout — Robot Fragrances" />
-  <meta name="twitter:description" content="Review your decants and check out securely with Stripe." />
+  <meta name="twitter:title" content="Build a Discovery Set — Robot Fragrances" />
+  <meta name="twitter:description" content="Pick any five 2 ml testers and save 10%. Build your own discovery set and find your signature without the guesswork." />
   <meta name="twitter:image" content="https://robotfragrances.com/assets/img/og-cover.png" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -47,34 +46,30 @@
   </header>
 
   <main>
-    <div id="checkout-root">
-      <section class="page-hero">
-        <div class="container">
-          <p class="breadcrumb"><a href="shop.html">Shop</a> / Checkout</p>
-          <span class="eyebrow">Secure checkout</span>
-          <h1>Checkout</h1>
-        </div>
-      </section>
+    <!-- ======================= PAGE HERO ======================= -->
+    <section class="page-hero">
+      <div class="container">
+        <p class="breadcrumb"><a href="index.html">Home</a> / <a href="shop.html">Shop</a> / Discovery set</p>
+        <span class="eyebrow">Can't decide?</span>
+        <h1>Build a discovery set.</h1>
+        <p class="lead">Pick any <strong data-set-min>five</strong> 2&nbsp;ml testers and we'll box them together — <strong data-set-discount>10%</strong> off the lot. The easiest way to find your signature without committing to a bottle.</p>
+      </div>
+    </section>
 
-      <section class="section--tight" style="padding-top:0">
-        <div class="container checkout-grid">
-          <!-- Filled by assets/js/checkout.js. Card details are never
-               collected here — shipping and payment are handled by
-               Stripe, either on their hosted page or in an embedded
-               form, depending on checkoutMode in assets/js/config.js. -->
-          <div class="checkout-form" id="checkout-pay"></div>
-
-          <aside class="checkout-summary" id="checkout-summary">
-            <h2>Order summary</h2>
-            <div class="sum-items"></div>
-            <div class="sum-line"><span>Subtotal</span><span class="sum-sub">$0</span></div>
-            <div class="sum-line"><span>Shipping</span><span class="sum-ship">—</span></div>
-            <div class="sum-line sum-line--total"><span>Total</span><span class="sum-total">$0</span></div>
-            <p class="cart-note">Free shipping on orders over $50.</p>
-          </aside>
+    <!-- ======================= BUILDER ======================= -->
+    <!-- Rendered by assets/js/discovery.js from the shared catalogue.
+         The no-JS fallback below points at the shop, where every
+         tester can still be bought individually. -->
+    <section class="section--tight" style="padding-top:0">
+      <div class="container">
+        <div id="discovery-builder">
+          <noscript>
+            <p class="form-note">The set builder needs JavaScript. You can still
+              <a href="shop.html">buy 2&nbsp;ml testers individually</a> from the shop.</p>
+          </noscript>
         </div>
-      </section>
-    </div>
+      </div>
+    </section>
   </main>
 
   <!-- ======================= FOOTER ======================= -->
@@ -83,7 +78,7 @@
       <div class="footer-top">
         <div class="footer-brand">
           <a class="brand" href="index.html"><svg class="logo-mark" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="6" y="8" width="12" height="13" rx="3"/><path d="M10 8V5.5h4V8"/><rect x="10.5" y="2.5" width="3" height="3" rx="0.6"/><circle cx="9.7" cy="13.5" r="1.1" fill="currentColor" stroke="none"/><circle cx="14.3" cy="13.5" r="1.1" fill="currentColor" stroke="none"/><path d="M9.6 17.4h4.8"/></svg><span><b>Robot</b> Fragrances</span></a>
-          <p>Authentic designer & niche fragrances, decanted into honest sizes. Discover more, commit when you're sure.</p>
+          <p>Authentic designer &amp; niche fragrances, decanted into honest sizes. Discover more, commit when you're sure.</p>
         </div>
         <div class="footer-col"><h4>Shop</h4><ul><li><a href="shop.html">All decants</a></li><li><a href="quiz.html">Scent Finder</a></li><li><a href="discovery.html">Discovery set</a></li><li><a href="shop.html">Bestsellers</a></li></ul></div>
         <div class="footer-col"><h4>Learn</h4><ul><li><a href="how-it-works.html">How it works</a></li><li><a href="about.html">Our story</a></li><li><a href="contact.html">FAQ</a></li><li><a href="contact.html">Contact</a></li></ul></div>
@@ -104,6 +99,6 @@
   <script src="assets/js/config.js"></script>
   <script src="assets/js/main.js"></script>
   <script src="assets/js/cart.js"></script>
-  <script src="assets/js/checkout.js"></script>
+  <script src="assets/js/discovery.js"></script>
 </body>
 </html>

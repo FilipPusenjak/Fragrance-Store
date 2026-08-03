@@ -10,3 +10,6 @@ worker/.dev.vars
 node_modules/
 worker/.wrangler/
 .DS_Store
+
+# Generated at build time by scripts/stamp-version.js
+worker/src/version.js
