@@ -1,0 +1,17 @@
+{
+  "name": "robot-fragrances",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Robot Fragrances storefront (static) plus the Cloudflare Worker that handles checkout.",
+  "scripts": {
+    "build": "node build.js",
+    "test": "node --test worker/test/*.mjs",
+    "deploy": "wrangler deploy",
+    "dev": "wrangler dev --port 8787",
+    "secret": "wrangler secret put STRIPE_SECRET_KEY",
+    "tail": "wrangler tail"
+  },
+  "devDependencies": {
+    "wrangler": "^4.118.0"
+  }
+}

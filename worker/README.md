@@ -23,9 +23,12 @@ Four steps, about ten minutes.
 ### 1. Install
 
 ```bash
-cd worker
-npm install
+npm install          # from the REPO ROOT, not worker/
 ```
+
+`wrangler.toml` lives at the repo root even though the source is in `worker/`.
+That is deliberate — see the comment at the top of that file. Leave **Root
+directory** empty in the Workers Builds settings.
 
 ### 2. Add your Stripe secret key
 
@@ -155,15 +158,15 @@ about a price you just changed.
 | Name | Where | Purpose |
 |---|---|---|
 | `STRIPE_SECRET_KEY` | `wrangler secret` or dashboard | **Secret.** Server-side Stripe auth. Stored on the worker, so it survives redeploys and is never part of a build. |
-| `SITE_URL` | `wrangler.toml` | Success/cancel/return URLs and CORS. |
-| `ALLOWED_ORIGINS` | `wrangler.toml` | Optional extra origins, comma-separated. |
+| `SITE_URL` | `wrangler.toml` (repo root) | Success/cancel/return URLs and CORS. |
+| `ALLOWED_ORIGINS` | `wrangler.toml` (repo root) | Optional extra origins, comma-separated. |
 
 `SITE_URL`, its `www.` variant and localhost are always allowed, so most setups
 never need `ALLOWED_ORIGINS`.
 
 ## Shipping scope
 
-`SHIP_TO` in `src/index.js` lists the countries Stripe will accept an address
+`SHIP_TO` in `worker/src/index.js` lists the countries Stripe will accept an address
 for. It is currently `["US"]`.
 
 Adding a country means **two** changes, not one: add it to `SHIP_TO` *and* give
