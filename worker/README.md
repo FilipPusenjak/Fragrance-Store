@@ -41,6 +41,12 @@ For local development instead, copy `.dev.vars.example` to `.dev.vars` and put a
 
 ### 3. Deploy
 
+The worker is connected to this repo through **Workers Builds**, so a push to
+the production branch builds and deploys it automatically — same model as the
+GitHub Pages site. Normally there is nothing to run.
+
+To deploy by hand (first-time setup, or when Builds is unavailable):
+
 ```bash
 npm run deploy
 ```
@@ -132,18 +138,23 @@ Prices live in `assets/js/main.js` (`window.RF_CATALOGUE`). After changing one:
 
 ```bash
 node build.js          # from the repo root; regenerates everything
-cd worker && npm run deploy
+git add -A && git commit && git push
 ```
 
 `build.js` regenerates the worker catalogue automatically, so the site and the
-worker can't disagree about what something costs — but the worker still needs a
-redeploy to pick it up.
+worker can't disagree about what something costs. Workers Builds then redeploys
+the worker on push, so both halves move together.
+
+Note the two halves deploy on different systems — GitHub Pages serves the site,
+Workers Builds deploys the worker. A push updates both, but not at the same
+instant. Expect a minute or so where the page and the charge could disagree
+about a price you just changed.
 
 ## Configuration
 
 | Name | Where | Purpose |
 |---|---|---|
-| `STRIPE_SECRET_KEY` | `wrangler secret` | **Secret.** Server-side Stripe auth. |
+| `STRIPE_SECRET_KEY` | `wrangler secret` or dashboard | **Secret.** Server-side Stripe auth. Stored on the worker, so it survives redeploys and is never part of a build. |
 | `SITE_URL` | `wrangler.toml` | Success/cancel/return URLs and CORS. |
 | `ALLOWED_ORIGINS` | `wrangler.toml` | Optional extra origins, comma-separated. |
 
