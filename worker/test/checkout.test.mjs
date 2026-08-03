@@ -290,6 +290,20 @@ test("gives free shipping at or above the threshold", async () => {
 });
 
 /* ============================================================
+   Shipping destinations
+   ============================================================ */
+
+test("only accepts US shipping addresses", async () => {
+  stubStripe();
+  await worker.fetch(post({ items: [{ slug: "bleu-de-chanel", ml: 5, qty: 1 }] }), ENV);
+  const p = sent();
+  assert.equal(p["shipping_address_collection[allowed_countries][0]"], "US");
+  assert.equal(p["shipping_address_collection[allowed_countries][1]"], undefined,
+    "a second country needs its own shipping rate before it can be listed");
+  restore();
+});
+
+/* ============================================================
    UI modes — the in-app checkout path
    ============================================================ */
 

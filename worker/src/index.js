@@ -34,13 +34,15 @@ import { PRODUCT_IDS } from "./product-ids.js";
 
 const STRIPE_API = "https://api.stripe.com/v1";
 
-/* Countries we'll ship to — Stripe needs these enumerated. */
-const SHIP_TO = [
-  "US", "CA", "GB", "IE", "AU", "NZ", "DE", "FR", "NL", "BE", "LU",
-  "AT", "CH", "IT", "ES", "PT", "DK", "SE", "NO", "FI", "IS", "PL",
-  "CZ", "SK", "SI", "HR", "HU", "RO", "BG", "GR", "EE", "LV", "LT",
-  "JP", "SG", "HK", "KR", "AE", "IL", "ZA", "MX", "BR"
-];
+/* Countries we'll ship to — Stripe needs these enumerated, and it
+   won't let a customer complete checkout to anywhere else.
+
+   US-only for now: small-parcel international runs $15-25 against a
+   $5 domestic rate, before customs forms and untracked-loss claims.
+   Adding a country means adding it here AND giving it a shipping
+   rate below — a destination with no rate would ship at the domestic
+   price, which is the exact mistake this list exists to prevent. */
+const SHIP_TO = ["US"];
 
 const MAX_LINES = 50;   // distinct product+size rows in one order
 const MAX_QTY = 99;     // per row; mirrors the cart's own clamp

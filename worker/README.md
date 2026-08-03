@@ -150,6 +150,20 @@ redeploy to pick it up.
 `SITE_URL`, its `www.` variant and localhost are always allowed, so most setups
 never need `ALLOWED_ORIGINS`.
 
+## Shipping scope
+
+`SHIP_TO` in `src/index.js` lists the countries Stripe will accept an address
+for. It is currently `["US"]`.
+
+Adding a country means **two** changes, not one: add it to `SHIP_TO` *and* give
+it a rate in `shippingOption()`. A country added to the list without its own
+rate ships at the domestic price, which is the mistake the list exists to
+prevent — small-parcel international runs $15-25 against a $5 domestic rate.
+
+The customer-facing copy also says US-only in several places (`contact.html`,
+`terms.html`, `assets/js/checkout.js`, `assets/js/product.js`, `build.js`), so
+widening the list means updating those too.
+
 ## Not built yet
 
 - **Webhooks.** Stripe emails receipts and the dashboard shows every order, which

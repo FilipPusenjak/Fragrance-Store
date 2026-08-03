@@ -126,6 +126,9 @@
         "<h2>Secure checkout</h2>" +
         '<p class="form-note">You’ll enter payment and delivery details on Stripe’s ' +
           "secure page, then come straight back here.</p>" +
+        /* Say this before the handoff — Stripe will simply not list other
+           countries, which reads as a broken form rather than a policy. */
+        '<p class="form-note"><strong>We currently ship within the United States only.</strong></p>' +
         '<div class="field full" style="margin-top:1.25rem">' +
           '<label for="co-email">Email <span class="opt">(optional — for your receipt)</span></label>' +
           '<input id="co-email" name="email" type="email" autocomplete="email" placeholder="you@example.com" />' +
@@ -135,7 +138,7 @@
         '<ul class="pd-reassure" style="margin-top:1.5rem">' +
           "<li>Payments handled by Stripe — we never see your card</li>" +
           "<li>Free shipping on orders over $50</li>" +
-          "<li>Dispatched within 48 hours, worldwide</li>" +
+          "<li>Dispatched within 48 hours, anywhere in the US</li>" +
         "</ul>" +
       "</div>";
 

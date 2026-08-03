@@ -212,7 +212,7 @@ function productDetailHTML(p, base) {
           <ul class="pd-reassure">
             <li>Decanted from an authentic, batch-checked bottle</li>
             <li>Filled to the millilitre &amp; sealed in a travel atomiser</li>
-            <li>Dispatched within 48 hours, worldwide</li>
+            <li>Dispatched within 48 hours, free US shipping over $50</li>
           </ul>
         </div>
       </div>

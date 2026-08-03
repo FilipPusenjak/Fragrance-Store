@@ -86,7 +86,7 @@
           '<ul class="pd-reassure">' +
             "<li>Decanted from an authentic, batch-checked bottle</li>" +
             "<li>Filled to the millilitre &amp; sealed in a travel atomiser</li>" +
-            "<li>Dispatched within 48 hours, worldwide</li>" +
+            "<li>Dispatched within 48 hours, anywhere in the US</li>" +
           "</ul>" +
         "</div>" +
       "</div>" +
