@@ -9,14 +9,21 @@
   "use strict";
 
   /* --- Pricing tiers (USD) ------------------------------- */
-  /* Each tier lists the available sizes as [millilitres, price]. */
+  /* Each tier lists the available sizes as [millilitres, price].
+
+     The three priciest tiers stop at 10 ml on purpose. Those bottles
+     are held in small quantities — a single 30 ml pour would take
+     most of a 50 ml bottle for roughly half what the same volume
+     earns as 5 ml decants, and they're the slowest to restock. It's
+     also where a decant stops being a trial and starts competing
+     with the full bottle. */
   var TIERS = {
     cheapDesigner: [[2, 4],  [5, 9],  [10, 17], [30, 45]],
     designer:      [[2, 6],  [5, 13], [10, 25], [30, 65]],
     niche:         [[2, 8],  [5, 17], [10, 30], [30, 85]],
-    expNiche:      [[2, 15], [5, 32], [10, 60], [30, 160]],
+    expNiche:      [[2, 15], [5, 32], [10, 60]],
     cityExclusive: [[2, 20], [5, 45], [10, 80]],
-    byredoLelabo:  [[2, 12], [5, 30], [10, 55], [30, 150]]
+    byredoLelabo:  [[2, 12], [5, 30], [10, 55]]
   };
 
   /* --- Catalogue ----------------------------------------- */

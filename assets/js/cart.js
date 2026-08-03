@@ -14,9 +14,24 @@
   var site = window.RF_site || function (x) { return x; };                       // assets + top-level pages
   var prod = window.RF_prod || function (s) { return "product.html?id=" + s; };  // canonical product page
 
+  /* A saved cart can outlive the catalogue that produced it — a size
+     or a whole fragrance may be gone by the time someone returns.
+     Drop anything that no longer exists rather than rendering it at
+     $0 and letting checkout reject the order at the last step. */
+  function valid(it) {
+    if (!it || typeof it.slug !== "string") return false;
+    var p = catGet(it.slug);
+    return !!p && p.sizes.some(function (s) { return s.ml === +it.ml; });
+  }
+
   function load() {
-    try { var a = JSON.parse(localStorage.getItem(KEY) || "[]"); return Array.isArray(a) ? a : []; }
-    catch (e) { return []; }
+    try {
+      var a = JSON.parse(localStorage.getItem(KEY) || "[]");
+      if (!Array.isArray(a)) return [];
+      return a.filter(valid).map(function (it) {
+        return { slug: it.slug, ml: +it.ml, qty: clampQty(it.qty) };
+      });
+    } catch (e) { return []; }
   }
   function persist() { try { localStorage.setItem(KEY, JSON.stringify(items)); } catch (e) {} }
 

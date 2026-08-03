@@ -139,8 +139,7 @@ export const CATALOGUE = {
     "sizes": {
       "2": 1500,
       "5": 3200,
-      "10": 6000,
-      "30": 16000
+      "10": 6000
     }
   },
   "ombra-lirica": {
@@ -150,8 +149,7 @@ export const CATALOGUE = {
     "sizes": {
       "2": 1500,
       "5": 3200,
-      "10": 6000,
-      "30": 16000
+      "10": 6000
     }
   },
   "le-labo-osmanthus-19": {
@@ -171,8 +169,7 @@ export const CATALOGUE = {
     "sizes": {
       "2": 1200,
       "5": 3000,
-      "10": 5500,
-      "30": 15000
+      "10": 5500
     }
   },
   "byredo-animalique": {
@@ -182,8 +179,7 @@ export const CATALOGUE = {
     "sizes": {
       "2": 1200,
       "5": 3000,
-      "10": 5500,
-      "30": 15000
+      "10": 5500
     }
   }
 };

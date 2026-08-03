@@ -112,11 +112,11 @@ Test card `4242 4242 4242 4242`, any future expiry, any CVC.
 npm test
 ```
 
-23 tests, no network and no Stripe key needed — the Stripe API is stubbed and the
+30 tests, no network and no Stripe key needed — the Stripe API is stubbed and the
 tests assert on the exact amounts the worker *would* have charged. Covers:
 
 - prices come from the catalogue even when the client sends its own
-- all 63 product/size combinations charge the right amount
+- all 59 product/size combinations charge the right amount
 - duplicate cart rows merge, so the 99-per-line cap can't be bypassed
 - unknown products and invalid sizes are rejected
 - the free-shipping threshold applies at the right subtotal

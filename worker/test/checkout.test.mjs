@@ -232,6 +232,25 @@ test("rejects a size the product doesn't come in", async () => {
   restore();
 });
 
+test("the priciest tiers top out at 10 ml", async () => {
+  stubStripe();
+  /* Held in small quantities — a 30 ml pour would take most of a
+     50 ml bottle. A stale cart or an old shared ?cart= link must not
+     be able to order one. */
+  const capped = ["wild-vetiver", "ombra-lirica", "le-labo-the-noir-29",
+    "byredo-animalique", "le-labo-osmanthus-19"];
+  for (const slug of capped) {
+    assert.equal(CATALOGUE[slug].sizes["30"], undefined, `${slug} should have no 30 ml`);
+    const res = await worker.fetch(post({ items: [{ slug, ml: 30, qty: 1 }] }), ENV);
+    assert.equal(res.status, 400, `${slug} 30 ml must be rejected`);
+  }
+  /* ...and the tiers that keep it still work. */
+  const res = await worker.fetch(post({ items: [{ slug: "erba-pura", ml: 30, qty: 1 }] }), ENV);
+  assert.equal(res.status, 200);
+  assert.equal(chargedSubtotal(), 8500);
+  restore();
+});
+
 test("rejects negative and zero quantities by flooring to 1", async () => {
   stubStripe();
   await worker.fetch(post({ items: [{ slug: "bleu-de-chanel", ml: 5, qty: -10 }] }), ENV);

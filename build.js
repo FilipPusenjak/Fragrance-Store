@@ -82,7 +82,13 @@ const LOGO_MARK =
 /* ---- Shared chrome (base = "../" for /fragrance/ pages) ---- */
 function headHTML(p, base) {
   const title = `${p.name} — ${p.label} decant | Robot Fragrances`;
-  const desc = `${p.name} (${p.label}) — ${p.notes}. An authentic decant filled to the millilitre, in 2 ml, 5 ml, 10 ml & 30 ml from $${p.from}.`;
+  /* Sizes vary by tier — the priciest stop at 10 ml — so list what
+     this product actually offers rather than a fixed set. */
+  const sizeList = p.sizes
+    .map(s => `${s.ml} ml`)
+    .join(", ")
+    .replace(/, ([^,]+)$/, " & $1");
+  const desc = `${p.name} (${p.label}) — ${p.notes}. An authentic decant filled to the millilitre, in ${sizeList} from $${p.from}.`;
   const url = `${SITE_URL}/fragrance/${p.slug}.html`;
   const imageAbs = `${SITE_URL}/${p.image}`;
   return `<!DOCTYPE html>
