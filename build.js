@@ -305,6 +305,67 @@ ${body}
 `;
 }
 
+/* ---- 404 -------------------------------------------------- *
+   GitHub Pages serves /404.html for any unknown path on a custom
+   domain, which means this one file has to work at every depth —
+   /nope.html and /fragrance/nope.html alike. So every path in it is
+   root-absolute rather than relative; base="/" makes the shared
+   header and footer come out that way too.
+
+   noindex, because a soft-404 in search results is worse than none. */
+function notFoundPage() {
+  const base = "/";
+  return `<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Page not found — Robot Fragrances</title>
+  <meta name="description" content="That page isn't here. Browse the shelf instead." />
+  <meta name="robots" content="noindex,follow" />
+  <!-- This page is served AT the missing URL, whatever its depth. The
+       markup below is all root-absolute, but cart.js and main.js inject
+       links relative to the current path — which would point into the
+       nonexistent directory. One <base> fixes every one of them. -->
+  <base href="${base}" />
+  <link rel="preload" href="${base}assets/fonts/jost-latin.woff2" as="font" type="font/woff2" crossorigin />
+  <link rel="preload" href="${base}assets/fonts/cormorant-garamond-latin.woff2" as="font" type="font/woff2" crossorigin />
+  <link rel="stylesheet" href="${base}assets/css/style.css" />
+  <link rel="icon" href="${base}assets/img/favicon.svg" type="image/svg+xml" />
+</head>
+<body>` +
+    headerHTML(base) + `
+
+  <main>
+    <section class="section" style="text-align:center">
+      <div class="container" style="max-width:620px">
+        <span class="eyebrow">404</span>
+        <h1 style="margin:0.6rem 0 0">This shelf is empty.</h1>
+        <p class="lead" style="margin:1.25rem auto 2rem">
+          The page you were after has moved or never existed. Nothing is broken —
+          you're just one link off.
+        </p>
+        <a class="btn" href="${base}shop.html">Browse the shelf</a>
+        <p class="form-note" style="margin-top:2rem">
+          Or try the <a href="${base}quiz.html">Scent Finder</a>,
+          build a <a href="${base}discovery.html">discovery set</a>, or
+          <a href="${base}contact.html">tell us what you were looking for</a>.
+        </p>
+      </div>
+    </section>
+  </main>
+` +
+    footerHTML(base) + `
+
+  <script src="${base}assets/js/config.js"></script>
+  <script src="${base}assets/js/main.js"></script>
+  <script src="${base}assets/js/cart.js"></script>
+  <script src="${base}assets/js/promos.js"></script>
+</body>
+</html>
+`;
+}
+
 function buildRobots() {
   return `User-agent: *
 Allow: /
@@ -323,6 +384,7 @@ function main() {
   });
   fs.writeFileSync(path.join(ROOT, "sitemap.xml"), buildSitemap(cat), "utf8");
   fs.writeFileSync(path.join(ROOT, "robots.txt"), buildRobots(), "utf8");
+  fs.writeFileSync(path.join(ROOT, "404.html"), notFoundPage(), "utf8");
 
   /* The checkout worker prices orders from its own copy of the
      catalogue. Regenerate it here so a price edited in main.js can
@@ -330,7 +392,7 @@ function main() {
   require("./scripts/gen-worker-catalogue.js");
 
   console.log(`Built ${cat.length} product pages → /fragrance/`);
-  console.log("Wrote sitemap.xml and robots.txt");
+  console.log("Wrote sitemap.xml, robots.txt and 404.html");
   console.log(`SITE_URL = ${SITE_URL}  (change in build.js if your domain differs)`);
 }
 

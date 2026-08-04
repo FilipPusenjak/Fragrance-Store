@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Page not found — Robot Fragrances</title>
+  <meta name="description" content="That page isn't here. Browse the shelf instead." />
+  <meta name="robots" content="noindex,follow" />
+  <!-- This page is served AT the missing URL, whatever its depth. The
+       markup below is all root-absolute, but cart.js and main.js inject
+       links relative to the current path — which would point into the
+       nonexistent directory. One <base> fixes every one of them. -->
+  <base href="/" />
+  <link rel="preload" href="/assets/fonts/jost-latin.woff2" as="font" type="font/woff2" crossorigin />
+  <link rel="preload" href="/assets/fonts/cormorant-garamond-latin.woff2" as="font" type="font/woff2" crossorigin />
+  <link rel="stylesheet" href="/assets/css/style.css" />
+  <link rel="icon" href="/assets/img/favicon.svg" type="image/svg+xml" />
+</head>
+<body>
+  <!-- ======================= HEADER ======================= -->
+  <header class="site-header">
+    <div class="container nav">
+      <a class="brand" href="/index.html" aria-label="Robot Fragrances home">
+        <svg class="logo-mark" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="6" y="8" width="12" height="13" rx="3"/><path d="M10 8V5.5h4V8"/><rect x="10.5" y="2.5" width="3" height="3" rx="0.6"/><circle cx="9.7" cy="13.5" r="1.1" fill="currentColor" stroke="none"/><circle cx="14.3" cy="13.5" r="1.1" fill="currentColor" stroke="none"/><path d="M9.6 17.4h4.8"/></svg>
+        <span><b>Robot</b> Fragrances</span>
+      </a>
+      <nav class="nav-links" aria-label="Primary">
+        <a href="/index.html">Home</a>
+        <a href="/shop.html">Shop</a>
+        <a href="/quiz.html">Scent Finder</a>
+        <a href="/how-it-works.html">How It Works</a>
+        <a href="/about.html">About</a>
+        <a href="/contact.html">Contact</a>
+      </nav>
+      <div class="nav-actions">
+        <button class="nav-toggle" aria-label="Toggle menu" aria-expanded="false"><span></span></button>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <section class="section" style="text-align:center">
+      <div class="container" style="max-width:620px">
+        <span class="eyebrow">404</span>
+        <h1 style="margin:0.6rem 0 0">This shelf is empty.</h1>
+        <p class="lead" style="margin:1.25rem auto 2rem">
+          The page you were after has moved or never existed. Nothing is broken —
+          you're just one link off.
+        </p>
+        <a class="btn" href="/shop.html">Browse the shelf</a>
+        <p class="form-note" style="margin-top:2rem">
+          Or try the <a href="/quiz.html">Scent Finder</a>,
+          build a <a href="/discovery.html">discovery set</a>, or
+          <a href="/contact.html">tell us what you were looking for</a>.
+        </p>
+      </div>
+    </section>
+  </main>
+
+  <!-- ======================= FOOTER ======================= -->
+  <footer class="site-footer">
+    <div class="container">
+      <div class="footer-top">
+        <div class="footer-brand">
+          <a class="brand" href="/index.html"><svg class="logo-mark" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="6" y="8" width="12" height="13" rx="3"/><path d="M10 8V5.5h4V8"/><rect x="10.5" y="2.5" width="3" height="3" rx="0.6"/><circle cx="9.7" cy="13.5" r="1.1" fill="currentColor" stroke="none"/><circle cx="14.3" cy="13.5" r="1.1" fill="currentColor" stroke="none"/><path d="M9.6 17.4h4.8"/></svg><span><b>Robot</b> Fragrances</span></a>
+          <p>Authentic designer &amp; niche fragrances, decanted into honest sizes. Discover more, commit when you're sure.</p>
+        </div>
+        <div class="footer-col"><h4>Shop</h4><ul><li><a href="/shop.html">All decants</a></li><li><a href="/quiz.html">Scent Finder</a></li><li><a href="/discovery.html">Discovery set</a></li><li><a href="/shop.html">Bestsellers</a></li></ul></div>
+        <div class="footer-col"><h4>Learn</h4><ul><li><a href="/how-it-works.html">How it works</a></li><li><a href="/about.html">Our story</a></li><li><a href="/contact.html">FAQ</a></li><li><a href="/contact.html">Contact</a></li></ul></div>
+        <div class="footer-col"><h4>Care</h4><ul><li><a href="/contact.html">Shipping</a></li><li><a href="/contact.html">Returns</a></li><li><a href="/contact.html">Authenticity</a></li><li><a href="/privacy.html">Privacy</a></li><li><a href="/terms.html">Terms</a></li></ul></div>
+      </div>
+      <div class="footer-bottom">
+        <span>© <span data-year>2026</span> Robot Fragrances.</span>
+        <div class="socials">
+          <a href="https://www.instagram.com/robotfragrances/" target="_blank" rel="me noopener">Instagram</a>
+          <a href="https://www.tiktok.com/@robotfragrances" target="_blank" rel="me noopener">TikTok</a>
+          <a href="https://www.youtube.com/@robotfragrances" target="_blank" rel="me noopener">YouTube</a>
+          <a href="/index.html#newsletter">Newsletter</a>
+        </div>
+      </div>
+      <p class="footer-legal">
+        Robot Fragrances is an independent decanting house. We are not affiliated with,
+        authorised by, sponsored by, or endorsed by any of the brands whose fragrances we
+        decant. All brand and fragrance names are the trademarks of their respective owners
+        and are used only to identify what is inside the bottle we poured from.
+      </p>
+    </div>
+  </footer>
+
+  <script src="/assets/js/config.js"></script>
+  <script src="/assets/js/main.js"></script>
+  <script src="/assets/js/cart.js"></script>
+  <script src="/assets/js/promos.js"></script>
+</body>
+</html>
