@@ -1137,6 +1137,12 @@ body.cart-open .cart-overlay { opacity: 1; pointer-events: auto; }
   font-family: var(--serif); font-size: 1.3rem; color: var(--ink);
   border-top: 1px solid var(--line); margin-top: 0.6rem; padding-top: 0.8rem;
 }
+/* Below the threshold there are no lines above the total, so its rule
+   sat a gap beneath the block's own rule — two stacked dividers with
+   nothing between them. The block's rule is enough on its own. */
+.ds-line--total:first-child {
+  border-top: 0; margin-top: 0; padding-top: 0;
+}
 
 .ds-add { width: 100%; justify-content: center; margin-top: 1.1rem; }
 .ds-add[disabled] { opacity: 0.45; pointer-events: none; }
