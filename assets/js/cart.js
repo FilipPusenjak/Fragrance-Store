@@ -143,7 +143,17 @@
   }
 
   /* ---- UI ------------------------------------------------ */
-  var BAG = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6.5 8h11l-1 12.5h-9L6.5 8z"/><path d="M9.2 8.5V6.2a2.8 2.8 0 0 1 5.6 0v2.3"/></svg>';
+  /* Repeated from the page banner on purpose: by the time someone
+     has a cart open they have scrolled well past the top of the
+     page, and this sits directly above the Checkout button. */
+  function preLaunchNote() {
+    if (!window.RF_preLaunch || !window.RF_preLaunch()) return "";
+    return '<p class="cart-prelaunch">We haven’t opened yet — an order placed now ' +
+      "can’t be packed or shipped. Build your cart by all means; it’ll still be " +
+      "here when we open.</p>";
+  }
+
+  var BAG ='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6.5 8h11l-1 12.5h-9L6.5 8z"/><path d="M9.2 8.5V6.2a2.8 2.8 0 0 1 5.6 0v2.3"/></svg>';
   var cartBtn, badgeEl, drawer, overlay, bodyEl, subtotalEl, upsellEl, nudgeEl;
 
   function buildUI() {
@@ -175,6 +185,7 @@
       '<div class="cart-foot">' +
         '<div class="cart-subtotal"><span>Subtotal</span><span class="cart-subtotal-val">$0</span></div>' +
         '<p class="cart-note">Shipping &amp; taxes calculated at checkout.</p>' +
+        preLaunchNote() +
         '<a class="btn cart-checkout" href="' + site("checkout.html") + '">Checkout</a>' +
         '<button class="btn btn--ghost cart-continue" type="button">Continue shopping</button>' +
       '</div>';

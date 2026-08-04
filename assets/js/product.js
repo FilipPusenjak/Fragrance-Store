@@ -88,6 +88,12 @@
             "<li>Filled to the millilitre &amp; sealed in a travel atomiser</li>" +
             "<li>Dispatched within 48 hours, anywhere in the US</li>" +
           "</ul>" +
+          /* Mirrors build.js — this page and the generated ones must
+             carry the same disclaimer. */
+          '<p class="pd-legal">Robot Fragrances is an independent decanting house. This ' +
+            "decant is poured from an authentic bottle bought at retail; we are not " +
+            "affiliated with, authorised by, or endorsed by the brand, and all names and " +
+            "trademarks are the property of their respective owners.</p>" +
         "</div>" +
       "</div>" +
     "</div>";

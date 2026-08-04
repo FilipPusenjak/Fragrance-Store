@@ -380,6 +380,35 @@
      re-binding safe, so it can just say when new ones appear. */
   document.addEventListener("rf:forms-added", bindAllForms);
 
+  /* --- Pre-launch notice --------------------------------- *
+     Nothing on this site can be fulfilled until there is stock on
+     the bench, so while RF_CONFIG.preLaunch is true every page
+     opens by saying so. The cart and the checkout ask again nearer
+     the money — see cart.js and checkout.js — because a banner at
+     the top of a long page is not what someone is looking at when
+     they press pay. */
+  function isPreLaunch() {
+    var c = window.RF_CONFIG;
+    return !!c && c.preLaunch === true;
+  }
+  window.RF_preLaunch = isPreLaunch;
+
+  if (isPreLaunch()) {
+    var bar = document.createElement("div");
+    bar.className = "prelaunch-bar";
+    /* role=status, not alert: it's a standing condition, not an
+       interruption, and it must not steal focus on every page. */
+    bar.setAttribute("role", "status");
+    bar.innerHTML =
+      '<div class="container">' +
+        "<strong>We haven’t opened yet — please don’t buy anything.</strong> " +
+        "Robot Fragrances is still being set up, so we can’t accept or ship an order. " +
+        "Have a look round, and " +
+        '<a href="' + rfSite("index.html") + '#newsletter">get told when we open</a>.' +
+      "</div>";
+    document.body.insertBefore(bar, document.body.firstChild);
+  }
+
   /* --- Footer year --------------------------------------- */
   var yearEl = document.querySelector("[data-year]");
   if (yearEl) yearEl.textContent = new Date().getFullYear();

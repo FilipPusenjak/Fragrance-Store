@@ -1405,3 +1405,111 @@ body.cart-open .cart-overlay { opacity: 1; pointer-events: auto; }
   transition: color 0.3s var(--ease);
 }
 .contact-social a:hover { color: var(--ink); }
+
+/* ---- Legal: brand non-affiliation -------------------------- */
+/* Every fragrance on the shelf is somebody else's trademark. The
+   line sits in each footer and again on each product page, where
+   the brand name is largest. */
+.footer-legal {
+  margin-top: 1.25rem;
+  padding-top: 1.25rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  font-size: 0.74rem;
+  line-height: 1.6;
+  color: #7d786f;
+  max-width: 78ch;
+}
+.pd-legal {
+  margin-top: 1.5rem;
+  font-size: 0.74rem;
+  line-height: 1.6;
+  color: var(--muted);
+}
+
+/* ---- Pre-launch notice (config.js preLaunch) --------------- */
+/* Three placements, one flag. Set preLaunch to false and none of
+   these elements is rendered at all. */
+.prelaunch-bar {
+  background: var(--dark);
+  color: var(--dark-ink);
+  font-size: 0.82rem;
+  line-height: 1.6;
+  padding: 0.7rem 0;
+  text-align: center;
+}
+.prelaunch-bar strong { font-weight: 500; color: #fff; }
+.prelaunch-bar a {
+  color: var(--accent-2);
+  border-bottom: 1px solid currentColor;
+  padding-bottom: 1px;
+  white-space: nowrap;
+  transition: color 0.3s var(--ease);
+}
+.prelaunch-bar a:hover { color: #fff; }
+
+.cart-prelaunch {
+  margin: 0 0 0.9rem;
+  padding: 0.7rem 0.85rem;
+  border: 1px solid var(--line);
+  border-left: 2px solid var(--accent);
+  border-radius: var(--radius);
+  background: color-mix(in srgb, var(--accent) 7%, transparent);
+  font-size: 0.78rem;
+  line-height: 1.55;
+  color: var(--ink-soft);
+}
+
+.pre-ack {
+  display: flex;
+  gap: 0.7rem;
+  align-items: flex-start;
+  margin: 1.25rem 0;
+  padding: 0.9rem 1rem;
+  border: 1px solid var(--line);
+  border-left: 2px solid var(--accent);
+  border-radius: var(--radius);
+  background: color-mix(in srgb, var(--accent) 7%, transparent);
+  font-size: 0.8rem;
+  line-height: 1.6;
+  color: var(--ink-soft);
+  cursor: pointer;
+}
+.pre-ack input {
+  flex: 0 0 auto;
+  width: 1rem;
+  height: 1rem;
+  margin-top: 0.28rem;
+  accent-color: var(--accent);
+  cursor: pointer;
+}
+.pre-ack strong { font-weight: 500; color: var(--ink); }
+/* The disabled pay button is already dimmed and made inert by
+   .pay-panel > .btn[disabled] further up this file. */
+
+/* ---- Legal prose (privacy, terms) -------------------------- */
+/* The base reset zeroes every margin and strips list markers, and
+   body weight is 300 — so <strong> computes to 400 and all but
+   disappears, headings sit flush against the paragraph above, and
+   a list reads as one run-on block. Fine on the marketing pages,
+   wrong for the two documents people read carefully. Scoped to
+   those, so nothing else moves. */
+.legal-prose h2 {
+  margin-top: 2.75rem;
+  margin-bottom: 0.4rem;
+}
+.legal-prose strong { font-weight: 500; color: var(--ink); }
+.legal-prose ul {
+  list-style: disc;
+  padding-left: 1.3rem;
+  margin: 0.5rem 0 1.5rem;
+}
+.legal-prose li { margin-top: 0.6rem; padding-left: 0.3rem; }
+.legal-prose li::marker { color: var(--accent); }
+/* Outbound links matter here — each processor's own policy is linked
+   from its bullet, and by default they render as plain body text. */
+.legal-prose a {
+  color: var(--accent);
+  border-bottom: 1px solid color-mix(in srgb, var(--accent) 45%, transparent);
+  transition: border-color 0.3s var(--ease);
+}
+.legal-prose a:hover { border-bottom-color: var(--accent); }

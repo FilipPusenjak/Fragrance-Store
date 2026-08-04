@@ -173,6 +173,12 @@ function footerHTML(base) {
           <a href="${base}index.html#newsletter">Newsletter</a>
         </div>
       </div>
+      <p class="footer-legal">
+        Robot Fragrances is an independent decanting house. We are not affiliated with,
+        authorised by, sponsored by, or endorsed by any of the brands whose fragrances we
+        decant. All brand and fragrance names are the trademarks of their respective owners
+        and are used only to identify what is inside the bottle we poured from.
+      </p>
     </div>
   </footer>`;
 }
@@ -220,6 +226,10 @@ function productDetailHTML(p, base) {
             <li>Filled to the millilitre &amp; sealed in a travel atomiser</li>
             <li>Dispatched within 48 hours, free US shipping over $50</li>
           </ul>
+          <p class="pd-legal">Robot Fragrances is an independent decanting house. This decant is
+            poured from an authentic bottle bought at retail; we are not affiliated with,
+            authorised by, or endorsed by the brand, and all names and trademarks are the
+            property of their respective owners.</p>
         </div>
       </div>
     </div>`;

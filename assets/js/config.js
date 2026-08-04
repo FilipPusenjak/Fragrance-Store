@@ -40,7 +40,26 @@ window.RF_CONFIG = {
   publishableKey: null,
 
   /* ----------------------------------------------------------
-     4. Feature flags.
+     4. Pre-launch mode.
+
+     The shop is finished but the business isn't open: there is no
+     stock on the bench and nobody to pour an order. Stripe is also
+     still in test mode, so a real card would be declined — but a
+     declined card is a confusing way to learn a shop isn't trading.
+
+     While this is true the site says so plainly in three places: a
+     banner above every page, a line in the cart, and a box the
+     shopper has to tick before the payment button will do anything.
+     Between them nothing can be bought by accident, and the tick is
+     one click when you want to test the checkout yourself.
+
+     Set it to false on launch day. That removes all three; there is
+     nothing else to undo.
+     ---------------------------------------------------------- */
+  preLaunch: true,
+
+  /* ----------------------------------------------------------
+     5. Feature flags.
 
      Everything here is additive — set any one to false and that
      piece reverts to how the site behaved before it existed. They

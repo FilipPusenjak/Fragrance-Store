@@ -21,6 +21,22 @@
   var CFG = window.RF_CONFIG || {};
   var API = (CFG.checkoutApi || "").replace(/\/$/, "");
   var MODE = CFG.checkoutMode === "embedded" ? "embedded" : "hosted";
+  var PRE = !!(window.RF_preLaunch && window.RF_preLaunch());
+
+  /* The last and firmest of the three pre-launch notices. Whatever
+     would otherwise reach Stripe stays inert until this is ticked, so
+     nobody gets there on momentum — and it's one click when you want
+     to test the checkout yourself. Both payment modes use it, so
+     switching to embedded later doesn't quietly drop the guard. */
+  function ackHTML() {
+    if (!PRE) return "";
+    return '<label class="pre-ack">' +
+        '<input type="checkbox" id="pre-ack-box" />' +
+        "<span><strong>Robot Fragrances hasn’t opened yet.</strong> There is no stock " +
+        "on the bench, so nothing ordered here can be packed or shipped. Please don’t " +
+        "buy anything — tick this only if you understand that.</span>" +
+      "</label>";
+  }
 
   var BOTTLE = window.RF_BOTTLE || "";
   var get = window.RF_get || function () { return null; };
@@ -155,7 +171,9 @@
           '<input id="co-email" name="email" type="email" autocomplete="email" placeholder="you@example.com" />' +
         "</div>" +
         '<p id="checkout-error" class="form-note form-note--error" hidden></p>' +
-        '<button class="btn" type="button" id="pay-btn">Continue to payment</button>' +
+        ackHTML() +
+        '<button class="btn" type="button" id="pay-btn"' + (PRE ? " disabled" : "") +
+          ">Continue to payment</button>" +
         '<ul class="pd-reassure" style="margin-top:1.5rem">' +
           "<li>Payments handled by Stripe — we never see your card</li>" +
           "<li>Free shipping on orders over $50</li>" +
@@ -164,7 +182,13 @@
       "</div>";
 
     var btn = document.getElementById("pay-btn");
+    var ack = document.getElementById("pre-ack-box");
+    if (ack) {
+      ack.addEventListener("change", function () { btn.disabled = !ack.checked; });
+    }
+
     btn.addEventListener("click", function () {
+      if (ack && !ack.checked) return;   // belt and braces; the button is disabled too
       setError("");
       btn.disabled = true;
       btn.textContent = "Taking you to Stripe…";
@@ -197,9 +221,30 @@
     payPanel.innerHTML =
       '<div class="pay-panel pay-panel--embed">' +
         '<p id="checkout-error" class="form-note form-note--error" hidden></p>' +
-        '<div id="checkout-embed"><p class="form-note">Loading secure checkout…</p></div>' +
+        ackHTML() +
+        '<div id="checkout-embed">' +
+          (PRE ? "" : '<p class="form-note">Loading secure checkout…</p>') +
+        "</div>" +
       "</div>";
 
+    /* Unlike the hosted button there is nothing to disable — the form
+       simply isn't built until the notice is acknowledged. */
+    var ack = document.getElementById("pre-ack-box");
+    if (ack) {
+      var mounted = false;
+      ack.addEventListener("change", function () {
+        if (!ack.checked || mounted) return;
+        mounted = true;
+        document.getElementById("checkout-embed").innerHTML =
+          '<p class="form-note">Loading secure checkout…</p>';
+        mountEmbedded();
+      });
+      return;
+    }
+    mountEmbedded();
+  }
+
+  function mountEmbedded() {
     if (!CFG.publishableKey) {
       setError("Embedded checkout needs a publishable key in assets/js/config.js.");
       return;

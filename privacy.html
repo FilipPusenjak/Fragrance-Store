@@ -1,6 +1,10 @@
-<!-- TODO: owner to review specifics — confirm data processors (form handler,
-     email/newsletter provider, any payment processor), data-retention periods,
-     and your jurisdiction. This is a sensible starting template, not legal advice. -->
+<!-- Written against what the site actually does, verified in the code:
+     Formspree for both forms, Stripe for payment, Cloudflare for the checkout
+     worker, GitHub Pages for hosting, Google Fonts for the typefaces, and no
+     analytics of any kind. If any of those change, this page has to change too.
+     Two TODOs remain, both marked inline: the legal seller name, and the
+     postal address CAN-SPAM requires before the first marketing email.
+     Not legal advice — a New York lawyer should read it before real orders. -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -60,47 +64,86 @@
     </section>
 
     <section class="section--tight" style="padding-top:0">
-      <div class="container" style="max-width:760px">
-        <p class="form-note">Last updated: 20 June 2026</p>
+      <div class="container legal-prose" style="max-width:760px">
+        <p class="form-note">Last updated: 4 August 2026</p>
 
         <h2>Who we are</h2>
-        <p>Robot Fragrances (“we”, “us”) sells perfume decants. If you have any question about this policy, email <a href="mailto:hello@robotfragrances.com">hello@robotfragrances.com</a>.</p>
+        <p><strong>Robot Fragrances</strong> (“we”, “us”) is an independent perfume decanting business operating from New York City, New York, United States. We decide what this site collects and why, so we’re the ones responsible for it. Any question about this policy: <a href="mailto:hello@robotfragrances.com">hello@robotfragrances.com</a>.</p>
+        <!-- TODO: owner — once the business is registered, replace “Robot Fragrances”
+             in the paragraph above with the full legal name. Terms section 1 has the
+             matching line. -->
+
+        <h2>The short version</h2>
+        <p>We collect the least we can get away with. There are no analytics on this site, no advertising pixels, and no tracking cookies — we genuinely don’t know who you are until you write to us or buy something. We have never sold personal data and won’t.</p>
 
         <h2>What we collect</h2>
         <ul>
-          <li><strong>Newsletter sign-up:</strong> your email address, when you choose to subscribe.</li>
-          <li><strong>Contact form:</strong> your name, email address, and the message you send us.</li>
-          <li><strong>Orders:</strong> the details needed to fulfil an order — name, shipping address, email, and order contents. Payments are handled by Stripe; we never see or store your full card number.</li>
-          <li><strong>On your device:</strong> your shopping cart is stored locally in your browser (localStorage) and mirrored into the page URL so it can be shared or restored. It never leaves your device unless you place an order. We do not use advertising or tracking cookies.</li>
+          <li><strong>Newsletter sign-up:</strong> your email address, and nothing else, when you choose to subscribe.</li>
+          <li><strong>Contact form:</strong> your name, email address, the topic you pick, and the message you write.</li>
+          <li><strong>Orders:</strong> your name, shipping address, email address, and what you ordered. Payment is taken on Stripe’s own page — your card number never touches our site or our servers, and all we ever see back is the last four digits, the card brand, and whether it worked.</li>
+          <li><strong>On your device:</strong> your cart is kept in your browser’s <code>localStorage</code> and mirrored into the page address so a cart can be bookmarked or shared. It stays on your device unless you check out. Your Scent Finder answers work the same way. We set no cookies of our own.</li>
+          <li><strong>Automatically, in server logs:</strong> like every website, the services that serve these pages record technical request data including your IP address, browser type, and the page requested. We use it only to keep the site up and to spot abuse. We don’t build profiles from it and we don’t combine it with anything above.</li>
         </ul>
 
         <h2>How we use it</h2>
         <ul>
-          <li>To reply to your enquiry or build a discovery set you asked for.</li>
-          <li>To send the newsletter — only if you opted in. You can unsubscribe anytime via the link in any email or by emailing us.</li>
-          <li>To process, pack, and ship your order, and to contact you about it.</li>
+          <li>To reply to your message, or help you put a discovery set together.</li>
+          <li>To take, pack and ship your order, and to contact you about that order.</li>
+          <li>To send the newsletter, only if you asked for it — see below.</li>
+          <li>To keep the tax and accounting records a business is required to keep.</li>
         </ul>
+        <p>That is the whole list. We don’t use your details for advertising, we don’t enrich them from other sources, and we make no automated decisions about you.</p>
 
-        <h2>Who we share it with</h2>
-        <p>We don’t sell your data. We share it only with the services that make the shop work, for example:</p>
+        <h2>Who else touches it</h2>
+        <p><strong>We do not sell your personal information, and we do not share it for cross-context behavioural advertising.</strong> It reaches these companies only because they run part of the shop:</p>
         <ul>
-          <li>a form-handling service that delivers contact and newsletter submissions to us; <!-- TODO: owner — name your provider, e.g. Formspree, and link its privacy policy --></li>
-          <li>an email/newsletter provider, if you subscribe; <!-- TODO: owner — name your provider --></li>
-          <li><strong>Stripe</strong>, which processes payments. Card details are entered on Stripe’s own secure form and never reach our servers — we only ever see the last four digits and the outcome. See <a href="https://stripe.com/privacy" rel="noopener">Stripe’s privacy policy</a>;</li>
-          <li>shipping carriers, to deliver your order.</li>
+          <li><strong>Formspree</strong> — delivers both the contact form and the newsletter sign-up to our inbox. It receives whatever you type into those forms. <a href="https://formspree.io/legal/privacy-policy/" target="_blank" rel="noopener">Privacy policy</a>.</li>
+          <li><strong>Stripe</strong> — takes the payment and collects your shipping and billing address on its own secure page. <a href="https://stripe.com/privacy" target="_blank" rel="noopener">Privacy policy</a>.</li>
+          <li><strong>Cloudflare</strong> — runs the small service that prices your basket and creates the Stripe session. <a href="https://www.cloudflare.com/privacypolicy/" target="_blank" rel="noopener">Privacy policy</a>.</li>
+          <li><strong>GitHub (GitHub Pages)</strong> — hosts and serves these pages. <a href="https://docs.github.com/en/site-policy/privacy-policies/github-general-privacy-statement" target="_blank" rel="noopener">Privacy statement</a>.</li>
+          <li><strong>Google Fonts</strong> — the two typefaces on this site are loaded from Google’s servers, so your browser tells Google your IP address and browser when a page loads. Google states it sets no cookies for this. <a href="https://developers.google.com/fonts/faq/privacy" target="_blank" rel="noopener">What Google says it collects</a>.</li>
+          <li><strong>Shipping carriers</strong> — get your name and address so a parcel can reach you.</li>
         </ul>
+        <p>We may also disclose information if the law requires it, or to protect our rights or someone’s safety. All of these companies process data in the United States.</p>
+
+        <h2>The newsletter, honestly</h2>
+        <p>Right now the sign-up form simply emails your address to us; there is no mailing platform behind it yet, so there is no automatic unsubscribe link to click. To come off the list, reply to any message or email <a href="mailto:hello@robotfragrances.com">hello@robotfragrances.com</a> and we’ll remove you — no reason needed, and we’ll confirm.</p>
+        <p>We are moving to a dedicated email platform. When we do, we’ll name it here, every marketing email will carry a one-click unsubscribe link and our postal address, and we’ll update the date at the top of this page. We won’t add you to any list you didn’t ask to join, and we don’t email customers marketing they didn’t opt into.</p>
+        <!-- TODO: owner — two things before the FIRST marketing email goes out:
+             (1) CAN-SPAM (15 U.S.C. §7704) requires a valid physical postal address in
+                 every commercial email. A PO box counts; a bare email address does not.
+                 Add it here and in the email footer.
+             (2) Name the sending platform in the paragraph above and restore the
+                 one-click unsubscribe wording. -->
 
         <h2>How long we keep it</h2>
-        <p>We keep enquiry and order records only as long as needed for the purpose above and any legal/accounting requirements, then delete them. <!-- TODO: owner — state your actual retention periods --></p>
+        <ul>
+          <li><strong>Orders, receipts and shipping records — 7 years.</strong> Long enough to cover tax and accounting requirements and any dispute about an old order.</li>
+          <li><strong>Contact form messages — 24 months</strong> from your last message to us, then deleted.</li>
+          <li><strong>Newsletter address — until you unsubscribe</strong>, then removed within 30 days. We keep a minimal suppression record so we don’t accidentally re-add you.</li>
+          <li><strong>Server logs — whatever our hosting and payment providers keep</strong> under their own policies, linked above. We don’t hold copies.</li>
+        </ul>
 
-        <h2>Your rights</h2>
-        <p>You can ask us to show you the personal data we hold about you, correct it, or delete it. Email <a href="mailto:hello@robotfragrances.com">hello@robotfragrances.com</a> and we’ll action it. Depending on where you live, you may have additional rights under laws such as the GDPR or CCPA. <!-- TODO: owner — confirm applicable regime --></p>
+        <h2>Your choices</h2>
+        <p>Write to <a href="mailto:hello@robotfragrances.com">hello@robotfragrances.com</a> and you can ask us to:</p>
+        <ul>
+          <li>tell you what personal information we hold about you and give you a copy;</li>
+          <li>correct anything that’s wrong;</li>
+          <li>delete it, unless we’re legally required to keep it (an order record inside its 7 years, typically);</li>
+          <li>stop emailing you.</li>
+        </ul>
+        <p>We’ll answer within 30 days. We won’t charge you, and we won’t treat you any differently for asking.</p>
+        <p>Some US states — California, Colorado, Connecticut, Virginia and others — give residents these rights by statute, but only against businesses above a certain size, and we are well below those thresholds. Rather than make you work out whether a law covers you, <strong>we offer the rights above to everyone who asks, wherever you live.</strong></p>
+        <p>We sell and ship within the United States only and don’t offer goods or services to people in the EU or UK, so we don’t operate under the GDPR. If you’re browsing from outside the US and want us to delete something, ask anyway and we will.</p>
+
+        <h2>How we look after it</h2>
+        <p>New York’s SHIELD Act requires businesses holding New York residents’ private information to keep reasonable safeguards around it. In practice, for a shop this size: the whole site is served over HTTPS; card numbers never reach us, because Stripe collects them; our payment credentials live in an encrypted secret store, never in the website’s code; access is limited to the people running the shop; and we collect as little as the job allows, which is the safeguard that never fails. No system is perfect — if a breach ever affected your information, we’d tell you and the relevant New York authorities as the law requires.</p>
 
         <h2>Children</h2>
-        <p>This shop is intended for adults. We don’t knowingly collect data from children.</p>
+        <p>This is a shop for adults and isn’t directed at children. Please don’t use it or send us your details if you’re under 18. We don’t knowingly collect personal information from anyone under 13; if you believe a child has given us theirs, email us and we’ll delete it.</p>
 
         <h2>Changes</h2>
-        <p>We may update this policy as the shop grows. We’ll change the “last updated” date above when we do.</p>
+        <p>We’ll update this policy as the shop grows — a mailing platform, an inventory system, anything that changes who touches your data. The “last updated” date at the top changes when we do, and material changes will be flagged on the site.</p>
 
         <p style="margin-top:2rem">Questions? <a href="contact.html">Get in touch</a> — a real person on the bench will reply.</p>
       </div>
@@ -131,6 +174,12 @@
           <a href="index.html#newsletter">Newsletter</a>
         </div>
       </div>
+      <p class="footer-legal">
+        Robot Fragrances is an independent decanting house. We are not affiliated with,
+        authorised by, sponsored by, or endorsed by any of the brands whose fragrances we
+        decant. All brand and fragrance names are the trademarks of their respective owners
+        and are used only to identify what is inside the bottle we poured from.
+      </p>
     </div>
   </footer>
 
