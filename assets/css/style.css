@@ -1388,3 +1388,20 @@ body.cart-open .cart-overlay { opacity: 1; pointer-events: auto; }
   .ds-price { font-size: 0.82rem; }
   .ds-tick { top: 0.3rem; right: 0.3rem; width: 18px; height: 18px; font-size: 0.6rem; }
 }
+
+/* ---- Contact page: social handles -------------------------- */
+.contact-handle { display: block; }
+.contact-social {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25rem 0.9rem;
+  margin-top: 0.35rem;
+}
+.contact-social a {
+  font-size: 0.86rem;
+  color: var(--accent);
+  border-bottom: 1px solid currentColor;
+  padding-bottom: 1px;
+  transition: color 0.3s var(--ease);
+}
+.contact-social a:hover { color: var(--ink); }
