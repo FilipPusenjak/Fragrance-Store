@@ -1285,5 +1285,9 @@ body.cart-open .cart-overlay { opacity: 1; pointer-events: auto; }
 .result-set-link { margin-top: 0.9rem; }
 .result-set-link a { color: var(--accent); border-bottom: 1px solid currentColor; }
 
-.quiz-question:focus { outline: none; }
-.quiz-question:focus-visible { outline: 2px solid var(--accent); outline-offset: 4px; }
+/* The question heading is focused programmatically on each step so a
+   screen reader announces it. Chromium treats that as focus-visible
+   and drew a brass box around every question — the heading isn't
+   interactive, so no ring belongs on it either way. */
+.quiz-question:focus,
+.quiz-question:focus-visible { outline: none; }

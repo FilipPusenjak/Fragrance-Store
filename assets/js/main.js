@@ -40,7 +40,7 @@
   /* --- Catalogue ----------------------------------------- */
   /* group = used for filtering; label = small line on the card. */
   var PRODUCTS = [
-    { name: "SWY Powerfully",        label: "Designer", group: "designer", tier: "cheapDesigner", notes: "Bright, bold and built to last", image: "assets/img/swy-powerfully.webp" },
+    { name: "SWY Powerfully",        label: "Designer", group: "designer", tier: "cheapDesigner", notes: "Black cherry · vanilla · tonka · amber", image: "assets/img/swy-powerfully.webp" },
     { name: "Hermès H24",       label: "Designer", group: "designer", tier: "cheapDesigner", notes: "Clary sage · narcissus · rosewood · warm metallic musk", image: "assets/img/hermes-h24.webp" },
     { name: "Prada L'Homme",         label: "Designer", group: "designer", tier: "cheapDesigner", notes: "Neroli · iris · amber · cedar", image: "assets/img/prada-l-homme.webp" },
     { name: "JPG Le Male Le Parfum", label: "Designer", group: "designer", tier: "designer", notes: "Lavender · cardamom · vanilla · benzoin", tag: "Bestseller", image: "assets/img/jpg-le-male-le-parfum.webp" },
@@ -50,11 +50,11 @@
     { name: "Wood Neroli",           label: "Designer", group: "designer", tier: "designer", notes: "Neroli · orange blossom · warm woods", image: "assets/img/wood-neroli.webp" },
     { name: "Erba Pura",             label: "Niche", group: "niche", tier: "niche", notes: "Sicilian orange · summer fruits · amber · white musk", image: "assets/img/erba-pura.webp" },
     { name: "Myrrh & Tonka",         label: "Niche", group: "niche", tier: "niche", notes: "Myrrh · tonka bean · vanilla · almond", image: "assets/img/myrrh-tonka.webp" },
-    { name: "PDM Greenley",          label: "Niche", group: "niche", tier: "niche", notes: "Mint · fig leaf · vetiver · tonka", image: "assets/img/pdm-greenley.webp" },
+    { name: "PDM Greenley",          label: "Niche", group: "niche", tier: "niche", notes: "Green apple · bergamot · cedar · oakmoss", image: "assets/img/pdm-greenley.webp" },
     { name: "Tom Ford Ombré Leather", label: "Niche", group: "niche", tier: "niche", notes: "Leather · cardamom · jasmine · amber", image: "assets/img/tom-ford-ombre-leather.webp" },
     { name: "Wild Vetiver",          label: "Niche · Rare", group: "niche", tier: "expNiche", notes: "Vetiver · citrus · spice · dry woods", image: "assets/img/wild-vetiver.webp" },
     { name: "Ombra Lirica",          label: "Niche · Rare", group: "niche", tier: "expNiche", notes: "Incense · amber · soft resins · woods", image: "assets/img/ombra-lirica.webp" },
-    { name: "Le Labo Osmanthus 19",  label: "Niche", group: "niche", tier: "cityExclusive", notes: "Osmanthus · apricot · leather · musk", tag: "City Exclusive", image: "assets/img/le-labo-osmanthus-19.webp" },
+    { name: "Le Labo Osmanthus 19",  label: "Niche", group: "niche", tier: "cityExclusive", notes: "Frankincense · lavender · osmanthus · woods & resins", tag: "City Exclusive", image: "assets/img/le-labo-osmanthus-19.webp" },
     { name: "Le Labo Thé Noir 29", label: "Niche", group: "niche", tier: "byredoLelabo", notes: "Black tea · fig · bay leaf · cedarwood", image: "assets/img/le-labo-the-noir-29.webp" },
     { name: "Byredo Animalique",     label: "Niche", group: "niche", tier: "byredoLelabo", notes: "Musk · leather · amber · warm spice", image: "assets/img/byredo-animalique.webp" },
     { name: "Super Cedar",           label: "Niche", group: "niche", tier: "byredoLelabo", notes: "Virginian cedar · rose · sandalwood · musk", image: "assets/img/super-cedar.webp" }
@@ -62,7 +62,7 @@
 
   /* --- Long-form details (keyed by slug) ----------------- */
   var DETAILS = {
-    "swy-powerfully": { description: "A confident, crowd-pleasing signature built to last — bright and energetic on the open, warm and tenacious as it settles into the skin.", family: "Aromatic", season: "Year-round", occasion: "Everyday", longevity: "8–10 hrs" },
+    "swy-powerfully": { description: "Opens on a burst of juicy black cherry, then slides smoothly into a deep, creamy vanilla — sweet, warm and unmistakably cold-weather. A crowd-pleaser that stays close and lasts.", family: "Oriental fougère", season: "Autumn–Winter", occasion: "Date & evening", longevity: "8–10 hrs" },
     "hermes-h24": { description: "A modern men's fragrance that pairs dewy clary sage and narcissus with a warm, almost metallic woodiness — green, clean and quietly futuristic.", family: "Aromatic green", season: "Spring–Summer", occasion: "Office & day", longevity: "6–8 hrs" },
     "prada-l-homme": { description: "Powdery iris and neroli rest over soft amber and cedar — an understated, impeccably-groomed scent that whispers rather than shouts.", family: "Floral musk", season: "Spring", occasion: "Office & day", longevity: "6–8 hrs" },
     "jpg-le-male-le-parfum": { description: "The classic lavender–vanilla pairing turned rich and resinous with cardamom and benzoin — sweet, warm and unmistakably night-time.", family: "Oriental fougère", season: "Autumn–Winter", occasion: "Date & evening", longevity: "10+ hrs" },
@@ -71,11 +71,11 @@
     "by-the-fireplace": { description: "Roasted chestnut, clove and creamy vanilla wrapped in smoky guaiac wood — like a winter evening spent beside an open fire.", family: "Woody gourmand", season: "Autumn–Winter", occasion: "Cosy evenings", longevity: "7–9 hrs" },
     "wood-neroli": { description: "Sun-warmed neroli and orange blossom resting on soft, clean woods — fresh, elegant and effortless to wear.", family: "Floral woody", season: "Spring–Summer", occasion: "Day & office", longevity: "6–8 hrs" },
     "erba-pura": { description: "A luminous burst of Sicilian orange and candied fruits over white musk and amber — joyful, fruity and famously easy to love.", family: "Fruity amber", season: "Spring–Summer", occasion: "Versatile", longevity: "8–10 hrs" },
-    "pdm-greenley": { description: "Cool mint and fig leaf over green vetiver and soft tonka — a crisp, contemporary green that feels both fresh and refined.", family: "Green aromatic", season: "Spring–Summer", occasion: "Day & office", longevity: "7–9 hrs" },
+    "pdm-greenley": { description: "Crisp green apple with Calabrian bergamot and mandarin on the open, easing into petitgrain, cedar, cashmeran, pomarose and violet, and finishing on oakmoss, musk, amberwood and patchouli. Fresh and green up top, quietly woody underneath.", family: "Green woody", season: "Spring–Summer", occasion: "Day & office", longevity: "5–6 hrs" },
     "tom-ford-ombre-leather": { description: "Supple leather softened with jasmine and cardamom over amber and a touch of moss — rugged yet refined, equally at home day or night.", family: "Leather", season: "Autumn–Winter", occasion: "Versatile", longevity: "8–10 hrs" },
     "wild-vetiver": { description: "Earthy vetiver lifted by bright citrus and a whisper of spice, drying down to clean, dry woods — a sophisticated everyday signature.", family: "Woody", season: "Spring–Autumn", occasion: "Office & day", longevity: "7–9 hrs" },
     "ombra-lirica": { description: "Smoky incense and soft resins glow over warm amber and woods — a contemplative, almost ceremonial scent for cooler evenings.", family: "Amber woody", season: "Autumn–Winter", occasion: "Evening", longevity: "8–10 hrs" },
-    "le-labo-osmanthus-19": { description: "Apricot-tinged osmanthus laced with supple leather and musk — a city exclusive that's luminous, leathery and quietly unconventional.", family: "Floral leather", season: "Spring–Autumn", occasion: "Special", longevity: "7–9 hrs" },
+    "le-labo-osmanthus-19": { description: "Smoky frankincense and cool lavender wrapped around apricot-tinged osmanthus, settling into dry woods and soft resins. Le Labo's Kyoto City Exclusive — contemplative, incense-led and quietly unlike anything else on the shelf.", family: "Floral incense", season: "Spring–Autumn", occasion: "Special", longevity: "5–6 hrs" },
     "le-labo-the-noir-29": { description: "Black tea, fig and bay leaf over cedar and vetiver — dry, sophisticated and endlessly versatile, the kind of scent people lean in to ask about.", family: "Woody aromatic", season: "Year-round", occasion: "Versatile", longevity: "7–9 hrs" },
     "byredo-animalique": { description: "Warm musk, supple leather and amber with a spiced undertone — intimate, skin-like and undeniably after-dark.", family: "Leather musk", season: "Autumn–Winter", occasion: "Evening", longevity: "8–10 hrs" },
     "super-cedar": { description: "Sharp Virginian cedar softened by a single rose, drying down to creamy sandalwood and musk — clean, woody and deceptively simple.", family: "Woody floral", season: "Year-round", occasion: "Versatile", longevity: "6–8 hrs" },
