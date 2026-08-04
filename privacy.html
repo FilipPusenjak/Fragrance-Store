@@ -3,8 +3,10 @@
      worker, GitHub Pages for hosting, and no analytics of any kind. Fonts are
      self-hosted, so Google is no longer in this list — if that ever changes
      back, the "Who else touches it" section has to change with it.
-     Two TODOs remain, both marked inline: the legal seller name, and the
-     postal address CAN-SPAM requires before the first marketing email.
+     Two TODOs remain, both marked inline: the owner's legal name (the business
+     is a sole proprietorship trading under an assumed name), and the postal
+     address CAN-SPAM requires before the first marketing email — which is not
+     needed to trade, only to send marketing.
      Not legal advice — a New York lawyer should read it before real orders. -->
 <!DOCTYPE html>
 <html lang="en">
@@ -70,10 +72,16 @@
         <p class="form-note">Last updated: 4 August 2026</p>
 
         <h2>Who we are</h2>
-        <p><strong>Robot Fragrances</strong> (“we”, “us”) is an independent perfume decanting business operating from New York City, New York, United States. We decide what this site collects and why, so we’re the ones responsible for it. Any question about this policy: <a href="mailto:hello@robotfragrances.com">hello@robotfragrances.com</a>.</p>
-        <!-- TODO: owner — once the business is registered, replace “Robot Fragrances”
-             in the paragraph above with the full legal name. Terms section 1 has the
-             matching line. -->
+        <p><strong>Robot Fragrances</strong> (“we”, “us”) is an independent perfume decanting business — a sole proprietorship trading under that assumed name from New York City, New York, United States. We decide what this site collects and why, so we’re the ones responsible for it. Any question about this policy: <a href="mailto:hello@robotfragrances.com">hello@robotfragrances.com</a>.</p>
+        <!-- TODO: owner — once the Certificate of Assumed Name is filed, name the owner
+             here the same way Terms section 1 does:
+
+               <strong>Robot Fragrances</strong> (“we”, “us”) is the assumed name of
+               [FULL LEGAL NAME], a sole proprietorship in New York City, New York,
+               United States.
+
+             Someone asking us to hand over or delete their data is entitled to know
+             who is actually holding it, and a trading name answers nobody. -->
 
         <h2>The short version</h2>
         <p>We collect the least we can get away with. There are no analytics on this site, no advertising pixels, and no tracking cookies — we genuinely don’t know who you are until you write to us or buy something. We have never sold personal data and won’t.</p>
@@ -112,12 +120,22 @@
         <h2>The newsletter, honestly</h2>
         <p>Right now the sign-up form simply emails your address to us; there is no mailing platform behind it yet, so there is no automatic unsubscribe link to click. Instead the opt-out sits next to every sign-up box on the site, and here: <a href="mailto:hello@robotfragrances.com?subject=Unsubscribe">unsubscribe by email</a>. Reply to any message we send and that works too. No reason needed, we’ll confirm, and we’ll do it within a few days rather than the ten the law allows.</p>
         <p>We are moving to a dedicated email platform. When we do, we’ll name it here, every marketing email will carry a one-click unsubscribe link and our postal address, and we’ll update the date at the top of this page. We won’t add you to any list you didn’t ask to join, and we don’t email customers marketing they didn’t opt into.</p>
-        <!-- TODO: owner — two things before the FIRST marketing email goes out:
-             (1) CAN-SPAM (15 U.S.C. §7704) requires a valid physical postal address in
-                 every commercial email. A PO box counts; a bare email address does not.
-                 Add it here and in the email footer.
-             (2) Name the sending platform in the paragraph above and restore the
-                 one-click unsubscribe wording. -->
+        <!-- TODO: owner — the sending platform and the postal address arrive together,
+             and neither blocks the shop from trading:
+             (1) CAN-SPAM (15 U.S.C. §7704(a)(5)) requires a valid physical postal
+                 address in every COMMERCIAL email. A PO box counts; an email address
+                 does not. Transactional mail — Stripe receipts, dispatch notices — is
+                 a different category and is exempt, so orders can ship without one.
+             (2) The trigger is therefore the first marketing email, and no marketing
+                 email can go out before there is a platform to send it from. Settle
+                 both at once.
+             (3) The Certificate of Assumed Name filing needs a business address too,
+                 and that filing is a public record — so the same decision covers both.
+                 Ask the county clerk whether they accept a PO box; some want a street
+                 address on the certificate.
+             (4) When the platform lands: name it in the paragraph above, restore the
+                 one-click unsubscribe wording, replace the mailto opt-out in
+                 assets/js/promos.js and index.html, and move the date at the top. -->
 
         <h2>How long we keep it</h2>
         <ul>
