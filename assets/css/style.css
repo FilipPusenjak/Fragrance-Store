@@ -3,6 +3,73 @@
    A classy, minimal design system for a fragrance decanting shop
    ============================================================ */
 
+/* ---- Fonts (self-hosted) ---------------------------------- *
+   Cormorant Garamond and Jost, both under the SIL Open Font
+   Licence — full text in assets/fonts/OFL.txt.
+
+   These are VARIABLE fonts: one file carries the whole weight
+   range, so `font-weight: 400 600` below is a range, not a typo.
+   That is why there are six files and not eighteen — Google Fonts
+   serves the same variable file once per weight you ask for.
+
+   Self-hosted on purpose. Loading them from Google meant a DNS
+   lookup, a TLS handshake and a render-blocking stylesheet on
+   another origin before a single glyph could be requested — and
+   it handed Google every visitor's IP address, which we then had
+   to disclose in the privacy policy. Now nothing leaves the site.
+
+   Adding a weight or style means adding a file: Google's CSS API
+   is the easiest source, and the unicode-range values below come
+   straight from it. */
+@font-face {
+  font-family: "Cormorant Garamond";
+  font-style: normal;
+  font-weight: 400 600;
+  font-display: swap;
+  src: url("../fonts/cormorant-garamond-latin.woff2") format("woff2");
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face {
+  font-family: "Cormorant Garamond";
+  font-style: normal;
+  font-weight: 400 600;
+  font-display: swap;
+  src: url("../fonts/cormorant-garamond-latin-ext.woff2") format("woff2");
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+@font-face {
+  font-family: "Cormorant Garamond";
+  font-style: italic;
+  font-weight: 400 600;
+  font-display: swap;
+  src: url("../fonts/cormorant-garamond-italic-latin.woff2") format("woff2");
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face {
+  font-family: "Cormorant Garamond";
+  font-style: italic;
+  font-weight: 400 600;
+  font-display: swap;
+  src: url("../fonts/cormorant-garamond-italic-latin-ext.woff2") format("woff2");
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+@font-face {
+  font-family: "Jost";
+  font-style: normal;
+  font-weight: 300 600;
+  font-display: swap;
+  src: url("../fonts/jost-latin.woff2") format("woff2");
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face {
+  font-family: "Jost";
+  font-style: normal;
+  font-weight: 300 600;
+  font-display: swap;
+  src: url("../fonts/jost-latin-ext.woff2") format("woff2");
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+
 /* ---- Design tokens ---------------------------------------- */
 :root {
   /* Palette: warm ivory + charcoal ink + a single brass accent */
@@ -1513,3 +1580,20 @@ body.cart-open .cart-overlay { opacity: 1; pointer-events: auto; }
   transition: border-color 0.3s var(--ease);
 }
 .legal-prose a:hover { border-bottom-color: var(--accent); }
+
+/* ---- Newsletter opt-out ------------------------------------ */
+/* A <small>, not a <p>, so the dark-card and footer paragraph rules
+   don't claim it. Colour is inherited, which is what makes the same
+   line work on the homepage card, in the footer, and on the light
+   post-order panel without three variants. */
+.news-optout {
+  display: block;
+  margin-top: 0.75rem;
+  max-width: 46ch;
+  font-size: 0.74rem;
+  line-height: 1.6;
+  opacity: 0.72;
+}
+.newsletter + [data-form-note] + .news-optout,
+.cta-card .news-optout { margin-inline: auto; }
+.news-optout a { border-bottom: 1px solid currentColor; padding-bottom: 1px; }

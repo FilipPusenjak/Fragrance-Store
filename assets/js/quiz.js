@@ -378,10 +378,25 @@
     }
 
     /* ---- Share -------------------------------------------- */
+    /* cart.js mirrors the basket into every URL, so location.href on
+       this page carries ?cart= as well as ?a=. Someone pressing "copy
+       link to this result" means to send a scent match, not their
+       shopping basket — so share the answers and nothing else. */
+    function shareUrl() {
+      try {
+        var u = new URL(location.href);
+        var a = u.searchParams.get("a");
+        u.search = "";
+        if (a) u.searchParams.set("a", a);
+        u.hash = "";
+        return u.toString();
+      } catch (e) { return location.href; }
+    }
+
     var shareBtn = document.getElementById("quiz-share");
     if (shareBtn) shareBtn.addEventListener("click", function () {
       var note = resultMount.querySelector("[data-share-note]");
-      var url = location.href;
+      var url = shareUrl();
       function done(msg, ok) {
         if (!note) return;
         note.hidden = false;

@@ -16,9 +16,10 @@
   <meta name="twitter:title" content="Robot Fragrances — Designer &amp; Niche Decants" />
   <meta name="twitter:description" content="Robot Fragrances decants authentic designer and niche perfumes into honest, affordable sizes. Try before you commit to a full bottle." />
   <meta name="twitter:image" content="https://robotfragrances.com/assets/img/og-cover.png" />
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Jost:wght@300;400;500;600&display=swap" />
+  <!-- Fonts are served from this origin; see assets/css/style.css.
+       Preloaded because every page paints with both immediately. -->
+  <link rel="preload" href="assets/fonts/jost-latin.woff2" as="font" type="font/woff2" crossorigin />
+  <link rel="preload" href="assets/fonts/cormorant-garamond-latin.woff2" as="font" type="font/woff2" crossorigin />
   <link rel="stylesheet" href="assets/css/style.css" />
   <link rel="icon" href="assets/img/favicon.svg" type="image/svg+xml" />
 </head>
@@ -244,6 +245,10 @@
             <button class="btn btn--light" type="submit">Subscribe</button>
           </form>
           <p data-form-note class="form-note" style="color:#8a857c"></p>
+          <!-- Same wording and subject line as promos.js and privacy.html. -->
+          <small class="news-optout">One email a month, and you can leave whenever you like —
+            <a href="mailto:hello@robotfragrances.com?subject=Unsubscribe">unsubscribe</a>
+            and we’ll take you off the list.</small>
         </div>
       </div>
     </section>

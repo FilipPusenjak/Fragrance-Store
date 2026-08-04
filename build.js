@@ -117,9 +117,10 @@ function headHTML(p, base) {
   <meta name="twitter:description" content="${escAttr(desc)}" />
   <meta name="twitter:image" content="${escAttr(imageAbs)}" />
 
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Jost:wght@300;400;500;600&display=swap" />
+  <!-- Fonts are served from this origin; see assets/css/style.css.
+       Preloaded because every page paints with both immediately. -->
+  <link rel="preload" href="${base}assets/fonts/jost-latin.woff2" as="font" type="font/woff2" crossorigin />
+  <link rel="preload" href="${base}assets/fonts/cormorant-garamond-latin.woff2" as="font" type="font/woff2" crossorigin />
   <link rel="stylesheet" href="${base}assets/css/style.css" />
   <link rel="icon" href="${base}assets/img/favicon.svg" type="image/svg+xml" />
 </head>

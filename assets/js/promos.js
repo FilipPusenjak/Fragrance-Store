@@ -22,12 +22,26 @@
   var RULE = window.RF_SET_RULE || { ml: 2, min: 5, discount: 0.10 };
   var PCT = Math.round(RULE.discount * 100);
 
-  /* One endpoint, shared with the other forms. Read it off an existing
-     form so there's a single place to change it. */
+  /* One endpoint, shared with the other forms. It comes from config;
+     reading it off a form on the page is only a fallback, because
+     that is what limited the footer newsletter to the two pages that
+     happen to have a form of their own. */
   function formAction() {
+    var cfg = window.RF_CONFIG && window.RF_CONFIG.formEndpoint;
+    if (cfg) return cfg;
     var f = document.querySelector('form[data-form][action^="http"]');
     return f ? f.getAttribute("action") : null;
   }
+
+  /* Until there's a sending platform there is no unsubscribe link to
+     put in an email, so the opt-out has to live beside the sign-up
+     instead — asking for an address without showing the way out is
+     the part that isn't defensible. Same wording and same subject
+     line as index.html and privacy.html, so replies all file together. */
+  var OPT_OUT =
+    '<small class="news-optout">One email a month, and you can leave whenever you like — ' +
+    '<a href="mailto:hello@robotfragrances.com?subject=Unsubscribe">unsubscribe</a> ' +
+    "and we’ll take you off the list.</small>";
 
   function newsletterForm(opts) {
     var action = formAction();
@@ -44,7 +58,8 @@
         '<input type="text" name="_gotcha" tabindex="-1" autocomplete="off" style="display:none !important" aria-hidden="true" />' +
         '<button class="btn' + (opts.light ? " btn--light" : "") + '" type="submit">' + opts.cta + "</button>" +
       "</form>" +
-      '<p data-form-note class="form-note"></p>';
+      '<p data-form-note class="form-note"></p>' +
+      OPT_OUT;
   }
 
   /* ---- Homepage: discovery set band ---------------------- */

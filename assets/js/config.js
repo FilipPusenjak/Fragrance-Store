@@ -40,7 +40,25 @@ window.RF_CONFIG = {
   publishableKey: null,
 
   /* ----------------------------------------------------------
-     4. Pre-launch mode.
+     4. Form endpoint.
+
+     Where the contact form and every newsletter box post to. The
+     hand-written forms in index.html and contact.html carry it in
+     their own action attribute; this is the copy the injected
+     footer and post-order boxes use.
+
+     It used to be read off whichever form happened to be on the
+     page, which meant the footer newsletter silently appeared on
+     exactly the two pages that already had a form. Configuration
+     belongs in configuration.
+
+     Change the endpoint and you must change it in those two HTML
+     files too — a box that posts nowhere eats addresses in silence.
+     ---------------------------------------------------------- */
+  formEndpoint: "https://formspree.io/f/xpqvvqgb",
+
+  /* ----------------------------------------------------------
+     5. Pre-launch mode.
 
      The shop is finished but the business isn't open: there is no
      stock on the bench and nobody to pour an order. Stripe is also

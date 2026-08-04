@@ -1,7 +1,8 @@
 <!-- Written against what the site actually does, verified in the code:
      Formspree for both forms, Stripe for payment, Cloudflare for the checkout
-     worker, GitHub Pages for hosting, Google Fonts for the typefaces, and no
-     analytics of any kind. If any of those change, this page has to change too.
+     worker, GitHub Pages for hosting, and no analytics of any kind. Fonts are
+     self-hosted, so Google is no longer in this list — if that ever changes
+     back, the "Who else touches it" section has to change with it.
      Two TODOs remain, both marked inline: the legal seller name, and the
      postal address CAN-SPAM requires before the first marketing email.
      Not legal advice — a New York lawyer should read it before real orders. -->
@@ -23,9 +24,10 @@
   <meta name="twitter:title" content="Privacy Policy — Robot Fragrances" />
   <meta name="twitter:description" content="How Robot Fragrances handles the information you share — newsletter sign-ups, contact messages, and orders." />
   <meta name="twitter:image" content="https://robotfragrances.com/assets/img/og-cover.png" />
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Jost:wght@300;400;500;600&display=swap" />
+  <!-- Fonts are served from this origin; see assets/css/style.css.
+       Preloaded because every page paints with both immediately. -->
+  <link rel="preload" href="assets/fonts/jost-latin.woff2" as="font" type="font/woff2" crossorigin />
+  <link rel="preload" href="assets/fonts/cormorant-garamond-latin.woff2" as="font" type="font/woff2" crossorigin />
   <link rel="stylesheet" href="assets/css/style.css" />
   <link rel="icon" href="assets/img/favicon.svg" type="image/svg+xml" />
 </head>
@@ -81,7 +83,8 @@
           <li><strong>Newsletter sign-up:</strong> your email address, and nothing else, when you choose to subscribe.</li>
           <li><strong>Contact form:</strong> your name, email address, the topic you pick, and the message you write.</li>
           <li><strong>Orders:</strong> your name, shipping address, email address, and what you ordered. Payment is taken on Stripe’s own page — your card number never touches our site or our servers, and all we ever see back is the last four digits, the card brand, and whether it worked.</li>
-          <li><strong>On your device:</strong> your cart is kept in your browser’s <code>localStorage</code> and mirrored into the page address so a cart can be bookmarked or shared. It stays on your device unless you check out. Your Scent Finder answers work the same way. We set no cookies of our own.</li>
+          <li><strong>On your device:</strong> your cart is kept in your browser’s <code>localStorage</code> and also written into the page address, so it survives a refresh and a cart can be bookmarked or sent to someone. Your Scent Finder answers work the same way. None of it reaches us unless you check out, and we set no cookies of our own.
+            <br /><strong>Worth knowing:</strong> because the cart travels in the address, <strong>any link you copy from a page while your cart is filled will show its contents to whoever you send it to</strong> — that’s what makes a cart shareable, but it cuts both ways. Empty the cart first if you’re sending someone a link and would rather they didn’t see it. (The Scent Finder’s own “copy link” button is an exception: it shares your answers only, never your cart.)</li>
           <li><strong>Automatically, in server logs:</strong> like every website, the services that serve these pages record technical request data including your IP address, browser type, and the page requested. We use it only to keep the site up and to spot abuse. We don’t build profiles from it and we don’t combine it with anything above.</li>
         </ul>
 
@@ -101,13 +104,13 @@
           <li><strong>Stripe</strong> — takes the payment and collects your shipping and billing address on its own secure page. <a href="https://stripe.com/privacy" target="_blank" rel="noopener">Privacy policy</a>.</li>
           <li><strong>Cloudflare</strong> — runs the small service that prices your basket and creates the Stripe session. <a href="https://www.cloudflare.com/privacypolicy/" target="_blank" rel="noopener">Privacy policy</a>.</li>
           <li><strong>GitHub (GitHub Pages)</strong> — hosts and serves these pages. <a href="https://docs.github.com/en/site-policy/privacy-policies/github-general-privacy-statement" target="_blank" rel="noopener">Privacy statement</a>.</li>
-          <li><strong>Google Fonts</strong> — the two typefaces on this site are loaded from Google’s servers, so your browser tells Google your IP address and browser when a page loads. Google states it sets no cookies for this. <a href="https://developers.google.com/fonts/faq/privacy" target="_blank" rel="noopener">What Google says it collects</a>.</li>
           <li><strong>Shipping carriers</strong> — get your name and address so a parcel can reach you.</li>
         </ul>
         <p>We may also disclose information if the law requires it, or to protect our rights or someone’s safety. All of these companies process data in the United States.</p>
+        <p>That is the whole list. Notably absent: <strong>fonts</strong>. The two typefaces here are served from our own site rather than from Google, so loading a page doesn’t announce your IP address to a third party you never chose to visit.</p>
 
         <h2>The newsletter, honestly</h2>
-        <p>Right now the sign-up form simply emails your address to us; there is no mailing platform behind it yet, so there is no automatic unsubscribe link to click. To come off the list, reply to any message or email <a href="mailto:hello@robotfragrances.com">hello@robotfragrances.com</a> and we’ll remove you — no reason needed, and we’ll confirm.</p>
+        <p>Right now the sign-up form simply emails your address to us; there is no mailing platform behind it yet, so there is no automatic unsubscribe link to click. Instead the opt-out sits next to every sign-up box on the site, and here: <a href="mailto:hello@robotfragrances.com?subject=Unsubscribe">unsubscribe by email</a>. Reply to any message we send and that works too. No reason needed, we’ll confirm, and we’ll do it within a few days rather than the ten the law allows.</p>
         <p>We are moving to a dedicated email platform. When we do, we’ll name it here, every marketing email will carry a one-click unsubscribe link and our postal address, and we’ll update the date at the top of this page. We won’t add you to any list you didn’t ask to join, and we don’t email customers marketing they didn’t opt into.</p>
         <!-- TODO: owner — two things before the FIRST marketing email goes out:
              (1) CAN-SPAM (15 U.S.C. §7704) requires a valid physical postal address in
