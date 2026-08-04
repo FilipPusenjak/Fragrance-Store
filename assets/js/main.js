@@ -345,9 +345,36 @@
     note.textContent = msg;
     note.style.color = ok ? "var(--accent)" : "#b23b3b";
   }
+  /* Sign-ups go wherever config says, which today is the same
+     Formspree box the contact messages land in. The day there is a
+     real mailing platform it is one line in config.js — and this
+     rewrites the markup rather than trusting it, so the form written
+     into index.html follows the same line as the injected ones. A
+     config change that silently missed one form is exactly how the
+     footer newsletter ended up live on two pages out of thirty. */
+  function applyNewsletterConfig(form) {
+    var cfg = window.RF_CONFIG || {};
+    var url = cfg.newsletterEndpoint || cfg.formEndpoint;
+    if (url) form.setAttribute("action", url);
+
+    /* Every platform names the field differently: Buttondown wants
+       "email", Kit wants "email_address". */
+    var input = form.querySelector('input[type="email"]');
+    var field = cfg.newsletterField || "email";
+    if (input && input.name !== field) input.name = field;
+
+    /* _subject is a Formspree instruction and means nothing anywhere
+       else, so don't post it to somewhere else. */
+    if (cfg.newsletterEndpoint) {
+      var subject = form.querySelector('input[name="_subject"]');
+      if (subject) subject.remove();
+    }
+  }
+
   function bindForm(form) {
     if (form.hasAttribute("data-form-bound")) return;
     form.setAttribute("data-form-bound", "");
+    if (form.hasAttribute("data-newsletter")) applyNewsletterConfig(form);
     form.addEventListener("submit", function (e) {
       var action = form.getAttribute("action") || "";
       var configured = action && action.indexOf("FORM_ENDPOINT_TODO") === -1 && /^https?:\/\//.test(action);

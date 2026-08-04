@@ -49,7 +49,7 @@
        addresses, which is worse than not offering one. */
     if (!action) return "";
     var id = opts.id;
-    return '<form class="' + opts.cls + '" data-form ' +
+    return '<form class="' + opts.cls + '" data-form data-newsletter ' +
         'data-form-success="' + opts.success + '" ' +
         'method="POST" action="' + action + '">' +
         '<label class="sr-only" for="' + id + '" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)">Email address</label>' +

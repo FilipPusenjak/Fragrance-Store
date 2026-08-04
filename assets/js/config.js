@@ -58,7 +58,44 @@ window.RF_CONFIG = {
   formEndpoint: "https://formspree.io/f/xpqvvqgb",
 
   /* ----------------------------------------------------------
-     5. Pre-launch mode.
+     5. The newsletter, once it has a real mailing platform.
+
+     Leave newsletterEndpoint null and sign-ups keep going to
+     formEndpoint above — an inbox, with no automatic unsubscribe
+     link, which is what the privacy policy currently describes.
+
+     Set it and EVERY sign-up box on the site follows: the one in
+     index.html, the one in every footer, and the one after an
+     order. main.js rewrites the markup from these values, so this
+     is the only place to change.
+
+     Two providers verified to send the CORS headers this site's
+     inline submit needs — the form posts without leaving the page:
+
+       Buttondown   https://buttondown.com/api/emails/embed-subscribe/YOUR-USERNAME
+                    newsletterField -> "email"
+
+       Kit          https://app.kit.com/forms/YOUR-FORM-ID/subscriptions
+                    newsletterField -> "email_address"
+
+     Mailchimp sends no CORS headers on its list-manage.com form
+     endpoint, so the inline submit cannot work with it. It would
+     need a full-page redirect off the site or a hidden iframe.
+     Pick one of the two above unless you have a reason not to.
+
+     THREE THINGS MUST HAPPEN TOGETHER when this is set:
+       1. this value, and newsletterField to match the provider;
+       2. privacy.html — name the provider, restore the one-click
+          unsubscribe wording, add the postal address CAN-SPAM
+          requires, and move the "last updated" date;
+       3. the mailto opt-out in promos.js and index.html becomes the
+          provider's real unsubscribe link.
+     ---------------------------------------------------------- */
+  newsletterEndpoint: null,
+  newsletterField: "email",
+
+  /* ----------------------------------------------------------
+     6. Pre-launch mode.
 
      The shop is finished but the business isn't open: there is no
      stock on the bench and nobody to pour an order. Stripe is also
@@ -77,7 +114,7 @@ window.RF_CONFIG = {
   preLaunch: true,
 
   /* ----------------------------------------------------------
-     5. Feature flags.
+     7. Feature flags.
 
      Everything here is additive — set any one to false and that
      piece reverts to how the site behaved before it existed. They
