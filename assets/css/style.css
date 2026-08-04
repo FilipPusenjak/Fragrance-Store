@@ -1158,3 +1158,132 @@ body.cart-open .cart-overlay { opacity: 1; pointer-events: auto; }
   .ds-card, .ds-tick, .ds-bar span { transition: none; }
   .ds-card:hover { transform: none; }
 }
+
+/* A full set dims the remaining cards — still clickable to show why. */
+.ds-card.is-locked { opacity: 0.45; }
+.ds-card.is-locked:hover { opacity: 0.7; transform: none; }
+.ds-status.is-warn { color: #a4342c; }
+
+/* Discounted lines in the cart drawer and checkout summary */
+.cart-item-size s { opacity: 0.55; margin-right: 0.15em; }
+.cart-item-tag,
+.sum-tag {
+  display: inline-block;
+  font-size: 0.62rem; letter-spacing: 0.1em; text-transform: uppercase;
+  padding: 0.05em 0.4em; border-radius: 100px;
+  background: var(--accent); color: #fff; vertical-align: 0.1em;
+}
+.sum-line--save { color: var(--accent); }
+
+/* ---- Promotional placements (config.js features.*) --------- */
+
+/* Cart drawer: "N more testers" nudge */
+.cart-nudge { padding: 0 clamp(1.25rem, 4vw, 1.75rem) 0.25rem; }
+.cart-nudge-link {
+  display: block;
+  padding: 0.7rem 0.9rem;
+  border: 1px dashed var(--accent);
+  border-radius: var(--radius-card);
+  background: color-mix(in srgb, var(--accent) 7%, transparent);
+  font-size: 0.82rem;
+  color: var(--ink);
+  transition: background 0.3s var(--ease);
+}
+.cart-nudge-link:hover { background: color-mix(in srgb, var(--accent) 14%, transparent); }
+.cart-nudge-link strong { font-weight: 500; color: var(--accent); }
+
+/* Homepage discovery band */
+.discovery-band .db-inner {
+  display: grid;
+  grid-template-columns: 1.15fr 0.85fr;
+  gap: clamp(1.5rem, 5vw, 4rem);
+  align-items: center;
+  padding: clamp(1.75rem, 5vw, 3.25rem);
+  background: var(--bg-card);
+  border: 1px solid var(--line-soft);
+  border-radius: var(--radius-card);
+}
+.db-copy .eyebrow { margin-bottom: 0.75rem; }
+.db-copy h2 { font-size: clamp(1.75rem, 3.2vw, 2.5rem); }
+.db-copy p { margin: 0.9rem 0 1.6rem; max-width: 48ch; }
+.db-visual {
+  display: flex; align-items: flex-end; justify-content: center;
+  gap: clamp(0.4rem, 1.5vw, 0.9rem);
+  color: var(--accent);
+}
+.db-vial { width: clamp(26px, 4vw, 40px); height: auto; opacity: 0.75; }
+.db-vial:nth-child(odd) { transform: translateY(-6px); }
+
+/* Footer newsletter */
+.footer-news-wrap { margin-top: 1.75rem; }
+.footer-news-wrap h4 {
+  font-family: var(--sans); font-size: 0.72rem; font-weight: 500;
+  letter-spacing: 0.18em; text-transform: uppercase;
+  color: var(--dark-ink); margin-bottom: 0.35rem;
+}
+.footer-news-wrap p { font-size: 0.84rem; margin-bottom: 0.75rem; }
+.footer-news { display: flex; gap: 0.5rem; max-width: 340px; }
+.footer-news input {
+  flex: 1; min-width: 0;
+  padding: 0.6em 0.8em;
+  border: 1px solid rgba(233, 230, 223, 0.25);
+  border-radius: var(--radius);
+  background: rgba(255, 255, 255, 0.06);
+  color: var(--dark-ink);
+  font-size: 0.85rem;
+}
+.footer-news input::placeholder { color: rgba(233, 230, 223, 0.45); }
+.footer-news input:focus { outline: 1px solid var(--accent-2); border-color: var(--accent-2); }
+.footer-news .btn { padding: 0.6em 1.1em; font-size: 0.7rem; white-space: nowrap; }
+
+/* Post-order newsletter */
+.confirm-news {
+  margin-top: 2.25rem; padding-top: 1.75rem;
+  border-top: 1px solid var(--line-soft);
+}
+.confirm-news h3 { font-size: 1.3rem; margin-bottom: 0.4rem; }
+.confirm-news p { font-size: 0.9rem; margin-bottom: 1rem; }
+.confirm-news .newsletter { display: flex; gap: 0.5rem; max-width: 400px; margin-inline: auto; }
+.confirm-news .newsletter input {
+  flex: 1; min-width: 0; padding: 0.7em 0.9em;
+  border: 1px solid var(--line); border-radius: var(--radius); background: #fff;
+}
+
+/* Product page set link */
+.pd-set-link { margin-top: 1rem; }
+.pd-set-link a { color: var(--accent); border-bottom: 1px solid currentColor; }
+
+@media (max-width: 860px) {
+  .discovery-band .db-inner { grid-template-columns: 1fr; }
+  .db-visual { order: -1; }
+}
+
+/* ---- Quiz result additions (config.js features.quiz*) ------ */
+.result-why {
+  font-size: 0.88rem;
+  color: var(--muted);
+  margin: 0.6rem 0 0.2rem;
+  padding-left: 0.8rem;
+  border-left: 2px solid var(--accent);
+}
+.result-why em { font-style: normal; color: var(--ink-soft); }
+
+.result-sizes { margin: 0.75rem 0 0.25rem; }
+
+.result-actions--minor {
+  gap: 1rem;
+  margin-top: 0.9rem;
+  flex-wrap: wrap;
+}
+.quiz-link {
+  border: 0; background: none; padding: 0; cursor: pointer;
+  font: inherit; font-size: 0.8rem; color: var(--muted);
+  text-decoration: underline; text-underline-offset: 3px;
+}
+.quiz-link:hover { color: var(--ink); }
+.quiz-share-note { font-size: 0.78rem; margin-top: 0.5rem; word-break: break-all; }
+.result-set-link { margin-top: 0.9rem; }
+.result-set-link a { color: var(--accent); border-bottom: 1px solid currentColor; }
+
+.quiz-question:focus { outline: none; }
+.quiz-question:focus-visible { outline: 2px solid var(--accent); outline-offset: 4px; }

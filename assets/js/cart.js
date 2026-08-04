@@ -85,13 +85,22 @@
   }
   function hasSlug(slug) { return items.some(function (it) { return it.slug === slug; }); }
   function count() { return items.reduce(function (n, it) { return n + it.qty; }, 0); }
-  function subtotal() { return items.reduce(function (s, it) { return s + priceFor(it.slug, it.ml) * it.qty; }, 0); }
+
+  /* Priced by the shared rule so the drawer, the checkout page and the
+     worker all agree — including the discovery-set discount. */
+  function priced() {
+    if (window.RF_priceCart) return window.RF_priceCart(items);
+    var sub = items.reduce(function (s, it) { return s + priceFor(it.slug, it.ml) * it.qty; }, 0);
+    return { lines: [], gross: sub, subtotal: sub, saving: 0, sets: 0, isSet: false, testers: 0 };
+  }
+  function subtotal() { return priced().subtotal; }
 
   function changed() {
     persist();
     syncUrl();
     renderBadge();
     renderDrawer();
+    renderNudge();
     renderUpsell();
     document.dispatchEvent(new CustomEvent("rfcart:change"));
   }
@@ -135,7 +144,7 @@
 
   /* ---- UI ------------------------------------------------ */
   var BAG = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6.5 8h11l-1 12.5h-9L6.5 8z"/><path d="M9.2 8.5V6.2a2.8 2.8 0 0 1 5.6 0v2.3"/></svg>';
-  var cartBtn, badgeEl, drawer, overlay, bodyEl, subtotalEl, upsellEl;
+  var cartBtn, badgeEl, drawer, overlay, bodyEl, subtotalEl, upsellEl, nudgeEl;
 
   function buildUI() {
     var actions = document.querySelector(".nav-actions");
@@ -161,6 +170,7 @@
     drawer.innerHTML =
       '<div class="cart-head"><h2>Your cart</h2><button class="cart-close" type="button" aria-label="Close cart">&times;</button></div>' +
       '<div class="cart-body"></div>' +
+      '<div class="cart-nudge" hidden></div>' +
       '<div class="cart-upsell" hidden></div>' +
       '<div class="cart-foot">' +
         '<div class="cart-subtotal"><span>Subtotal</span><span class="cart-subtotal-val">$0</span></div>' +
@@ -174,6 +184,7 @@
     bodyEl = drawer.querySelector(".cart-body");
     subtotalEl = drawer.querySelector(".cart-subtotal-val");
     upsellEl = drawer.querySelector(".cart-upsell");
+    nudgeEl = drawer.querySelector(".cart-nudge");
 
     drawer.querySelector(".cart-close").addEventListener("click", closeDrawer);
     drawer.querySelector(".cart-continue").addEventListener("click", closeDrawer);
@@ -196,6 +207,7 @@
   function openDrawer() {
     if (!drawer) return;
     renderDrawer();
+    renderNudge();
     renderUpsell();
     document.body.classList.add("cart-open");
     drawer.classList.add("is-open");
@@ -227,24 +239,55 @@
       bodyEl.innerHTML = '<div class="cart-empty"><p>Your cart is empty.</p><a class="link-arrow" href="' + site("shop.html") + '">Browse the shelf &rarr;</a></div>';
     } else {
       drawer.classList.remove("is-empty");
-      bodyEl.innerHTML = items.map(function (it) {
-        var p = catGet(it.slug); if (!p) return "";
-        var price = priceFor(it.slug, it.ml);
-        return '<div class="cart-item" data-slug="' + it.slug + '" data-ml="' + it.ml + '">' +
+      var pr = priced();
+      bodyEl.innerHTML = pr.lines.map(function (l) {
+        var p = l.product;
+        var priceLine = l.discounted
+          ? '<s>$' + l.unitFull + "</s> $" + l.unit + ' <span class="cart-item-tag">set</span>'
+          : "$" + l.unitFull;
+        return '<div class="cart-item" data-slug="' + l.slug + '" data-ml="' + l.ml + '">' +
           '<a class="cart-item-media' + (p.image ? " has-photo" : "") + '" href="' + prod(p.slug) + '">' + media(p) + "</a>" +
           '<div class="cart-item-info">' +
             '<a class="cart-item-name" href="' + prod(p.slug) + '">' + p.name + "</a>" +
-            '<div class="cart-item-size">' + it.ml + " ml decant · $" + price + "</div>" +
+            '<div class="cart-item-size">' + l.ml + " ml decant · " + priceLine + "</div>" +
             '<div class="cart-item-controls">' +
-              '<div class="qty"><button type="button" class="qty-dec" aria-label="Decrease quantity">&minus;</button><span class="qty-val">' + it.qty + '</span><button type="button" class="qty-inc" aria-label="Increase quantity">+</button></div>' +
+              '<div class="qty"><button type="button" class="qty-dec" aria-label="Decrease quantity">&minus;</button><span class="qty-val">' + l.qty + '</span><button type="button" class="qty-inc" aria-label="Increase quantity">+</button></div>' +
               '<button type="button" class="cart-remove">Remove</button>' +
             "</div>" +
           "</div>" +
-          '<div class="cart-item-price">$' + (price * it.qty) + "</div>" +
+          '<div class="cart-item-price">$' + (Math.round(l.lineTotal * 100) / 100) + "</div>" +
         "</div>";
       }).join("");
     }
     if (subtotalEl) subtotalEl.textContent = "$" + subtotal();
+  }
+
+  /* Discovery-set nudge: shown when a cart holds testers but not a
+     complete set. Contextual — it appears at the moment someone is
+     looking at what they've chosen, which is when "two more for 10%
+     off" is worth knowing. Disable with features.cartSetNudge. */
+  function renderNudge() {
+    if (!nudgeEl) return;
+    var on = window.RF_feature && window.RF_feature("cartSetNudge");
+    var rule = window.RF_SET_RULE;
+    if (!on || !rule || !items.length) {
+      nudgeEl.hidden = true; nudgeEl.innerHTML = ""; return;
+    }
+
+    var pr = priced();
+    var need = rule.min - (pr.testers % rule.min);
+    if (pr.testers === 0 || need === rule.min) {
+      /* No testers, or every tester already sits in a complete set. */
+      nudgeEl.hidden = true; nudgeEl.innerHTML = ""; return;
+    }
+
+    var pct = Math.round(rule.discount * 100);
+    nudgeEl.hidden = false;
+    nudgeEl.innerHTML =
+      '<a class="cart-nudge-link" href="' + site("discovery.html") + '">' +
+        "<strong>" + need + " more " + (need === 1 ? "tester" : "testers") +
+        "</strong> and this set is " + pct + "% off &rarr;" +
+      "</a>";
   }
 
   function renderUpsell() {
@@ -280,6 +323,7 @@
     syncUrl();   // mirror the current cart into the URL
     renderBadge();
     renderDrawer();
+    renderNudge();
     renderUpsell();
   }
   if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", init);

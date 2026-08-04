@@ -10,6 +10,14 @@
   if (!mount) return;
 
   var prod = window.RF_prod || function (s) { return "product.html?id=" + s; }; // canonical product page
+  var site = window.RF_site || function (x) { return x; };
+  var on = window.RF_feature || function () { return false; };
+
+  function escapeHtml(s) {
+    return String(s).replace(/[&<>"']/g, function (c) {
+      return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c];
+    });
+  }
 
   var resultMount = document.getElementById("quiz-result");
   var bar = document.getElementById("quiz-bar-fill");
@@ -91,6 +99,38 @@
   var answers = [];
   var current = 0;
 
+  /* ---- Shareable results (features.quizShareResult) --------
+     Answers live in ?a=, so a result can be sent to someone or
+     reloaded later. Indices are validated against the questions on
+     the way in — a hand-edited URL can't put the quiz in a bad
+     state, it just starts from the beginning. */
+  function readAnswersFromUrl() {
+    if (!on("quizShareResult")) return null;
+    try {
+      var raw = new URLSearchParams(location.search).get("a");
+      if (!raw) return null;
+      var parts = raw.split(",").map(function (n) { return parseInt(n, 10); });
+      if (parts.length !== QUESTIONS.length) return null;
+      for (var i = 0; i < parts.length; i++) {
+        if (!(parts[i] >= 0 && parts[i] < QUESTIONS[i].options.length)) return null;
+      }
+      return parts;
+    } catch (e) { return null; }
+  }
+
+  function syncUrl() {
+    if (!on("quizShareResult")) return;
+    if (!window.history || !history.replaceState || typeof URL === "undefined") return;
+    try {
+      var url = new URL(location.href);
+      var complete = answers.length === QUESTIONS.length &&
+        answers.every(function (a) { return typeof a === "number"; });
+      if (complete) url.searchParams.set("a", answers.join(","));
+      else url.searchParams.delete("a");
+      history.replaceState(null, "", url.toString());
+    } catch (e) {}
+  }
+
   function setProgress(p) { if (bar) bar.style.transform = "scaleX(" + p + ")"; }
 
   function render() {
@@ -119,28 +159,60 @@
       "</div>";
 
     mount.querySelectorAll(".quiz-option").forEach(function (btn) {
-      btn.addEventListener("click", function () {
-        answers[current] = parseInt(btn.dataset.i, 10);
-        mount.querySelectorAll(".quiz-option").forEach(function (b) {
-          b.classList.toggle("is-selected", b === btn);
-        });
-        setTimeout(function () { current++; render(); }, 240);
-      });
+      btn.addEventListener("click", function () { choose(parseInt(btn.dataset.i, 10)); });
     });
 
     var back = mount.querySelector(".quiz-back");
     if (back) back.addEventListener("click", function () {
       if (current > 0) { current--; render(); }
     });
+
+    /* Focus the question so a screen reader announces the change and
+       the number keys below have somewhere sensible to land. */
+    if (on("quizKeyboard")) {
+      var h = mount.querySelector(".quiz-question");
+      if (h) { h.setAttribute("tabindex", "-1"); h.focus({ preventScroll: true }); }
+    }
   }
+
+  function choose(i) {
+    var q = QUESTIONS[current];
+    if (!q || !(i >= 0 && i < q.options.length)) return;
+    answers[current] = i;
+    mount.querySelectorAll(".quiz-option").forEach(function (b) {
+      b.classList.toggle("is-selected", parseInt(b.dataset.i, 10) === i);
+    });
+    setTimeout(function () { current++; render(); }, 240);
+  }
+
+  /* ---- Keyboard (features.quizKeyboard) ------------------- */
+  document.addEventListener("keydown", function (e) {
+    if (!on("quizKeyboard")) return;
+    if (mount.hidden || current >= QUESTIONS.length) return;
+    if (e.metaKey || e.ctrlKey || e.altKey) return;
+
+    var q = QUESTIONS[current];
+    if (e.key >= "1" && e.key <= String(Math.min(9, q.options.length))) {
+      e.preventDefault(); choose(parseInt(e.key, 10) - 1); return;
+    }
+    if (e.key === "ArrowLeft" && current > 0) { e.preventDefault(); current--; render(); return; }
+    if (e.key === "ArrowRight" && typeof answers[current] === "number") {
+      e.preventDefault(); current++; render();
+    }
+  });
 
   function computeResult() {
     var totals = {};
+    /* per key: which answers gave it points, and how many */
+    var contrib = {};
     QUESTIONS.forEach(function (q, qi) {
       if (q.filter) return;
       var opt = q.options[answers[qi]];
       if (!opt || !opt.s) return;
-      Object.keys(opt.s).forEach(function (k) { totals[k] = (totals[k] || 0) + opt.s[k]; });
+      Object.keys(opt.s).forEach(function (k) {
+        totals[k] = (totals[k] || 0) + opt.s[k];
+        (contrib[k] = contrib[k] || []).push({ label: opt.label, pts: opt.s[k] });
+      });
     });
 
     var bOpt = QUESTIONS[QUESTIONS.length - 1].options[answers[QUESTIONS.length - 1]];
@@ -159,7 +231,22 @@
     entries.sort(function (a, b) {
       return b.pts - a.pts || PRIORITY.indexOf(a.key) - PRIORITY.indexOf(b.key);
     });
+    entries.forEach(function (e) { e.why = contrib[e.key] || []; });
     return entries;
+  }
+
+  /* The two or three answers that mattered most, phrased as the
+     shopper picked them. Turns "here's a bottle" into "here's why". */
+  function whyHTML(entry) {
+    if (!on("quizExplainMatch") || !entry.why.length) return "";
+    var top = entry.why.slice().sort(function (a, b) { return b.pts - a.pts; }).slice(0, 3);
+    var bits = top.map(function (w) {
+      return "<em>" + escapeHtml(w.label.toLowerCase()) + "</em>";
+    });
+    var list = bits.length > 1
+      ? bits.slice(0, -1).join(", ") + " and " + bits[bits.length - 1]
+      : bits[0];
+    return '<p class="result-why">Because you chose ' + list + ".</p>";
   }
 
   function renderResult() {
@@ -178,6 +265,20 @@
 
     var win = entries[0].p;
     var alts = entries.slice(1, 3).map(function (e) { return e.p; });
+
+    syncUrl();
+
+    /* Quick-add: size buttons + add to cart, so a match can become an
+       order without another page load. Reverts to the plain link when
+       features.quizQuickAdd is off. */
+    var quickAdd = on("quizQuickAdd") && window.RFCart;
+    var sizeHTML = quickAdd
+      ? '<div class="result-sizes size-options">' + win.sizes.map(function (sz, i) {
+          return '<button type="button" class="size-opt' + (i === 0 ? " is-active" : "") +
+            '" data-ml="' + sz.ml + '" data-price="' + sz.price + '">' +
+            sz.ml + " ml <span>$" + sz.price + "</span></button>";
+        }).join("") + "</div>"
+      : "";
 
     var media = win.image
       ? '<img class="result-photo" src="' + win.image + '" alt="' + win.name + '" loading="lazy">'
@@ -200,11 +301,32 @@
           '<span class="product-house">' + win.label + "</span>" +
           '<h3 class="result-name">' + win.name + "</h3>" +
           '<p class="result-notes">' + win.notes + "</p>" +
-          '<div class="result-price">from $' + win.from + ' <small>/ 2 ml</small></div>' +
+          whyHTML(entries[0]) +
+          (quickAdd
+            ? '<div class="result-price"><span class="result-price-val">$' + win.sizes[0].price +
+                '</span> <small>/ ' + win.sizes[0].ml + " ml</small></div>" + sizeHTML
+            : '<div class="result-price">from $' + win.from + ' <small>/ ' +
+                win.sizes[0].ml + " ml</small></div>") +
           '<div class="result-actions">' +
-            '<a class="btn" href="' + prod(win.slug) + '">Shop this decant</a>' +
-            '<button type="button" class="btn btn--ghost" id="quiz-retake">Retake quiz</button>' +
+            (quickAdd
+              ? '<button type="button" class="btn" id="quiz-add">Add to cart</button>' +
+                '<a class="btn btn--ghost" href="' + prod(win.slug) + '">See the details</a>'
+              : '<a class="btn" href="' + prod(win.slug) + '">Shop this decant</a>') +
           "</div>" +
+          '<div class="result-actions result-actions--minor">' +
+            '<button type="button" class="quiz-link" id="quiz-retake">Retake quiz</button>' +
+            (on("quizKeyboard")
+              ? '<button type="button" class="quiz-link" id="quiz-back-result">&larr; Change my last answer</button>'
+              : "") +
+            (on("quizShareResult")
+              ? '<button type="button" class="quiz-link" id="quiz-share">Copy link to this result</button>'
+              : "") +
+          "</div>" +
+          '<p class="quiz-share-note" data-share-note hidden></p>' +
+          (on("quizQuickAdd")
+            ? '<p class="result-set-link form-note">Not sure yet? Try it in a ' +
+              '<a href="' + site("discovery.html") + '">discovery set</a> alongside four others.</p>'
+            : "") +
           altHTML +
         "</div>" +
       "</div>";
@@ -214,12 +336,72 @@
     if (retake) retake.addEventListener("click", function () {
       answers = [];
       current = 0;
+      syncUrl();
       resultMount.hidden = true;
       resultMount.innerHTML = "";
       render();
       if (mount.scrollIntoView) mount.scrollIntoView({ block: "start" });
     });
+
+    /* Step back into the last question with answers intact — someone
+       who mis-tapped shouldn't have to redo all eight. */
+    var backFromResult = document.getElementById("quiz-back-result");
+    if (backFromResult) backFromResult.addEventListener("click", function () {
+      current = QUESTIONS.length - 1;
+      resultMount.hidden = true;
+      resultMount.innerHTML = "";
+      render();
+      if (mount.scrollIntoView) mount.scrollIntoView({ block: "start" });
+    });
+
+    /* ---- Quick add ---------------------------------------- */
+    if (quickAdd) {
+      var state = { ml: win.sizes[0].ml, price: win.sizes[0].price };
+      var priceVal = resultMount.querySelector(".result-price-val");
+      var priceUnit = resultMount.querySelector(".result-price small");
+      var sizes = resultMount.querySelector(".result-sizes");
+      if (sizes) sizes.addEventListener("click", function (e) {
+        var b = e.target.closest(".size-opt"); if (!b) return;
+        state.ml = +b.dataset.ml; state.price = +b.dataset.price;
+        sizes.querySelectorAll(".size-opt").forEach(function (x) {
+          x.classList.toggle("is-active", x === b);
+        });
+        if (priceVal) priceVal.textContent = "$" + state.price;
+        if (priceUnit) priceUnit.textContent = "/ " + state.ml + " ml";
+      });
+
+      var addBtn = document.getElementById("quiz-add");
+      if (addBtn) addBtn.addEventListener("click", function () {
+        window.RFCart.add(win.slug, state.ml, 1);
+        window.RFCart.open();
+      });
+    }
+
+    /* ---- Share -------------------------------------------- */
+    var shareBtn = document.getElementById("quiz-share");
+    if (shareBtn) shareBtn.addEventListener("click", function () {
+      var note = resultMount.querySelector("[data-share-note]");
+      var url = location.href;
+      function done(msg, ok) {
+        if (!note) return;
+        note.hidden = false;
+        note.textContent = msg;
+        note.style.color = ok ? "var(--accent)" : "#b23b3b";
+      }
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(url)
+          .then(function () { done("Link copied — it reopens on this result.", true); })
+          .catch(function () { done(url, false); });
+      } else {
+        /* No clipboard access: show the URL so it can be copied by hand. */
+        done(url, false);
+      }
+    });
   }
+
+  /* A shared link lands straight on the result. */
+  var restored = readAnswersFromUrl();
+  if (restored) { answers = restored; current = QUESTIONS.length; }
 
   render();
 })();

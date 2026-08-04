@@ -177,18 +177,40 @@ function priceCart(rawItems, siteUrl) {
   const rows = [...merged.values()];
 
   /* Discovery set: N distinct fragrances at the tester size earn a
-     discount on those testers. Counted by distinct slug, so five of
-     one scent doesn't qualify — and decided here, from the server's
-     own rule, never from anything the browser claims. */
-  const testerSlugs = new Set(
-    rows.filter((r) => r.ml === SET_RULE.ml).map((r) => r.slug)
+     discount, and the discount is capped at COMPLETE sets.
+
+     Capping matters. Without it, "5 testers = 10% off" quietly becomes
+     "any number of testers = 10% off" — a shopper could add the whole
+     range from the shop page and take a blanket discount that was
+     never offered. Complete sets keep the offer to what the copy says:
+     18 testers is three sets, so fifteen are discounted and three are
+     not.
+
+     Most expensive first, so adding one extra cheap tester never
+     reduces what a shopper already had.
+
+     Quantity within a discounted row rides along — five scents at two
+     each is two sets' worth of juice, and that is a real bulk order,
+     not the loophole this guards. Breadth is what's rationed.
+
+     Decided here, from the server's own rule, never from anything the
+     browser claims. */
+  const testerRows = rows.filter((r) => r.ml === SET_RULE.ml);
+  const sets = Math.floor(testerRows.length / SET_RULE.min);
+  const discountedSlugs = new Set(
+    testerRows
+      .slice()
+      .sort((a, b) => b.unitAmount - a.unitAmount || a.slug.localeCompare(b.slug))
+      .slice(0, sets * SET_RULE.min)
+      .map((r) => r.slug)
   );
-  const isSet = testerSlugs.size >= SET_RULE.min;
+  const isSet = sets > 0;
 
   let subtotal = 0;
+  let grossSubtotal = 0;   // what it would have cost at full price
 
   const lines = rows.map((r) => {
-    const discounted = isSet && r.ml === SET_RULE.ml;
+    const discounted = r.ml === SET_RULE.ml && discountedSlugs.has(r.slug);
     /* Round the unit price, not the line total, so what Stripe charges
        is always quantity x a real per-item price. */
     const unitAmount = discounted
@@ -196,6 +218,7 @@ function priceCart(rawItems, siteUrl) {
       : r.unitAmount;
 
     subtotal += unitAmount * r.qty;
+    grossSubtotal += r.unitAmount * r.qty;
     const line = {
       quantity: r.qty,
       price_data: { currency: CURRENCY, unit_amount: unitAmount }
@@ -226,13 +249,24 @@ function priceCart(rawItems, siteUrl) {
   const summary = rows.map((r) => `${r.slug}:${r.ml}:${r.qty}`).join(",");
 
   /* Human-readable, for whoever is at the bench filling the order.
-     Line items lose the size once they reference a Stripe Product,
-     so this is where the ml actually lives. */
+     Line items lose the size once they reference a Stripe Product, and
+     a discounted price is a poor way to infer what to pour — so the
+     sizes and quantities live here regardless of how the order was
+     priced. A star marks a tester that took the set discount. */
   const packingList = rows
-    .map((r) => `${r.qty}x ${r.product.name} ${r.ml}ml`)
-    .join("; ") + (isSet ? ` [discovery set -${Math.round(SET_RULE.discount * 100)}%]` : "");
+    .map((r) => {
+      const star = r.ml === SET_RULE.ml && discountedSlugs.has(r.slug) ? "*" : "";
+      return `${r.qty}x ${r.product.name} ${r.ml}ml${star}`;
+    })
+    .join("; ");
 
-  return { lines, subtotal, summary, packingList, isSet };
+  const setNote = isSet
+    ? `${sets} set${sets === 1 ? "" : "s"} of ${SET_RULE.min} ` +
+      `(-${Math.round(SET_RULE.discount * 100)}% on * items); ` +
+      `full price would be $${(grossSubtotal / 100).toFixed(2)}`
+    : "";
+
+  return { lines, subtotal, grossSubtotal, summary, packingList, setNote, sets, isSet };
 }
 
 function shippingOption(subtotal) {
@@ -283,9 +317,12 @@ async function handleCheckout(request, env) {
     phone_number_collection: { enabled: false },
     billing_address_collection: "auto",
     allow_promotion_codes: true,
+    /* What to pour, in a form that survives however the order was
+       priced. Stripe caps each value at 500 chars. */
     metadata: {
       items: priced.packingList.slice(0, 480),
       cart: priced.summary.slice(0, 480),
+      ...(priced.setNote ? { discovery_set: priced.setNote.slice(0, 480) } : {}),
       source: "robotfragrances.com"
     }
   };

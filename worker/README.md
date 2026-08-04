@@ -121,13 +121,15 @@ Test card `4242 4242 4242 4242`, any future expiry, any CVC.
 npm test
 ```
 
-37 tests, no network and no Stripe key needed — the Stripe API is stubbed and the
+51 tests, no network and no Stripe key needed — the Stripe API is stubbed and the
 tests assert on the exact amounts the worker *would* have charged. Covers:
 
 - prices come from the catalogue even when the client sends its own
 - all 66 product/size combinations charge the right amount
-- the discovery-set discount applies only to a genuine set, and cannot
-  be claimed by a flag in the request body
+- the discovery-set discount applies only to a genuine set, is capped at
+  complete sets, and cannot be claimed by a flag in the request body
+- the browser's preview and the worker's charge agree to the cent across
+  every cart shape plus 200 random carts (test/parity.test.mjs)
 - duplicate cart rows merge, so the 99-per-line cap can't be bypassed
 - unknown products and invalid sizes are rejected
 - the free-shipping threshold applies at the right subtotal
@@ -179,6 +181,28 @@ prevent — small-parcel international runs $15-25 against a $5 domestic rate.
 The customer-facing copy also says US-only in several places (`contact.html`,
 `terms.html`, `assets/js/checkout.js`, `assets/js/product.js`, `build.js`), so
 widening the list means updating those too.
+
+## The discovery-set discount
+
+`SET_RULE` lives in `assets/js/main.js` and is generated into
+`worker/src/catalogue.js`, so the storefront and the worker cannot disagree
+about what earns a discount.
+
+The rule: **N distinct fragrances at tester size, discounted in complete sets.**
+
+Complete sets is the part that matters. Without it, "five testers, 10% off"
+silently becomes "any number of testers, 10% off" — a shopper could add the
+whole range from the shop page and take a blanket discount that was never
+offered. With 18 testers in the cart, three sets are discounted and three
+testers are not.
+
+Quantity within a discounted row rides along: five scents at two each is two
+sets' worth of juice, and that is a real bulk order rather than the loophole
+this guards. Breadth is what's rationed, not depth.
+
+`test/parity.test.mjs` runs the browser's `RF_priceCart` and the worker over
+the same carts and asserts they agree to the cent. If that fails, the page is
+quoting one price and the till charging another — fix it before anything else.
 
 ## Smoke-testing a deploy
 

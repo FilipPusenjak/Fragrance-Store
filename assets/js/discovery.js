@@ -44,6 +44,7 @@
   });
 
   var picked = [];   // slugs, in the order chosen
+  var full = false;  // true for one render after a blocked pick
 
   function money(n) {
     return "$" + (Math.round(n * 100) / 100).toFixed(2).replace(/\.00$/, "");
@@ -54,24 +55,25 @@
     });
   }
 
-  function gross() {
-    return picked.reduce(function (n, slug) {
-      var p = window.RF_get(slug);
-      return n + (p ? testerPrice(p) : 0);
-    }, 0);
+  /* Totals come from the shared rule, so this page, the cart drawer,
+     the checkout summary and the worker all agree. */
+  function totals() {
+    return window.RF_priceCart(picked.map(function (slug) {
+      return { slug: slug, ml: RULE.ml, qty: 1 };
+    }));
   }
   function qualifies() { return picked.length >= RULE.min; }
-  function net() {
-    var g = gross();
-    return qualifies() ? g * (1 - RULE.discount) : g;
-  }
 
   function cardHTML(p) {
     var on = picked.indexOf(p.slug) !== -1;
+    /* Once the set is full, the unpicked cards are dimmed rather than
+       removed — you can still swap by deselecting one. */
+    var locked = !on && qualifies();
     var media = p.image
       ? '<img src="' + site(p.image) + '" alt="' + escapeHtml(p.name) + '" loading="lazy">'
       : '<span class="ds-svg">' + BOTTLE + "</span>";
-    return '<button type="button" class="ds-card' + (on ? " is-picked" : "") + '"' +
+    return '<button type="button" class="ds-card' + (on ? " is-picked" : "") +
+        (locked ? " is-locked" : "") + '"' +
         ' data-slug="' + p.slug + '" aria-pressed="' + (on ? "true" : "false") + '">' +
         '<span class="ds-tick" aria-hidden="true">&check;</span>' +
         '<span class="ds-media' + (p.image ? " has-photo" : "") + '">' + media + "</span>" +
@@ -87,7 +89,7 @@
   function summaryHTML() {
     var n = picked.length;
     var need = Math.max(0, RULE.min - n);
-    var g = gross(), t = net();
+    var t = totals();
     var pct = Math.round(RULE.discount * 100);
 
     var chips = picked.map(function (slug) {
@@ -98,10 +100,16 @@
         '" aria-label="Remove ' + escapeHtml(p.name) + '">&times;</button></span>';
     }).join("");
 
-    var status = qualifies()
-      ? '<p class="ds-status is-on">Discount applied — ' + pct + "% off your testers.</p>"
-      : '<p class="ds-status">Add ' + word(need) + " more " +
+    var status;
+    if (full) {
+      status = '<p class="ds-status is-warn">A set is ' + RULE.min +
+        " testers. Remove one to swap, or add this set and start another.</p>";
+    } else if (qualifies()) {
+      status = '<p class="ds-status is-on">Set complete — ' + pct + "% off.</p>";
+    } else {
+      status = '<p class="ds-status">Add ' + word(need) + " more " +
         (need === 1 ? "tester" : "testers") + " to unlock " + pct + "% off.</p>";
+    }
 
     return '<div class="ds-summary-inner">' +
         '<div class="ds-count"><span class="ds-count-num">' + n + "</span>" +
@@ -111,12 +119,13 @@
         status +
         (chips ? '<div class="ds-chips">' + chips + "</div>" : "") +
         '<div class="ds-totals">' +
-          (qualifies()
-            ? '<div class="ds-line"><span>Testers</span><span>' + money(g) + "</span></div>" +
+          (t.saving > 0
+            ? '<div class="ds-line"><span>Testers</span><span>' + money(t.gross) + "</span></div>" +
               '<div class="ds-line ds-line--save"><span>Set discount</span><span>&minus;' +
-                money(g - t) + "</span></div>"
+                money(t.saving) + "</span></div>"
             : "") +
-          '<div class="ds-line ds-line--total"><span>Total</span><span>' + money(t) + "</span></div>" +
+          '<div class="ds-line ds-line--total"><span>Total</span><span>' +
+            money(t.subtotal) + "</span></div>" +
         "</div>" +
         '<button type="button" class="btn ds-add"' + (n ? "" : " disabled") + ">" +
           (n ? "Add " + n + " tester" + (n === 1 ? "" : "s") + " to cart" : "Pick some testers") +
@@ -124,6 +133,10 @@
         (n && !qualifies()
           ? '<p class="ds-note">You can add these now — the discount applies automatically once ' +
             "you reach " + RULE.min + ".</p>"
+          : "") +
+        (qualifies()
+          ? '<p class="ds-note">Want more? Add this set, then build another — every complete ' +
+            "set of " + RULE.min + " is discounted.</p>"
           : "") +
         (n ? '<button type="button" class="ds-clear">Clear selection</button>' : "") +
       "</div>";
@@ -137,9 +150,16 @@
       "</div>";
   }
 
+  /* A set is exactly RULE.min testers. Selecting beyond that is
+     refused rather than silently allowed — otherwise "five testers,
+     10% off" turns into an unlimited discount on the whole range.
+     Deselecting still works, so swapping a choice is one extra click. */
   function toggle(slug) {
     var i = picked.indexOf(slug);
-    if (i === -1) picked.push(slug); else picked.splice(i, 1);
+    if (i !== -1) { picked.splice(i, 1); full = false; render(); return; }
+    if (picked.length >= RULE.min) { full = true; render(); return; }
+    picked.push(slug);
+    full = false;
     render();
   }
 
@@ -147,12 +167,13 @@
     var rm = e.target.closest("[data-remove]");
     if (rm) { toggle(rm.getAttribute("data-remove")); return; }
 
-    if (e.target.closest(".ds-clear")) { picked = []; render(); return; }
+    if (e.target.closest(".ds-clear")) { picked = []; full = false; render(); return; }
 
     if (e.target.closest(".ds-add")) {
       if (!picked.length || !window.RFCart) return;
       picked.forEach(function (slug) { window.RFCart.add(slug, RULE.ml, 1); });
       picked = [];
+      full = false;
       render();
       window.RFCart.open();
       return;

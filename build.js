@@ -265,8 +265,10 @@ function productPage(p, cat) {
     footerHTML(base) +
     `
 
+  <script src="${base}assets/js/config.js"></script>
   <script src="${base}assets/js/main.js"></script>
   <script src="${base}assets/js/cart.js"></script>
+  <script src="${base}assets/js/promos.js"></script>
   <script src="${base}assets/js/product.js"></script>
 </body>
 </html>

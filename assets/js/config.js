@@ -37,5 +37,60 @@ window.RF_CONFIG = {
      3. Stripe publishable key — only needed for "embedded".
      Starts pk_test_ / pk_live_. Safe to commit.
      ---------------------------------------------------------- */
-  publishableKey: null
+  publishableKey: null,
+
+  /* ----------------------------------------------------------
+     4. Feature flags.
+
+     Everything here is additive — set any one to false and that
+     piece reverts to how the site behaved before it existed. They
+     are independent, so a change that doesn't suit you can be
+     switched off without giving up the others.
+
+     Set the whole object to {} to revert all of them at once.
+     ---------------------------------------------------------- */
+  features: {
+    /* --- Discovery set & newsletter promotion --------------- */
+
+    /* Cart drawer: when a shopper has some testers but not a full
+       set, show how many more earn the discount. Contextual, at the
+       moment they're deciding. Off -> drawer as before. */
+    cartSetNudge: true,
+
+    /* Homepage: a band between the featured scents and the
+       newsletter pointing at the set builder. Off -> section absent. */
+    homeDiscoveryBand: true,
+
+    /* A compact newsletter form in the footer of every page. The
+       homepage keeps its larger one either way.
+       Off -> footers as before. */
+    footerNewsletter: true,
+
+    /* Order confirmation: offer the newsletter once an order is
+       done — the warmest moment there is. Off -> plain confirmation. */
+    confirmNewsletter: true,
+
+    /* Product pages: a line under the buy box pointing at the set
+       builder for anyone still deciding. Off -> no line. */
+    productSetLink: true,
+
+    /* --- Quiz ---------------------------------------------- */
+
+    /* Add the winning decant straight to the cart from the result,
+       with a size selector, instead of only linking to its page.
+       Off -> link only, as before. */
+    quizQuickAdd: true,
+
+    /* Explain the match ("you chose woody & earthy, autumn…") so the
+       result reads as reasoned rather than random. Off -> no note. */
+    quizExplainMatch: true,
+
+    /* Put the answers in the URL so a result can be shared or
+       reloaded, plus a copy-link button. Off -> no URL sync. */
+    quizShareResult: true,
+
+    /* Arrow keys and number keys to answer, and a visible back link
+       from the result. Off -> click only. */
+    quizKeyboard: true
+  }
 };

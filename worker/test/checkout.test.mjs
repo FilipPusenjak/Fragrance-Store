@@ -383,10 +383,48 @@ test("duplicate rows of the same tester don't inflate the distinct count", async
   restore();
 });
 
-test("a discounted set is flagged in the packing list", async () => {
+test("order metadata says what to pour, however it was priced", async () => {
   stubStripe();
-  await worker.fetch(post({ items: testers(FIVE) }), ENV);
-  assert.match(sent()["metadata[items]"], /discovery set -10%/);
+  await worker.fetch(post({
+    items: [...testers(FIVE), { slug: "erba-pura", ml: 30, qty: 2 }]
+  }), ENV);
+  const p = sent();
+
+  /* Sizes and quantities must survive the discount — a discounted
+     unit price is a poor way to work out what goes in the box. */
+  assert.match(p["metadata[items]"], /1x Bleu de Chanel 2ml\*/, "discounted testers marked");
+  assert.match(p["metadata[items]"], /2x Erba Pura 30ml(?!\*)/, "full-price line unmarked");
+
+  /* And the discount is explained, with the full-price comparison. */
+  assert.match(p["metadata[discovery_set]"], /1 set of 5/);
+  assert.match(p["metadata[discovery_set]"], /-10% on \* items/);
+  assert.match(p["metadata[discovery_set]"], /full price would be \$\d+\.\d\d/);
+
+  /* Machine-readable cart is still exact. */
+  assert.match(p["metadata[cart]"], /erba-pura:30:2/);
+  restore();
+});
+
+test("no set means no discovery_set metadata at all", async () => {
+  stubStripe();
+  await worker.fetch(post({ items: testers(FIVE.slice(0, 3)) }), ENV);
+  assert.equal(sent()["metadata[discovery_set]"], undefined);
+  restore();
+});
+
+test("a whole-range cart cannot take a blanket discount", async () => {
+  stubStripe();
+  /* The loophole: add every tester from the shop and expect 10% off. */
+  const every = Object.keys(CATALOGUE)
+    .filter((s) => CATALOGUE[s].sizes["2"])
+    .map((slug) => ({ slug, ml: 2, qty: 1 }));
+  await worker.fetch(post({ items: every }), ENV);
+
+  const full = every.reduce((n, i) => n + CATALOGUE[i.slug].sizes["2"], 0);
+  const sets = Math.floor(every.length / 5);
+  assert.ok(chargedSubtotal() > Math.round(full * 0.9),
+    "must not discount everything");
+  assert.match(sent()["metadata[discovery_set]"], new RegExp(`${sets} sets of 5`));
   restore();
 });
 

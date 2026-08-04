@@ -26,11 +26,10 @@
   var get = window.RF_get || function () { return null; };
   function cart() { return window.RFCart; }
 
-  function priceFor(p, ml) {
-    for (var i = 0; i < p.sizes.length; i++) { if (p.sizes[i].ml === ml) return p.sizes[i].price; }
-    return 0;
-  }
   function shippingFor(sub) { return sub === 0 || sub >= 50 ? 0 : 5; }
+  function money(n) {
+    return "$" + (Math.round(n * 100) / 100).toFixed(2).replace(/\.00$/, "");
+  }
   function escapeHtml(s) {
     return String(s).replace(/[&<>"']/g, function (c) {
       return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c];
@@ -48,29 +47,51 @@
       "</div>";
   }
 
-  /* ---- order summary ------------------------------------- */
+  /* ---- order summary ------------------------------------- *
+     Priced by window.RF_priceCart, the same rule the worker applies.
+     This page used to compute its own totals, which is how a
+     discounted discovery set showed full price here and a lower
+     figure on Stripe. */
   function fillSummary() {
     var summary = document.getElementById("checkout-summary");
     if (!summary) return;
     var its = cart() ? cart().items() : [];
     if (!its.length) { showEmpty(); return; }
 
-    var sub = 0;
-    var rows = its.map(function (it) {
-      var p = get(it.slug); if (!p) return "";
-      var price = priceFor(p, it.ml); sub += price * it.qty;
-      var media = p.image ? '<img src="' + p.image + '" alt="' + escapeHtml(p.name) + '">' : '<span class="cart-svg">' + BOTTLE + "</span>";
+    var priced = window.RF_priceCart(its);
+
+    var rows = priced.lines.map(function (l) {
+      var p = l.product;
+      var media = p.image
+        ? '<img src="' + p.image + '" alt="' + escapeHtml(p.name) + '">'
+        : '<span class="cart-svg">' + BOTTLE + "</span>";
       return '<div class="sum-item">' +
-        '<div class="sum-media' + (p.image ? " has-photo" : "") + '">' + media + '<span class="sum-qty">' + it.qty + "</span></div>" +
-        '<div class="sum-info"><div class="sum-name">' + escapeHtml(p.name) + '</div><div class="sum-size">' + it.ml + " ml decant</div></div>" +
-        '<div class="sum-price">$' + (price * it.qty) + "</div>" +
+        '<div class="sum-media' + (p.image ? " has-photo" : "") + '">' + media +
+          '<span class="sum-qty">' + l.qty + "</span></div>" +
+        '<div class="sum-info"><div class="sum-name">' + escapeHtml(p.name) + "</div>" +
+          '<div class="sum-size">' + l.ml + " ml decant" +
+          (l.discounted ? ' <span class="sum-tag">set</span>' : "") + "</div></div>" +
+        '<div class="sum-price">' + money(l.lineTotal) + "</div>" +
       "</div>";
     }).join("");
-    var ship = shippingFor(sub);
+
+    var ship = shippingFor(priced.subtotal);
     summary.querySelector(".sum-items").innerHTML = rows;
-    summary.querySelector(".sum-sub").textContent = "$" + sub;
-    summary.querySelector(".sum-ship").textContent = ship === 0 ? "Free" : "$" + ship;
-    summary.querySelector(".sum-total").textContent = "$" + (sub + ship);
+    summary.querySelector(".sum-sub").textContent = money(priced.gross);
+    summary.querySelector(".sum-ship").textContent = ship === 0 ? "Free" : money(ship);
+    summary.querySelector(".sum-total").textContent = money(priced.subtotal + ship);
+
+    /* Show the saving as its own line, inserted above shipping. */
+    var existing = summary.querySelector(".sum-line--save");
+    if (existing) existing.remove();
+    if (priced.saving > 0) {
+      var shipRow = summary.querySelector(".sum-ship").closest(".sum-line");
+      var el = document.createElement("div");
+      el.className = "sum-line sum-line--save";
+      el.innerHTML = "<span>Discovery set &times;" + priced.sets +
+        "</span><span>&minus;" + money(priced.saving) + "</span>";
+      shipRow.parentNode.insertBefore(el, shipRow);
+    }
   }
 
   /* ---- pay panel ----------------------------------------- */

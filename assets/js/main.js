@@ -115,6 +115,89 @@
   /* Shared globals for the other scripts */
   window.RF_CATALOGUE = CATALOGUE;
   window.RF_SET_RULE = SET_RULE;
+
+  /* Feature flags, from assets/js/config.js.
+
+     Opt-in: a feature is on only where config.js says `true`. Absent,
+     false, an empty features object, or no config.js at all — every
+     one of those means off.
+
+     Deliberately strict, so the fallback in any confused state is the
+     older, known-good behaviour. It also makes `features: {}` a real
+     kill switch, which is what config.js promises. */
+  window.RF_feature = function (name) {
+    var f = window.RF_CONFIG && window.RF_CONFIG.features;
+    return !!f && f[name] === true;
+  };
+
+  /* --- Cart pricing (mirrors the worker) ------------------ *
+     One function for the drawer, the checkout summary and the set
+     builder. They used to price independently, which is how the
+     checkout page ended up showing full price for a discounted set.
+
+     This is a PREVIEW. worker/src/index.js runs the same rule over
+     its own catalogue and that is what actually gets charged; if the
+     two ever disagree, the worker is right. Keep them in step.
+
+     items: [{ slug, ml, qty }]  ->
+       { lines, gross, subtotal, saving, sets, isSet, testers } */
+  function priceCartItems(items) {
+    var merged = [];
+    (items || []).forEach(function (it) {
+      var p = BY_SLUG[it.slug];
+      if (!p) return;
+      var size = null;
+      for (var i = 0; i < p.sizes.length; i++) {
+        if (p.sizes[i].ml === +it.ml) { size = p.sizes[i]; break; }
+      }
+      if (!size) return;
+      var qty = Math.max(1, Math.min(99, parseInt(it.qty, 10) || 1));
+      var found = null;
+      for (var j = 0; j < merged.length; j++) {
+        if (merged[j].slug === it.slug && merged[j].ml === +it.ml) { found = merged[j]; break; }
+      }
+      if (found) found.qty = Math.min(99, found.qty + qty);
+      else merged.push({ slug: it.slug, ml: +it.ml, qty: qty, unitFull: size.price, product: p });
+    });
+
+    /* Complete sets only, most expensive first — same as the worker. */
+    var testerRows = merged.filter(function (r) { return r.ml === SET_RULE.ml; });
+    var sets = Math.floor(testerRows.length / SET_RULE.min);
+    var discounted = {};
+    testerRows.slice()
+      .sort(function (a, b) {
+        return b.unitFull - a.unitFull || (a.slug < b.slug ? -1 : a.slug > b.slug ? 1 : 0);
+      })
+      .slice(0, sets * SET_RULE.min)
+      .forEach(function (r) { discounted[r.slug] = true; });
+
+    var gross = 0, subtotal = 0;
+    var lines = merged.map(function (r) {
+      var isDisc = r.ml === SET_RULE.ml && discounted[r.slug] === true;
+      /* Round the unit, not the line — the worker charges qty x unit. */
+      var unit = isDisc
+        ? Math.round(r.unitFull * 100 * (1 - SET_RULE.discount)) / 100
+        : r.unitFull;
+      gross += r.unitFull * r.qty;
+      subtotal += unit * r.qty;
+      return {
+        slug: r.slug, ml: r.ml, qty: r.qty, product: r.product,
+        unitFull: r.unitFull, unit: unit, discounted: isDisc,
+        lineTotal: unit * r.qty
+      };
+    });
+
+    return {
+      lines: lines,
+      gross: gross,
+      subtotal: subtotal,
+      saving: gross - subtotal,
+      sets: sets,
+      isSet: sets > 0,
+      testers: testerRows.length
+    };
+  }
+  window.RF_priceCart = priceCartItems;
   window.RF_BOTTLE = BOTTLE_SVG;
   window.RF_get = function (slug) { return BY_SLUG[slug] || null; };
 
@@ -184,21 +267,34 @@
     });
   }
 
-  /* --- Scroll reveal ------------------------------------- */
-  var reveals = document.querySelectorAll(".reveal");
-  if ("IntersectionObserver" in window && reveals.length) {
-    var io = new IntersectionObserver(function (entries) {
+  /* --- Scroll reveal ------------------------------------- *
+     .reveal starts at opacity 0 and fades in when scrolled to. That
+     means anything injected AFTER this runs — promos.js, say — stays
+     invisible unless it gets observed too, so the scan is a function
+     other scripts can call rather than a one-off at startup. */
+  var revealIO = null;
+  if ("IntersectionObserver" in window) {
+    revealIO = new IntersectionObserver(function (entries) {
       entries.forEach(function (entry) {
         if (entry.isIntersecting) {
           entry.target.classList.add("is-visible");
-          io.unobserve(entry.target);
+          revealIO.unobserve(entry.target);
         }
       });
     }, { threshold: 0.12, rootMargin: "0px 0px -40px 0px" });
-    reveals.forEach(function (el) { io.observe(el); });
-  } else {
-    reveals.forEach(function (el) { el.classList.add("is-visible"); });
   }
+
+  function observeReveals(root) {
+    var els = (root || document).querySelectorAll(".reveal:not(.is-visible)");
+    els.forEach(function (el) {
+      if (el.hasAttribute("data-reveal-seen")) return;
+      el.setAttribute("data-reveal-seen", "");
+      /* No IntersectionObserver: show it rather than hide it forever. */
+      if (revealIO) revealIO.observe(el); else el.classList.add("is-visible");
+    });
+  }
+  observeReveals();
+  window.RF_observeReveals = observeReveals;
 
   /* --- Shop filter --------------------------------------- */
   var filterBar = document.querySelector(".filter-bar");
@@ -249,7 +345,9 @@
     note.textContent = msg;
     note.style.color = ok ? "var(--accent)" : "#b23b3b";
   }
-  document.querySelectorAll("form[data-form]").forEach(function (form) {
+  function bindForm(form) {
+    if (form.hasAttribute("data-form-bound")) return;
+    form.setAttribute("data-form-bound", "");
     form.addEventListener("submit", function (e) {
       var action = form.getAttribute("action") || "";
       var configured = action && action.indexOf("FORM_ENDPOINT_TODO") === -1 && /^https?:\/\//.test(action);
@@ -271,7 +369,16 @@
         })
         .catch(function () { form.submit(); }); // network hiccup: fall back to a normal POST
     });
-  });
+  }
+
+  function bindAllForms() {
+    document.querySelectorAll("form[data-form]").forEach(bindForm);
+  }
+  bindAllForms();
+
+  /* promos.js injects forms after this runs; the guard above makes
+     re-binding safe, so it can just say when new ones appear. */
+  document.addEventListener("rf:forms-added", bindAllForms);
 
   /* --- Footer year --------------------------------------- */
   var yearEl = document.querySelector("[data-year]");
