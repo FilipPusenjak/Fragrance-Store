@@ -389,6 +389,15 @@ p { color: var(--ink-soft); }
   grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
   gap: clamp(1.25rem, 3vw, 2.25rem);
 }
+/* Homepage "Featured this month" always holds exactly 4 cards, which
+   auto-fill (and the 3-up phone rule below) both split as 3-then-1 —
+   an orphan card alone on its own row. Two classes beats the phone
+   media query's one-class selector on specificity alone, so this
+   holds at every width without needing a breakpoint copy of its own.
+   Shop, related-product and discovery grids are untouched. */
+.product-grid.product-grid--pair {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
 .product-card {
   background: var(--bg-card);
   border: 1px solid var(--line-soft);
