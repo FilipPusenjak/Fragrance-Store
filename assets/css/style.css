@@ -1427,6 +1427,18 @@ body.cart-open .cart-overlay { opacity: 1; pointer-events: auto; }
     border-top: 0;
   }
   .product-price { font-size: 0.86rem; }
+  /* Only the "You might also like" related cards use .link-arrow here
+     (shop cards use .product-add, hidden above) — it never got scaled
+     down alongside .product-price, so "View" ended up reading larger
+     and bolder than everything around it. .link-arrow itself is left
+     alone; this is scoped to its one appearance inside a product card. */
+  .product-foot .link-arrow {
+    font-size: 0.62rem;
+    letter-spacing: 0.08em;
+    gap: 0.35em;
+    padding-bottom: 0.2em;
+  }
+  .product-foot .link-arrow:hover { gap: 0.5em; }
   .product-price small { font-size: 0.6rem; letter-spacing: 0.04em; }
 
   /* With the pills and add button gone, only the photo and the name
