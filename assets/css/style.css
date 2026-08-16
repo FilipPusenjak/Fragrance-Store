@@ -561,6 +561,20 @@ p { color: var(--ink-soft); }
 .band-dark h2 { color: #fff; }
 .band-dark p { color: #b7b2a8; }
 
+/* One .band-dark section (the homepage "Why decant" editorial split)
+   sits on the page's own light background instead of the dark one —
+   it used to set that inline, but .band-dark h2/p above still forced
+   white-on-cream heading text and low-contrast paragraph text, since
+   an inline color on the *section* doesn't reach into these child
+   rules. Two classes beats .band-dark's one on specificity alone, so
+   this holds regardless of source order. Every other .band-dark
+   section is untouched. */
+.band-dark.band-dark--plain {
+  background: transparent;
+  color: var(--ink-soft);
+}
+.band-dark.band-dark--plain h2 { color: var(--ink); }
+
 /* ---- Quote ----------------------------------------------- */
 .quote { text-align: center; max-width: 46ch; margin-inline: auto; }
 .quote blockquote {
