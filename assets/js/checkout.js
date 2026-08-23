@@ -42,7 +42,7 @@
   var get = window.RF_get || function () { return null; };
   function cart() { return window.RFCart; }
 
-  function shippingFor(sub) { return sub === 0 || sub >= 50 ? 0 : 5; }
+  function shippingFor(sub) { return sub === 0 || sub >= 50 ? 0 : 7; }
   function money(n) {
     return "$" + (Math.round(n * 100) / 100).toFixed(2).replace(/\.00$/, "");
   }

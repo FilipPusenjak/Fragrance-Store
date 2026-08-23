@@ -113,7 +113,7 @@ function generate() {
     "/* Free shipping at or above this subtotal (cents). */\n" +
     "export const FREE_SHIPPING_THRESHOLD = 5000;\n\n" +
     "/* Flat rate charged below the threshold (cents). */\n" +
-    "export const SHIPPING_FLAT_RATE = 500;\n\n" +
+    "export const SHIPPING_FLAT_RATE = 700;\n\n" +
     "export const CURRENCY = \"usd\";\n";
 
   fs.mkdirSync(path.dirname(OUT), { recursive: true });

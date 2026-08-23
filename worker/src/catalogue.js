@@ -213,6 +213,6 @@ export const SET_RULE = {"ml":2,"min":5,"discount":0.1};
 export const FREE_SHIPPING_THRESHOLD = 5000;
 
 /* Flat rate charged below the threshold (cents). */
-export const SHIPPING_FLAT_RATE = 500;
+export const SHIPPING_FLAT_RATE = 700;
 
 export const CURRENCY = "usd";

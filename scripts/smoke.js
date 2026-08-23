@@ -92,9 +92,9 @@ async function main() {
     const r = await fetch(`${API}/api/session?id=${session.sessionId}`,
       { headers: { Origin: ORIGIN } });
     const s = await r.json();
-    /* 2 x Bleu de Chanel 5 ml = $26.00; under $50 so +$5 shipping. */
-    check("charges the catalogue price, not the client's", s.amountTotal === 3100,
-      `amountTotal=${s.amountTotal} (expected 3100)`);
+    /* 2 x Bleu de Chanel 5 ml = $26.00; under $50 so +$7 shipping. */
+    check("charges the catalogue price, not the client's", s.amountTotal === 3300,
+      `amountTotal=${s.amountTotal} (expected 3300)`);
   }
 
   /* ---- guardrails still guarding ------------------------ */
