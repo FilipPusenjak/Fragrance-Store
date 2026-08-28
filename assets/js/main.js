@@ -345,27 +345,50 @@
     note.textContent = msg;
     note.style.color = ok ? "var(--accent)" : "#b23b3b";
   }
-  /* Sign-ups go wherever config says, which today is the same
-     Formspree box the contact messages land in. The day there is a
-     real mailing platform it is one line in config.js — and this
-     rewrites the markup rather than trusting it, so the form written
-     into index.html follows the same line as the injected ones. A
-     config change that silently missed one form is exactly how the
-     footer newsletter ended up live on two pages out of thirty. */
+  /* Sign-ups go wherever config says — today MailerLite, by way of
+     the checkout worker. This rewrites the markup rather than
+     trusting it, so the form hand-written into index.html follows
+     the same line of config as the injected ones. A config change
+     that silently missed one form is exactly how the footer
+     newsletter ended up live on two pages out of thirty.
+
+     A newsletterEndpoint beginning with "/" is a path on the
+     checkout worker, which is where sign-ups go now — MailerLite
+     can't be posted to from the browser, so the worker holds the
+     API key and makes the call. Writing it as a path keeps the
+     worker's URL in exactly one place; spelling it out twice is
+     how a moved worker leaves sign-ups posting into the void.
+     An absolute URL still works, for a platform that can take the
+     form directly. */
+  function newsletterUrl(cfg) {
+    var ep = cfg.newsletterEndpoint;
+    if (!ep) return cfg.formEndpoint || "";
+    if (ep.charAt(0) !== "/") return ep;
+    var api = (cfg.checkoutApi || "").replace(/\/$/, "");
+    /* No worker configured: fall back rather than post nowhere. */
+    return api ? api + ep : (cfg.formEndpoint || "");
+  }
+  window.RF_newsletterUrl = function () {
+    return newsletterUrl(window.RF_CONFIG || {});
+  };
+
   function applyNewsletterConfig(form) {
     var cfg = window.RF_CONFIG || {};
-    var url = cfg.newsletterEndpoint || cfg.formEndpoint;
+    var url = newsletterUrl(cfg);
+    /* Whether we actually left Formspree — everything below is a
+       change that only makes sense somewhere else. */
+    var moved = Boolean(url) && url !== cfg.formEndpoint;
     if (url) form.setAttribute("action", url);
 
-    /* Every platform names the field differently: Buttondown wants
-       "email", Kit wants "email_address". */
+    /* Every platform names the field differently: the worker and
+       Buttondown want "email", Kit wants "email_address". */
     var input = form.querySelector('input[type="email"]');
-    var field = cfg.newsletterField || "email";
+    var field = (moved && cfg.newsletterField) || "email";
     if (input && input.name !== field) input.name = field;
 
     /* _subject is a Formspree instruction and means nothing anywhere
        else, so don't post it to somewhere else. */
-    if (cfg.newsletterEndpoint) {
+    if (moved) {
       var subject = form.querySelector('input[name="_subject"]');
       if (subject) subject.remove();
     }

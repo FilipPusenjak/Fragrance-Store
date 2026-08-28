@@ -33,14 +33,30 @@ SITE_URL = "https://robotfragrances.com"
 # localhost are always allowed, so most setups can leave it unset.
 # ALLOWED_ORIGINS = "https://staging.robotfragrances.com"
 
+# MAILERLITE_GROUP_ID is optional: comma-separated MailerLite group
+# IDs that newsletter sign-ups are filed into. Unset means they land
+# in the account ungrouped. The ID is in the group's dashboard URL.
+# MAILERLITE_GROUP_ID = "123456789"
+
+# MAILERLITE_STATUS is optional and should almost always stay unset.
+# It defaults to "unconfirmed", which is what makes MailerLite send
+# its confirmation email — the check that stops a public form from
+# putting someone on a list without their say-so. Setting "active"
+# skips that. Don't, unless you know why you are.
+# MAILERLITE_STATUS = "unconfirmed"
+
 # ------------------------------------------------------------
-# STRIPE_SECRET_KEY is a SECRET and must never live in this file
-# or anywhere else in the repo. It is stored on the Worker itself,
-# so it survives redeploys and is never part of a build. Set it
-# with:
+# SECRETS — STRIPE_SECRET_KEY and MAILERLITE_API_KEY — must never
+# live in this file or anywhere else in the repo. They are stored
+# on the Worker itself, so they survive redeploys and are never
+# part of a build. Set them with:
 #
 #     npx wrangler secret put STRIPE_SECRET_KEY
+#     npx wrangler secret put MAILERLITE_API_KEY
 #
 # ...or in the dashboard under Settings -> Variables and Secrets.
 # For local dev, use worker/.dev.vars (gitignored).
+#
+# Without MAILERLITE_API_KEY only /api/subscribe is affected: it
+# answers 503 and checkout carries on as normal.
 # ------------------------------------------------------------

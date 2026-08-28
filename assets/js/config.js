@@ -58,40 +58,49 @@ window.RF_CONFIG = {
   formEndpoint: "https://formspree.io/f/xpqvvqgb",
 
   /* ----------------------------------------------------------
-     5. The newsletter, once it has a real mailing platform.
+     5. The newsletter.
 
-     Leave newsletterEndpoint null and sign-ups keep going to
-     formEndpoint above — an inbox, with no automatic unsubscribe
-     link, which is what the privacy policy currently describes.
+     Sign-ups go to MailerLite, through the checkout worker.
 
-     Set it and EVERY sign-up box on the site follows: the one in
-     index.html, the one in every footer, and the one after an
-     order. main.js rewrites the markup from these values, so this
-     is the only place to change.
+     They have to go through the worker. MailerLite's embedded
+     forms are a JavaScript widget, and its classic form URL sends
+     no CORS headers the inline submit can use — the same wall that
+     ruled out Mailchimp. Posting to our own worker instead keeps
+     the API key server-side, where a static site cannot leak it.
 
-     Two providers verified to send the CORS headers this site's
-     inline submit needs — the form posts without leaving the page:
+     A value starting with "/" is a path on checkoutApi above, so
+     the worker's URL is written once. An absolute URL is used as
+     given, for a platform that can take the form directly:
 
        Buttondown   https://buttondown.com/api/emails/embed-subscribe/YOUR-USERNAME
                     newsletterField -> "email"
-
        Kit          https://app.kit.com/forms/YOUR-FORM-ID/subscriptions
                     newsletterField -> "email_address"
 
-     Mailchimp sends no CORS headers on its list-manage.com form
-     endpoint, so the inline submit cannot work with it. It would
-     need a full-page redirect off the site or a hidden iframe.
-     Pick one of the two above unless you have a reason not to.
+     Set this to null and sign-ups fall back to formEndpoint above
+     — an inbox, with no automatic unsubscribe link. It is also the
+     automatic fallback if checkoutApi is null, so a half-configured
+     site still collects addresses rather than dropping them.
 
-     THREE THINGS MUST HAPPEN TOGETHER when this is set:
-       1. this value, and newsletterField to match the provider;
-       2. privacy.html — name the provider, restore the one-click
-          unsubscribe wording, add the postal address CAN-SPAM
-          requires, and move the "last updated" date;
-       3. the mailto opt-out in promos.js and index.html becomes the
-          provider's real unsubscribe link.
+     EVERY sign-up box follows this: index.html, every footer, and
+     the one after an order. main.js rewrites the markup from these
+     values, so this is the only place to change.
+
+     THE WORKER NEEDS ITS KEY. Sign-ups 503 until it is set:
+         npx wrangler secret put MAILERLITE_API_KEY
+     Optional: MAILERLITE_GROUP_ID to file sign-ups into a group.
+
+     DOUBLE OPT-IN MUST BE ON in the MailerLite dashboard. The
+     worker adds people as "unconfirmed" on purpose — anyone can
+     type anyone's address into a public box — and MailerLite is
+     what emails them to confirm. With double opt-in off, they sit
+     unconfirmed forever and no one is ever emailed.
+
+     STILL OUTSTANDING: the postal address CAN-SPAM requires in
+     every marketing email. Collecting sign-ups is fine without it;
+     sending the first campaign is not. See privacy.html.
      ---------------------------------------------------------- */
-  newsletterEndpoint: null,
+  newsletterEndpoint: "/api/subscribe",
   newsletterField: "email",
 
   /* ----------------------------------------------------------

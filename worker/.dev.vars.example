@@ -4,3 +4,14 @@
 # Use a TEST key (sk_test_...) for local development. Card 4242 4242
 # 4242 4242, any future expiry, any CVC will complete a test order.
 STRIPE_SECRET_KEY=sk_test_replace_me
+
+# MailerLite API token, for newsletter sign-ups. Without it
+# /api/subscribe answers 503 and the rest of the worker is fine.
+#
+# Careful locally: there is no test mode. A sign-up posted while
+# this is set goes to the real account, so use an address you own.
+MAILERLITE_API_KEY=replace_me
+
+# Optional. Comma-separated MailerLite group IDs to file sign-ups
+# into. Unset means they land in the account with no group.
+# MAILERLITE_GROUP_ID=123456789

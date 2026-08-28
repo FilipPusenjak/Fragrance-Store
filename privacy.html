@@ -69,7 +69,7 @@
 
     <section class="section--tight" style="padding-top:0">
       <div class="container legal-prose" style="max-width:760px">
-        <p class="form-note">Last updated: 4 August 2026</p>
+        <p class="form-note">Last updated: 28 August 2026</p>
 
         <h2>Who we are</h2>
         <p><strong>Robot Fragrances</strong> (“we”, “us”) is an independent perfume decanting business — a sole proprietorship trading under that assumed name from New York City, New York, United States. We decide what this site collects and why, so we’re the ones responsible for it. Any question about this policy: <a href="mailto:hello@robotfragrances.com">hello@robotfragrances.com</a>.</p>
@@ -88,7 +88,7 @@
 
         <h2>What we collect</h2>
         <ul>
-          <li><strong>Newsletter sign-up:</strong> your email address, and nothing else, when you choose to subscribe.</li>
+          <li><strong>Newsletter sign-up:</strong> your email address, plus the date and the IP address the sign-up came from. We keep those last two only as the record that the sign-up was real — it’s what lets us show a subscription was genuinely asked for.</li>
           <li><strong>Contact form:</strong> your name, email address, the topic you pick, and the message you write.</li>
           <li><strong>Orders:</strong> your name, shipping address, email address, and what you ordered. Payment is taken on Stripe’s own page — your card number never touches our site or our servers, and all we ever see back is the last four digits, the card brand, and whether it worked.</li>
           <li><strong>On your device:</strong> your cart is kept in your browser’s <code>localStorage</code> and also written into the page address, so it survives a refresh and a cart can be bookmarked or sent to someone. Your Scent Finder answers work the same way. None of it reaches us unless you check out, and we set no cookies of our own.
@@ -108,7 +108,8 @@
         <h2>Who else touches it</h2>
         <p><strong>We do not sell your personal information, and we do not share it for cross-context behavioural advertising.</strong> It reaches these companies only because they run part of the shop:</p>
         <ul>
-          <li><strong>Formspree</strong> — delivers both the contact form and the newsletter sign-up to our inbox. It receives whatever you type into those forms. <a href="https://formspree.io/legal/privacy-policy/" target="_blank" rel="noopener">Privacy policy</a>.</li>
+          <li><strong>Formspree</strong> — delivers the contact form to our inbox. It receives whatever you type into that form. <a href="https://formspree.io/legal/privacy-policy/" target="_blank" rel="noopener">Privacy policy</a>.</li>
+          <li><strong>MailerLite</strong> — stores the newsletter list and sends the newsletter. It receives your email address and the sign-up record described above. <a href="https://www.mailerlite.com/legal/privacy-policy" target="_blank" rel="noopener">Privacy policy</a>.</li>
           <li><strong>Stripe</strong> — takes the payment and collects your shipping and billing address on its own secure page. <a href="https://stripe.com/privacy" target="_blank" rel="noopener">Privacy policy</a>.</li>
           <li><strong>Cloudflare</strong> — runs the small service that prices your basket and creates the Stripe session. <a href="https://www.cloudflare.com/privacypolicy/" target="_blank" rel="noopener">Privacy policy</a>.</li>
           <li><strong>GitHub (GitHub Pages)</strong> — hosts and serves these pages. <a href="https://docs.github.com/en/site-policy/privacy-policies/github-general-privacy-statement" target="_blank" rel="noopener">Privacy statement</a>.</li>
@@ -118,30 +119,28 @@
         <p>That is the whole list. Notably absent: <strong>fonts</strong>. The two typefaces here are served from our own site rather than from Google, so loading a page doesn’t announce your IP address to a third party you never chose to visit.</p>
 
         <h2>The newsletter, honestly</h2>
-        <p>Right now the sign-up form simply emails your address to us; there is no mailing platform behind it yet, so there is no automatic unsubscribe link to click. Instead the opt-out sits next to every sign-up box on the site, and here: <a href="mailto:hello@robotfragrances.com?subject=Unsubscribe">unsubscribe by email</a>. Reply to any message we send and that works too. No reason needed, we’ll confirm, and we’ll do it within a few days rather than the ten the law allows.</p>
-        <p>We are moving to a dedicated email platform. When we do, we’ll name it here, every marketing email will carry a one-click unsubscribe link and our postal address, and we’ll update the date at the top of this page. We won’t add you to any list you didn’t ask to join, and we don’t email customers marketing they didn’t opt into.</p>
-        <!-- TODO: owner — the sending platform and the postal address arrive together,
-             and neither blocks the shop from trading:
+        <p>The list is held by <strong>MailerLite</strong>, and every email it sends carries a one-click unsubscribe link. You can also <a href="mailto:hello@robotfragrances.com?subject=Unsubscribe">unsubscribe by email</a>, or reply to any message we send. No reason needed, and we’ll do it within a few days rather than the ten the law allows.</p>
+        <p><strong>Signing up takes two steps, on purpose.</strong> Entering an address in a box on this site doesn’t put it on the list — MailerLite emails you first, and nothing is sent until you click the link in that email to confirm. Anyone can type anyone’s address into a public form, and this is what stops that from being our problem or yours. If you never confirm, the address sits inert and is never emailed anything else.</p>
+        <p>We won’t add you to any list you didn’t ask to join, and we don’t email customers marketing they didn’t opt into. If you unsubscribe, filling in a sign-up box again won’t quietly put you back on — you stay off until you ask us directly.</p>
+        <!-- TODO: owner — the postal address. Sign-ups are live and legal without
+             one; the FIRST MARKETING EMAIL is what needs it:
              (1) CAN-SPAM (15 U.S.C. §7704(a)(5)) requires a valid physical postal
                  address in every COMMERCIAL email. A PO box counts; an email address
-                 does not. Transactional mail — Stripe receipts, dispatch notices — is
-                 a different category and is exempt, so orders can ship without one.
-             (2) The trigger is therefore the first marketing email, and no marketing
-                 email can go out before there is a platform to send it from. Settle
-                 both at once.
-             (3) The Certificate of Assumed Name filing needs a business address too,
+                 does not. Transactional mail — Stripe receipts, dispatch notices —
+                 is a different category and is exempt, so orders can ship without one.
+             (2) The Certificate of Assumed Name filing needs a business address too,
                  and that filing is a public record — so the same decision covers both.
                  Ask the county clerk whether they accept a PO box; some want a street
                  address on the certificate.
-             (4) When the platform lands: name it in the paragraph above, restore the
-                 one-click unsubscribe wording, replace the mailto opt-out in
-                 assets/js/promos.js and index.html, and move the date at the top. -->
+             (3) When it lands: add it to the paragraph above, set it in the MailerLite
+                 account so it appears in every campaign footer, and move the date at
+                 the top of this page. -->
 
         <h2>How long we keep it</h2>
         <ul>
           <li><strong>Orders, receipts and shipping records — 7 years.</strong> Long enough to cover tax and accounting requirements and any dispute about an old order.</li>
           <li><strong>Contact form messages — 24 months</strong> from your last message to us, then deleted.</li>
-          <li><strong>Newsletter address — until you unsubscribe</strong>, then removed within 30 days. We keep a minimal suppression record so we don’t accidentally re-add you.</li>
+          <li><strong>Newsletter address — until you unsubscribe</strong>, then removed within 30 days. We keep a minimal suppression record so we don’t accidentally re-add you. An address that never confirms its sign-up is cleared out the same way.</li>
           <li><strong>Server logs — whatever our hosting and payment providers keep</strong> under their own policies, linked above. We don’t hold copies.</li>
         </ul>
 
@@ -164,7 +163,7 @@
         <p>This is a shop for adults and isn’t directed at children. Please don’t use it or send us your details if you’re under 18. We don’t knowingly collect personal information from anyone under 13; if you believe a child has given us theirs, email us and we’ll delete it.</p>
 
         <h2>Changes</h2>
-        <p>We’ll update this policy as the shop grows — a mailing platform, an inventory system, anything that changes who touches your data. The “last updated” date at the top changes when we do, and material changes will be flagged on the site.</p>
+        <p>We’ll update this policy as the shop grows — an inventory system, anything that changes who touches your data. The “last updated” date at the top changes when we do, and material changes will be flagged on the site.</p>
 
         <p style="margin-top:2rem">Questions? <a href="contact.html">Get in touch</a> — a real person on the bench will reply.</p>
       </div>

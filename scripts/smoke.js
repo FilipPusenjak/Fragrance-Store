@@ -110,6 +110,29 @@ async function main() {
   await rejects("rejects a discontinued size", [{ slug: "byredo-animalique", ml: 30, qty: 1 }]);
   await rejects("rejects an empty cart", []);
 
+  /* ---- newsletter --------------------------------------- *
+     Deliberately never posts a valid address: a smoke test that
+     ran on every deploy would fill the list with junk. These
+     prove the route is wired up and guarding, which is what a
+     deploy can actually break. */
+  check("newsletter is configured", health.newsletterConfigured === true,
+    "MAILERLITE_API_KEY is not set on the worker");
+
+  const sub = async (label, body, origin, want) => {
+    const r = await fetch(`${API}/api/subscribe`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json", Origin: origin },
+      body: JSON.stringify(body)
+    });
+    check(label, r.status === want, `HTTP ${r.status} (expected ${want})`);
+  };
+  await sub("rejects a malformed address", { email: "not-an-address" }, ORIGIN, 400);
+  await sub("refuses an unknown origin", { email: "a@b.co" }, "https://evil.example", 403);
+  /* A filled honeypot is answered 200 and dropped — proving the
+     spam guard is live without adding anyone. */
+  await sub("swallows a honeypot submission",
+    { email: "bot@example.com", _gotcha: "x" }, ORIGIN, 200);
+
   /* ---- CORS --------------------------------------------- */
   const eo = await fetch(`${API}/api/checkout`, {
     method: "OPTIONS", headers: { Origin: "https://evil.example" }

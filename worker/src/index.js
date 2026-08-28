@@ -8,6 +8,7 @@
    Routes
      POST /api/checkout        cart -> Checkout Session
      GET  /api/session?id=...  safe status for the confirm page
+     POST /api/subscribe       newsletter sign-up -> MailerLite
      GET  /api/health          liveness + config sanity
 
    Two UI modes, one endpoint:
@@ -35,12 +36,13 @@ import { PRODUCT_IDS } from "./product-ids.js";
 import { BRANCH, BUILT_AT, VERSION } from "./version.js";
 
 const STRIPE_API = "https://api.stripe.com/v1";
+const MAILERLITE_API = "https://connect.mailerlite.com/api";
 
 /* Countries we'll ship to — Stripe needs these enumerated, and it
    won't let a customer complete checkout to anywhere else.
 
    US-only for now: small-parcel international runs $15-25 against a
-   $5 domestic rate, before customs forms and untracked-loss claims.
+   $7 domestic rate, before customs forms and untracked-loss claims.
    Adding a country means adding it here AND giving it a shipping
    rate below — a destination with no rate would ship at the domestic
    price, which is the exact mistake this list exists to prevent. */
@@ -383,6 +385,134 @@ async function handleSession(request, env, url) {
   }, 200, request, env);
 }
 
+/* ---------- newsletter ------------------------------------ */
+/* Sign-ups can't post to MailerLite directly. Its embedded forms
+   are a JavaScript widget, and the classic webforms URL doesn't
+   send CORS headers this site can use — the same wall that ruled
+   out Mailchimp. So the form posts here and the worker makes the
+   API call, which is the better shape anyway: the API key stays
+   server-side instead of sitting in the page for anyone to lift.
+
+   Before this, sign-ups went to Formspree — an inbox, with no
+   unsubscribe link and a list only a human could maintain. */
+
+/* yyyy-MM-dd HH:mm:ss — the only timestamp format the API takes. */
+function mlTimestamp(date) {
+  return date.toISOString().slice(0, 19).replace("T", " ");
+}
+
+/* The site's forms post FormData. JSON is accepted too so the
+   endpoint can be exercised with a plain fetch. */
+async function readSubscribeBody(request) {
+  const type = request.headers.get("Content-Type") || "";
+  if (type.includes("application/json")) {
+    const body = await request.json();
+    return { email: body.email, gotcha: body._gotcha };
+  }
+  const form = await request.formData();
+  return { email: form.get("email"), gotcha: form.get("_gotcha") };
+}
+
+async function handleSubscribe(request, env) {
+  if (!env.MAILERLITE_API_KEY) {
+    return fail("The newsletter isn't connected yet.", 503, request, env,
+      "MAILERLITE_API_KEY is not set on the worker.");
+  }
+
+  /* Checkout can afford an unknown caller: a session nobody pays for
+     costs nothing. This writes to a real mailing list, so an
+     unrecognised origin is turned away outright rather than merely
+     denied its CORS header. A forged Origin still gets through —
+     the honeypot and double opt-in are what carry the rest. */
+  if (!allowedOrigins(env).includes(request.headers.get("Origin") || "")) {
+    return fail("Not allowed.", 403, request, env);
+  }
+
+  let fields;
+  try {
+    fields = await readSubscribeBody(request);
+  } catch (e) {
+    return fail("Malformed request.", 400, request, env);
+  }
+
+  /* Formspree filtered spam for us; that job moves here along with
+     the endpoint. A bot that fills the hidden field is told the
+     sign-up worked and nothing is sent on — saying otherwise only
+     teaches it to try again without the field. */
+  if (fields.gotcha) return json({ ok: true }, 200, request, env);
+
+  const email = String(fields.email || "").trim().toLowerCase();
+  if (email.length > 254 || !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) {
+    return fail("That doesn't look like an email address.", 400, request, env);
+  }
+
+  /* "unconfirmed" is what makes MailerLite send its confirmation
+     email. A box anyone can type any address into shouldn't be able
+     to put that address on a list without its owner agreeing, and an
+     unconfirmed row can never be mailed — so junk sign-ups stay
+     inert instead of becoming a deliverability problem.
+
+     This needs double opt-in switched ON in the MailerLite
+     dashboard. With it off, these addresses sit unconfirmed forever
+     and nobody is ever emailed. */
+  const payload = {
+    email,
+    status: env.MAILERLITE_STATUS || "unconfirmed",
+    /* Someone who unsubscribed stays unsubscribed. Quietly re-adding
+       them because they hit a form again is how a list earns
+       complaints. */
+    resubscribe: false,
+    subscribed_at: mlTimestamp(new Date())
+  };
+
+  /* Where the sign-up came from, kept as the record of consent. */
+  const ip = request.headers.get("CF-Connecting-IP");
+  if (ip) payload.ip_address = ip;
+  /* opted_in_at and optin_ip are left for MailerLite to fill in when
+     the confirmation link is actually clicked. Writing them here
+     would record a consent that hasn't happened yet. */
+
+  const groups = (env.MAILERLITE_GROUP_ID || "")
+    .split(",").map((s) => s.trim()).filter(Boolean);
+  if (groups.length) payload.groups = groups;
+
+  let res;
+  try {
+    res = await fetch(`${MAILERLITE_API}/subscribers`, {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${env.MAILERLITE_API_KEY}`,
+        "Content-Type": "application/json",
+        Accept: "application/json"
+      },
+      body: JSON.stringify(payload)
+    });
+  } catch (e) {
+    console.error("mailerlite unreachable", e.message);
+    return fail("We couldn't reach the mailing list. Please try again.",
+      502, request, env);
+  }
+
+  /* 201 created, 200 already known. Both are a success to the person
+     at the form, and distinguishing them would tell any caller
+     whether a given address is already on the list. */
+  if (res.status === 200 || res.status === 201) {
+    return json({ ok: true }, 200, request, env);
+  }
+  if (res.status === 422) {
+    return fail("That doesn't look like an email address.", 400, request, env);
+  }
+  if (res.status === 429) {
+    return fail("Too many sign-ups at once. Please try again in a minute.",
+      503, request, env);
+  }
+
+  /* Status only — the body can echo the address back. */
+  console.error("mailerlite rejected a sign-up", res.status);
+  return fail("We couldn't add you just now. Please try again.",
+    502, request, env);
+}
+
 export default {
   async fetch(request, env) {
     const url = new URL(request.url);
@@ -395,6 +525,7 @@ export default {
       return json({
         ok: true,
         stripeConfigured: Boolean(env.STRIPE_SECRET_KEY),
+        newsletterConfigured: Boolean(env.MAILERLITE_API_KEY),
         liveMode: (env.STRIPE_SECRET_KEY || "").startsWith("sk_live_"),
         products: Object.keys(CATALOGUE).length,
         site: env.SITE_URL || "https://robotfragrances.com",
@@ -412,6 +543,10 @@ export default {
 
     if (url.pathname === "/api/session" && request.method === "GET") {
       return handleSession(request, env, url);
+    }
+
+    if (url.pathname === "/api/subscribe" && request.method === "POST") {
+      return handleSubscribe(request, env);
     }
 
     return fail("Not found.", 404, request, env);

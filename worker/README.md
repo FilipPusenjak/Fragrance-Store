@@ -70,7 +70,7 @@ Sanity check any time:
 
 ```bash
 curl https://robot-fragrances-checkout.<you>.workers.dev/api/health
-# {"ok":true,"stripeConfigured":true,"liveMode":false,"products":16,...}
+# {"ok":true,"stripeConfigured":true,"newsletterConfigured":true,"liveMode":false,"products":16,...}
 ```
 
 ## Switching to in-app checkout
@@ -162,11 +162,59 @@ about a price you just changed.
 | Name | Where | Purpose |
 |---|---|---|
 | `STRIPE_SECRET_KEY` | `wrangler secret` or dashboard | **Secret.** Server-side Stripe auth. Stored on the worker, so it survives redeploys and is never part of a build. |
+| `MAILERLITE_API_KEY` | `wrangler secret` or dashboard | **Secret.** Newsletter sign-ups. Unset, `/api/subscribe` answers 503 and nothing else changes. |
 | `SITE_URL` | `wrangler.toml` (repo root) | Success/cancel/return URLs and CORS. |
 | `ALLOWED_ORIGINS` | `wrangler.toml` (repo root) | Optional extra origins, comma-separated. |
+| `MAILERLITE_GROUP_ID` | `wrangler.toml` (repo root) | Optional group(s) to file sign-ups into, comma-separated. |
+| `MAILERLITE_STATUS` | `wrangler.toml` (repo root) | Optional. Defaults to `unconfirmed`; see below before changing it. |
 
 `SITE_URL`, its `www.` variant and localhost are always allowed, so most setups
 never need `ALLOWED_ORIGINS`.
+
+## The newsletter
+
+Sign-ups post to `/api/subscribe`, which forwards them to MailerLite.
+
+They go through the worker because they can't go direct. MailerLite's embedded
+forms are a JavaScript widget, and its classic form URL sends no CORS headers
+the site's inline submit can use — the same wall that ruled out Mailchimp. That
+turns out to be the better shape anyway: the API key stays on the worker, where
+a static site cannot leak it.
+
+```bash
+npx wrangler secret put MAILERLITE_API_KEY
+```
+
+**Turn double opt-in on in the MailerLite dashboard.** The worker adds people
+with status `unconfirmed` on purpose — anyone can type anyone's address into a
+public box — and MailerLite is what emails them to confirm. With double opt-in
+off, sign-ups sit unconfirmed forever and nobody is ever emailed. That silent
+failure is the one thing to check after setting this up: sign up with your own
+address and confirm the email arrives.
+
+Three other decisions worth knowing, all in `handleSubscribe`:
+
+- **An unsubscribe is never undone.** `resubscribe: false`, so someone who left
+  and later hits a form again stays off the list. Re-adding them quietly is how
+  a list earns complaints.
+- **`opted_in_at` is left alone.** MailerLite fills it in when the confirmation
+  link is clicked. Writing it at sign-up would record a consent that hasn't
+  happened; `subscribed_at` and `ip_address` are the honest record of the form
+  submission itself.
+- **Unknown origins are refused outright**, not merely denied a CORS header like
+  `/api/checkout`. A checkout session nobody pays for costs nothing; this writes
+  to a real mailing list. A forged `Origin` still gets through — the honeypot and
+  double opt-in carry the rest.
+
+**Not rate limited.** Formspree used to absorb that; nothing replaces it. The
+honeypot stops naive bots and unconfirmed subscribers can never be mailed, so a
+flood is inert and purgeable rather than a deliverability problem — but it could
+still burn the account's quota. If sign-up spam ever becomes real, a Cloudflare
+rate-limiting binding on this route is the fix.
+
+**Still outstanding: the postal address.** CAN-SPAM requires one in every
+marketing email. Collecting sign-ups without it is fine; sending the first
+campaign is not. See the TODO in `../privacy.html`.
 
 ## Shipping scope
 
@@ -176,7 +224,7 @@ for. It is currently `["US"]`.
 Adding a country means **two** changes, not one: add it to `SHIP_TO` *and* give
 it a rate in `shippingOption()`. A country added to the list without its own
 rate ships at the domestic price, which is the mistake the list exists to
-prevent — small-parcel international runs $15-25 against a $5 domestic rate.
+prevent — small-parcel international runs $15-25 against a $7 domestic rate.
 
 The customer-facing copy also says US-only in several places (`contact.html`,
 `terms.html`, `assets/js/checkout.js`, `assets/js/product.js`, `build.js`), so
