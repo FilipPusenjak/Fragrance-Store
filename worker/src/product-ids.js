@@ -32,7 +32,7 @@ export const PRODUCT_IDS = {
   "bleu-de-chanel": null,
   "dior-sauvage-edp": null,
   "by-the-fireplace": null,
-  "wood-neroli": null,
+  "ysl-y-iced": null,
   "erba-pura": null,
   "pdm-greenley": null,
   "tom-ford-ombre-leather": null,

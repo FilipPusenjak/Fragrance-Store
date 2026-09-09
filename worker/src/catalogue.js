@@ -88,10 +88,10 @@ export const CATALOGUE = {
       "30": 6500
     }
   },
-  "wood-neroli": {
-    "name": "Wood Neroli",
+  "ysl-y-iced": {
+    "name": "YSL Y Iced",
     "label": "Designer",
-    "image": "assets/img/wood-neroli.webp",
+    "image": "assets/img/ysl-y-iced.webp",
     "sizes": {
       "2": 600,
       "5": 1300,
